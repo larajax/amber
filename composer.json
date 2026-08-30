@@ -6,8 +6,8 @@
     "require": {
         "php": "^8.2",
         "larajax/larajax": "dev-develop as 2.3",
-        "october/rain": "dev-next as 4.4.0",
-        "october/amber": "dev-main"
+        "october/ui": "dev-main",
+        "october/rain": "dev-next as 4.4.0"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
