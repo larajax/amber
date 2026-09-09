@@ -1,4 +1,6 @@
 /.phpunit.cache
+/database/*.sqlite
+/database/*.sqlite-journal
 /public/storage
 /public/vendor
 /storage/*.key
