@@ -1,0 +1,20 @@
+# ===================================
+#  User Group Form Field Definitions
+# ===================================
+
+fields:
+
+    name:
+        label: Name
+        span: left
+
+    code:
+        label: Code
+        span: right
+        comment: A unique machine-readable identifier, e.g. "editors".
+
+    description:
+        label: Description
+        type: textarea
+        size: small
+        span: full
