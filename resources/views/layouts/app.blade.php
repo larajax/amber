@@ -6,25 +6,19 @@
 
         <title>@yield('title', 'Amber') — {{ config('app.name', 'Amber') }}</title>
 
+        {{-- No build step: assets load from a CDN and the published vendor/larajax files. --}}
         <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2"></script>
-
-        <!-- Styles / Scripts -->
-        @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-            @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @else
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-            <link href="{{ asset('vendor/larajax/ui/ui.css') }}" rel="stylesheet">
-            <style>
-                body { background-color: #FDFDFC; color: #1b1b18; }
-                .amber-nav { border-bottom: 1px solid #e5e5e2; }
-                .amber-nav .nav-link.active { font-weight: 600; }
-            </style>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
-
-            <script src="{{ asset('vendor/larajax/framework-bundle.js') }}"></script>
-            <script type="module" src="{{ asset('vendor/larajax/ui/ui.js') }}"></script>
-        @endif
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+        <link href="{{ asset('vendor/larajax/ui/ui.css') }}" rel="stylesheet">
+        <style>
+            body { background-color: #FDFDFC; color: #1b1b18; }
+            .amber-nav { border-bottom: 1px solid #e5e5e2; }
+            .amber-nav .nav-link.active { font-weight: 600; }
+        </style>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+        <script src="{{ asset('vendor/larajax/framework-bundle.js') }}"></script>
+        <script type="module" src="{{ asset('vendor/larajax/ui/ui.js') }}"></script>
     </head>
     <body>
         <nav class="amber-nav px-5 py-3 mb-4">

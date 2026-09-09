@@ -36,7 +36,8 @@ cd amber
 # database and run migrations + seeders.
 composer setup
 
-# Serve the app (plus queue, logs and Vite in parallel).
+# Serve the app. There is no build step — assets load from a CDN and the
+# published vendor/larajax files.
 composer dev
 ```
 
