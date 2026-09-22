@@ -8,7 +8,7 @@
         <a href="{{ url('user-groups') }}" class="btn btn-link text-decoration-none">&larr; Back to groups</a>
     </div>
 
-    {!! $formWidget->render() !!}
+    {{ $formWidget }}
 
     <div class="mt-4">
         {{ Ui::ajaxButton(handler: 'onStore', label: 'Create Group', primary: true) }}

@@ -4,8 +4,8 @@
 
 <h1 class="mb-4">User Groups</h1>
 
-{!! $toolbar->render() !!}
+{{ $toolbar }}
 
-{!! $list->render() !!}
+{{ $list }}
 
 @endsection

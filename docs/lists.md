@@ -47,13 +47,13 @@ class UserController extends ControllerBase
 {
     public function index()
     {
-        $widget = Lists::make([
-            'alias' => 'list',
-            'model' => new User,
-            'columns' => '~/resources/amber/user/columns.yaml',
-            'recordsPerPage' => 10,
-            'recordUrl' => 'users/edit/:id',
-        ]);
+        $widget = Lists::make(
+            alias: 'list',
+            model: new User,
+            columns: '~/resources/amber/user/columns.yaml',
+            recordsPerPage: 10,
+            recordUrl: 'users/edit/:id',
+        );
 
         return view('users.index', ['widget' => $widget]);
     }
@@ -63,7 +63,7 @@ class UserController extends ControllerBase
 Render it in the view:
 
 ```blade
-{!! $widget->render() !!}
+{{ $widget }}
 ```
 
 Sorting, pagination and search post back through [Larajax](https://larajax.org) AJAX handlers on the
@@ -337,11 +337,11 @@ option above applies — plus the structure options:
 ```php
 use October\Amber\Widgets\ListStructure;
 
-$widget = ListStructure::make([
-    'alias' => 'list',
-    'model' => new Category,
-    'columns' => '~/resources/amber/category/columns.yaml',
-]);
+$widget = ListStructure::make(
+    alias: 'list',
+    model: new Category,
+    columns: '~/resources/amber/category/columns.yaml',
+);
 ```
 
 Option | Description

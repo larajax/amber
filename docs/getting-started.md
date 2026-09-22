@@ -32,20 +32,27 @@ columns:
 Build the widget in a controller and render it in a view:
 
 ```php
-$widget = Lists::make([
-    'alias' => 'list',
-    'model' => new User,
-    'columns' => '~/resources/amber/user/columns.yaml',
-    'recordsPerPage' => 10,
-]);
+$widget = Lists::make(
+    alias: 'list',
+    model: new User,
+    columns: '~/resources/amber/user/columns.yaml',
+    recordsPerPage: 10,
+);
 ```
 
 ```blade
-{!! $widget->render() !!}
+{{ $widget }}
 ```
 
 That renders a sortable, searchable, paginated table of users. Forms work the same way from a
 `fields.yaml`, and filters from a `scopes.yaml`.
+
+Each widget declares its common options as `make()` parameters, so your editor can suggest and
+document them as you type; less common options pass through the same call and are resolved by name.
+A configuration array built dynamically is passed with `Lists::makeWithConfig($config)`.
+
+Widgets are `Htmlable`, so Blade's `{{ }}` renders their markup directly — calling
+`{!! $widget->render() !!}` remains equivalent.
 
 ## The widgets
 

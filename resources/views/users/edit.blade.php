@@ -8,7 +8,7 @@
         <a href="{{ url('users') }}" class="btn btn-link text-decoration-none">&larr; Back to users</a>
     </div>
 
-    {!! $formWidget->render() !!}
+    {{ $formWidget }}
 
     <div class="mt-4 d-flex gap-2">
         {{ Ui::ajaxButton(handler: 'onUpdate', label: 'Save', primary: true) }}

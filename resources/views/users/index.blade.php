@@ -4,10 +4,10 @@
 
 <h1 class="mb-4">Users</h1>
 
-{!! $toolbar->render() !!}
+{{ $toolbar }}
 
-{!! $filter->render() !!}
+{{ $filter }}
 
-{!! $list->render() !!}
+{{ $list }}
 
 @endsection

@@ -35,19 +35,19 @@ array:
 ```php
 use October\Amber\Widgets\Filter;
 
-$filter = Filter::make([
-    'alias' => 'filter',
-    'model' => new User,
-    'scopes' => '~/resources/amber/user/scopes.yaml',
-]);
+$filter = Filter::make(
+    alias: 'filter',
+    model: new User,
+    scopes: '~/resources/amber/user/scopes.yaml',
+);
 ```
 
 Render it in the view, above the list it filters:
 
 ```blade
-{!! $filter->render() !!}
+{{ $filter }}
 
-{!! $widget->render() !!}
+{{ $widget }}
 ```
 
 ## Connecting a filter to a list
@@ -92,18 +92,18 @@ class UserFilter extends Filter
 Wire it all together in the controller action:
 
 ```php
-$filter = UserFilter::make([
-    'alias' => 'filter',
-    'model' => new User,
-    'scopes' => '~/resources/amber/user/scopes.yaml',
-]);
+$filter = UserFilter::make(
+    alias: 'filter',
+    model: new User,
+    scopes: '~/resources/amber/user/scopes.yaml',
+);
 
-$widget = Lists::make([
-    'alias' => 'list',
-    'model' => new User,
-    'columns' => '~/resources/amber/user/columns.yaml',
-    'recordsPerPage' => 10,
-]);
+$widget = Lists::make(
+    alias: 'list',
+    model: new User,
+    columns: '~/resources/amber/user/columns.yaml',
+    recordsPerPage: 10,
+);
 
 $widget->addFilter([$filter, 'applyAllScopesToQuery']);
 $filter->parentList = $widget;

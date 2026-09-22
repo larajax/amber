@@ -41,25 +41,25 @@ class UsersController extends ControllerBase
      */
     public function index()
     {
-        $list = Lists::make([
-            'model' => new User,
-            'columns' => '~/resources/ui/user/columns.yaml',
-            'recordsPerPage' => 10,
-            'showCheckboxes' => true,
-            'recordUrl' => 'users/:id/edit',
-        ]);
+        $list = Lists::make(
+            model: new User,
+            columns: '~/resources/ui/user/columns.yaml',
+            recordsPerPage: 10,
+            showCheckboxes: true,
+            recordUrl: 'users/:id/edit'
+        );
 
-        $filter = Filter::make([
-            'model' => new User,
-            'scopes' => '~/resources/ui/user/scopes.yaml',
-        ]);
+        $filter = Filter::make(
+            model: new User,
+            scopes: '~/resources/ui/user/scopes.yaml',
+        );
 
         $filter->bindToListWidget($list);
 
-        $toolbar = Toolbar::make([
-            'buttons' => '~/resources/views/users/_list_toolbar.php',
-            'search' => ['prompt' => 'Search users...'],
-        ]);
+        $toolbar = Toolbar::make(
+            buttons: '~/resources/ui/user/buttons.yaml',
+            search: ['prompt' => 'Search users...'],
+        );
 
         $toolbar->bindToListWidget($list);
 
@@ -71,17 +71,31 @@ class UsersController extends ControllerBase
     }
 
     /**
+     * Delete the checked users. AJAX handler for the list toolbar delete button.
+     */
+    public function onDelete()
+    {
+        $checkedIds = (array) input('checked');
+
+        User::whereIn('id', $checkedIds)->get()->each->delete();
+
+        return ajax()
+            ->flash('success', 'Users deleted.')
+            ->redirect('users');
+    }
+
+    /**
      * Display the users as a drag-to-reorder structure.
      */
     public function structure()
     {
-        $widget = ListStructure::make([
-            'model' => new User,
-            'columns' => '~/resources/ui/user/columns.yaml',
+        $widget = ListStructure::make(
+            model: new User,
+            columns: '~/resources/ui/user/columns.yaml',
             // The demo User model has no tree/parent contract, so render the
             // flat reorderable variant rather than a nested tree.
-            'showTree' => false,
-        ]);
+            showTree: false,
+        );
 
         return view('users.structure', [
             'widget' => $widget,
@@ -157,11 +171,11 @@ class UsersController extends ControllerBase
      */
     protected function makeForm(User $user, string $context): Form
     {
-        return Form::make([
-            'context' => $context,
-            'model' => $user,
-            'fields' => '~/resources/ui/user/fields.yaml',
-        ]);
+        return Form::make(
+            context: $context,
+            model: $user,
+            fields: '~/resources/ui/user/fields.yaml',
+        );
     }
 
     /**

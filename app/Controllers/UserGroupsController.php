@@ -25,17 +25,17 @@ class UserGroupsController extends ControllerBase
      */
     public function index()
     {
-        $list = Lists::make([
-            'model' => new UserGroup,
-            'columns' => '~/resources/ui/user_group/columns.yaml',
-            'recordsPerPage' => 10,
-            'recordUrl' => 'user-groups/:id/edit',
-        ]);
+        $list = Lists::make(
+            model: new UserGroup,
+            columns: '~/resources/ui/user_group/columns.yaml',
+            recordsPerPage: 10,
+            recordUrl: 'user-groups/:id/edit',
+        );
 
-        $toolbar = Toolbar::make([
-            'buttons' => '~/resources/views/user_groups/_list_toolbar.php',
-            'search' => ['prompt' => 'Search groups...'],
-        ]);
+        $toolbar = Toolbar::make(
+            buttons: '~/resources/views/user_groups/_list_toolbar.php',
+            search: ['prompt' => 'Search groups...'],
+        );
 
         $toolbar->bindToListWidget($list);
 
@@ -113,11 +113,11 @@ class UserGroupsController extends ControllerBase
      */
     protected function makeForm(UserGroup $group, string $context): Form
     {
-        return Form::make([
-            'context' => $context,
-            'model' => $group,
-            'fields' => '~/resources/ui/user_group/fields.yaml',
-        ]);
+        return Form::make(
+            context: $context,
+            model: $group,
+            fields: '~/resources/ui/user_group/fields.yaml',
+        );
     }
 
     /**

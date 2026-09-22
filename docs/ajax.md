@@ -35,7 +35,7 @@ Route::match(['get', 'post'], '/users', [UserController::class, 'index']);
 Widget handlers are addressed as `alias::onHandler`. The alias comes from the widget configuration:
 
 ```php
-$widget = Lists::make(['alias' => 'list', /* ... */]);
+$widget = Lists::make(alias: 'list', /* ... */);
 // exposes list::onSort, list::onPaginate, list::onRefresh, ...
 ```
 

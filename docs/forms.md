@@ -42,11 +42,11 @@ class UserController extends ControllerBase
 {
     public function edit($id)
     {
-        $widget = Form::make([
-            'alias' => 'form',
-            'model' => User::findOrFail($id),
-            'fields' => '~/resources/amber/user/fields.yaml',
-        ]);
+        $widget = Form::make(
+            alias: 'form',
+            model: User::findOrFail($id),
+            fields: '~/resources/amber/user/fields.yaml',
+        );
 
         return view('users.edit', ['widget' => $widget]);
     }
@@ -57,7 +57,7 @@ Render it in the view, inside a `<form>` element with your own submit control:
 
 ```blade
 <form>
-    {!! $widget->render() !!}
+    {{ $widget }}
 
     {{ Ui::ajaxButton(label: 'Save', handler: 'onSave', primary: true) }}
 </form>
