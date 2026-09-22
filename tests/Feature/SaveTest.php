@@ -33,6 +33,25 @@ class SaveTest extends TestCase
         $this->assertSame(1, $user->groups()->count());
     }
 
+    public function test_on_update_clears_an_emptied_field(): void
+    {
+        // A posted empty string must clear the field even when middleware converts it to null
+        $user = User::factory()->create(['notes' => 'existing notes']);
+
+        $resp = $this->withHeaders([
+            'X-AJAX-HANDLER' => 'onUpdate',
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->post("/users/{$user->id}/edit", [
+            'name' => $user->name,
+            'email' => $user->email,
+            'notes' => '',
+        ]);
+
+        $resp->assertOk();
+        $user->refresh();
+        $this->assertSame('', (string) $user->notes);
+    }
+
     public function test_on_update_validates_required_name(): void
     {
         $user = User::factory()->create();

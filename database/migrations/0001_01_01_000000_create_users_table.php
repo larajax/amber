@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->text('notes')->nullable();
+            $table->json('links')->nullable();
             $table->boolean('is_mail_blocked')->default(false);
             $table->boolean('is_two_factor_enabled')->default(false);
             $table->integer('sort_order')->nullable()->index();

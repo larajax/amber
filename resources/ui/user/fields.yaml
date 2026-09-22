@@ -88,3 +88,20 @@ tabs:
             label: Notes
             type: textarea
             size: small
+
+        links:
+            label: Links
+            tab: Profile
+            type: repeater
+            titleFrom: title
+            prompt: Add Link
+            showReorder: true
+            showDuplicate: true
+            form:
+                fields:
+                    title:
+                        label: Title
+                        span: auto
+                    url:
+                        label: URL
+                        span: auto

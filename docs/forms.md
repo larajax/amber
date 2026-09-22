@@ -244,7 +244,7 @@ content:
 
 ### Form widgets
 
-Richer fields with their own assets and AJAX handlers. Amber currently ships two:
+Richer fields with their own assets and AJAX handlers. Amber currently ships three:
 
 **relation** — displays a dropdown (singular relations) or checkbox list (multiple relations) sourced
 from a model relationship, with optional inline quick-create:
@@ -265,6 +265,59 @@ avatar:
     mode: image
     imageHeight: 260
     imageWidth: 260
+```
+
+**repeater** — repeats a nested set of form fields for building lists of structured data. Items can
+be added, removed, duplicated, collapsed and drag-reordered:
+
+```yaml
+links:
+    label: Links
+    type: repeater
+    prompt: Add Link
+    titleFrom: title
+    form:
+        fields:
+            title:
+                label: Title
+                span: auto
+            url:
+                label: URL
+                span: auto
+```
+
+The value is stored as a JSON array on the attribute — cast it with `'array'` or `'json'` on a plain
+Eloquent model (or list it in `$jsonable` on an October Rain model). When the field name matches a
+model relationship the items are stored as related records instead, each item form bound to its own
+model.
+
+Supported properties: `form` (inline fields or a YAML path), `prompt`, `titleFrom` (field shown as
+the collapsed item title), `minItems`, `maxItems`, `showReorder`, `showDuplicate`, `itemsExpanded`
+(start collapsed when `false`), `useTabs` and `displayMode` (`accordion` or `builder` — builder shows
+a selectable item sidebar).
+
+Mixed item types are supported through `groups`, where each group defines its own name, icon,
+description and fields; the group code is stored with each item under the `groupKeyFrom` key
+(`_group` by default):
+
+```yaml
+content:
+    label: Content
+    type: repeater
+    prompt: Add Block
+    groups:
+        text:
+            name: Text
+            description: A block of paragraph text
+            fields:
+                body:
+                    type: textarea
+        quote:
+            name: Quote
+            fields:
+                quote_text:
+                    type: textarea
+                attribution: {}
 ```
 
 Relation fields work with both October Rain and plain Eloquent models — see

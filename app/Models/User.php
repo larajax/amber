@@ -24,6 +24,7 @@ use October\Contracts\Database\SortableInterface;
     'email',
     'password',
     'notes',
+    'links',
     'is_mail_blocked',
     'is_two_factor_enabled',
     'primary_group_id',
@@ -44,6 +45,7 @@ class User extends Authenticatable implements SortableInterface
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'links' => 'array',
             'is_mail_blocked' => 'boolean',
             'is_two_factor_enabled' => 'boolean',
         ];
