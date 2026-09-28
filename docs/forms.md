@@ -127,7 +127,7 @@ Property | Description
 **dependsOn** | an array of other field names this field depends on; when the other fields are modified, this field will update.
 **changeHandler** | the name of an AJAX handler to call when the field value is changed, optional.
 **trigger** | specify conditions for this field using trigger events.
-**required** | places an asterisk next to the field label to indicate it is required. Enforce it with validation on the model — the form does not enforce it.
+**required** | places an asterisk next to the field label to indicate it is required. Enforce it with validation on the model - the form does not enforce it.
 **attributes** | specify custom HTML attributes to add to the form field element.
 **containerAttributes** | specify custom HTML attributes to add to the form field container.
 **order** | a numerical weight when determining the display order, default value increments at 100 points per field.
@@ -170,17 +170,17 @@ Property | Description
 
 All fields are identified by their **type** property; `text` is the default.
 
-**text** — single line text box.
+**text** - single line text box.
 
-**number** — single line text box with number validation.
+**number** - single line text box with number validation.
 
-**password** — single line password box.
+**password** - single line password box.
 
-**email** — single line text box with email validation.
+**email** - single line text box with email validation.
 
-**textarea** — multiline text box. Sizeable via `size`.
+**textarea** - multiline text box. Sizeable via `size`.
 
-**dropdown** — a select box. Supply the options inline, or omit them to source from the model
+**dropdown** - a select box. Supply the options inline, or omit them to source from the model
 (see [field options](#field-options) below):
 
 ```yaml
@@ -192,7 +192,7 @@ status:
         published: Published
 ```
 
-**radio** — a list of radio options, one selectable. Options may carry descriptions:
+**radio** - a list of radio options, one selectable. Options may carry descriptions:
 
 ```yaml
 security_level:
@@ -203,19 +203,19 @@ security_level:
         registered: [Registered only, Members only]
 ```
 
-**checkbox** — a single checkbox.
+**checkbox** - a single checkbox.
 
-**checkboxlist** — a list of checkboxes, multiple selectable.
+**checkboxlist** - a list of checkboxes, multiple selectable.
 
-**switch** — a switchable toggle.
+**switch** - a switchable toggle.
 
-**balloon-selector** — a group of pill buttons, one selectable.
+**balloon-selector** - a group of pill buttons, one selectable.
 
 ### Form UI
 
 Layout elements that render inside the form without binding data:
 
-**section** — a heading and subheading:
+**section** - a heading and subheading:
 
 ```yaml
 _section1:
@@ -224,17 +224,17 @@ _section1:
     type: section
 ```
 
-**hint** — like a section, rendered inside a dismissible callout. Set `mode` to `tip`, `info`,
+**hint** - like a section, rendered inside a dismissible callout. Set `mode` to `tip`, `info`,
 `success`, `warning` or `danger`.
 
-**ruler** — a horizontal divider:
+**ruler** - a horizontal divider:
 
 ```yaml
 _ruler1:
     type: ruler
 ```
 
-**partial** — renders a custom view; receives `$field`, `$formModel` and `$value`:
+**partial** - renders a custom view; receives `$field`, `$formModel` and `$value`:
 
 ```yaml
 content:
@@ -246,7 +246,7 @@ content:
 
 Richer fields with their own assets and AJAX handlers. Amber currently ships three:
 
-**relation** — displays a dropdown (singular relations) or checkbox list (multiple relations) sourced
+**relation** - displays a dropdown (singular relations) or checkbox list (multiple relations) sourced
 from a model relationship, with optional inline quick-create:
 
 ```yaml
@@ -256,7 +256,7 @@ groups:
     nameFrom: name
 ```
 
-**fileupload** — file/image uploader bound to a file attachment:
+**fileupload** - file/image uploader bound to a file attachment:
 
 ```yaml
 avatar:
@@ -267,7 +267,7 @@ avatar:
     imageWidth: 260
 ```
 
-**repeater** — repeats a nested set of form fields for building lists of structured data. Items can
+**repeater** - repeats a nested set of form fields for building lists of structured data. Items can
 be added, removed, duplicated, collapsed and drag-reordered:
 
 ```yaml
@@ -286,14 +286,14 @@ links:
                 span: auto
 ```
 
-The value is stored as a JSON array on the attribute — cast it with `'array'` or `'json'` on a plain
+The value is stored as a JSON array on the attribute - cast it with `'array'` or `'json'` on a plain
 Eloquent model (or list it in `$jsonable` on an October Rain model). When the field name matches a
 model relationship the items are stored as related records instead, each item form bound to its own
 model.
 
 Supported properties: `form` (inline fields or a YAML path), `prompt`, `titleFrom` (field shown as
 the collapsed item title), `minItems`, `maxItems`, `showReorder`, `showDuplicate`, `itemsExpanded`
-(start collapsed when `false`), `useTabs` and `displayMode` (`accordion` or `builder` — builder shows
+(start collapsed when `false`), `useTabs` and `displayMode` (`accordion` or `builder` - builder shows
 a selectable item sidebar).
 
 Mixed item types are supported through `groups`, where each group defines its own name, icon,
@@ -320,12 +320,12 @@ content:
                 attribution: {}
 ```
 
-Relation fields work with both October Rain and plain Eloquent models — see
+Relation fields work with both October Rain and plain Eloquent models - see
 [Using Eloquent models](eloquent.md).
 
 ::: warning
 File upload fields require an October Rain model, as they are built on Rain's file attachment
-subsystem — see [Using Eloquent models](eloquent.md).
+subsystem - see [Using Eloquent models](eloquent.md).
 :::
 
 ## Field options
@@ -427,6 +427,6 @@ public function filterFields($fields, $context = null)
 
 ## Next steps
 
-- [Lists](lists.md) — the record list that links to this form
-- [UI Elements](ui.md) — the `Ui::ajaxButton` used to submit the form
-- [Using Eloquent models](eloquent.md) — driving Amber from plain `Illuminate` models
+- [Lists](lists.md) - the record list that links to this form
+- [UI Elements](ui.md) - the `Ui::ajaxButton` used to submit the form
+- [Using Eloquent models](eloquent.md) - driving Amber from plain `Illuminate` models

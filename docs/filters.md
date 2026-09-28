@@ -3,7 +3,7 @@ subtitle: Add scope-based filtering to a list.
 ---
 # Filters
 
-The Filter widget renders a row of filter scopes — checkboxes, switches and dropdowns — defined in a
+The Filter widget renders a row of filter scopes - checkboxes, switches and dropdowns - defined in a
 `scopes.yaml` file. Scope values persist in the session and apply themselves as constraints to a
 database query, typically the query behind a [List widget](lists.md).
 
@@ -59,7 +59,7 @@ $widget->addFilter([$filter, 'applyAllScopesToQuery']);
 ```
 
 Second, refresh the list when a scope changes. Subclass the filter and extend the update response with
-the re-rendered list — changing a scope then updates both widgets in one AJAX round trip:
+the re-rendered list - changing a scope then updates both widgets in one AJAX round trip:
 
 ```php
 namespace App\Widgets;
@@ -137,7 +137,7 @@ Property | Description
 
 ## Scope types
 
-**checkbox** — a single on/off filter. Unchecked applies nothing; checked applies the scope's
+**checkbox** - a single on/off filter. Unchecked applies nothing; checked applies the scope's
 constraint. Supply the constraint as raw SQL `conditions`, a `modelScope`, or omit both to compare the
 column (`valueFrom` or the scope name) against the value:
 
@@ -148,8 +148,8 @@ verified:
     conditions: email_verified_at is not null
 ```
 
-**switch** — a three-state toggle: indeterminate (no filter), off and on. Supply `conditions` as an
-array of two raw SQL statements — the first applies in the off state, the second in the on state.
+**switch** - a three-state toggle: indeterminate (no filter), off and on. Supply `conditions` as an
+array of two raw SQL statements - the first applies in the off state, the second in the on state.
 Without conditions, the column is compared against `false`/`true`:
 
 ```yaml
@@ -161,7 +161,7 @@ is_approved:
         - is_approved = true
 ```
 
-**dropdown** — a select of options, one selectable. Options come from an inline array, an
+**dropdown** - a select of options, one selectable. Options come from an inline array, an
 `optionsMethod` on the model, or the model options convention. The constraint is a raw SQL `conditions`
 string with a `:value` placeholder, a `modelScope`, or a plain column comparison:
 
@@ -181,7 +181,7 @@ status:
 The following types render as a clickable label that opens a popover with a small condition form.
 Apply and Clear buttons submit the scope through AJAX.
 
-**text** — filter a text column by an `equals` or `contains` condition:
+**text** - filter a text column by an `equals` or `contains` condition:
 
 ```yaml
 email:
@@ -189,7 +189,7 @@ email:
     type: text
 ```
 
-**number** — filter a numeric column by `equals`, `between`, `greater` or `lesser`:
+**number** - filter a numeric column by `equals`, `between`, `greater` or `lesser`:
 
 ```yaml
 id:
@@ -197,7 +197,7 @@ id:
     type: number
 ```
 
-**date** — filter a date column by `equals`, `notEquals`, `between`, `before` or `after`, using native
+**date** - filter a date column by `equals`, `notEquals`, `between`, `before` or `after`, using native
 date inputs:
 
 ```yaml
@@ -206,7 +206,7 @@ created_at:
     type: date
 ```
 
-For text, number and date, limit the conditions offered by listing them in `conditions` — a single
+For text, number and date, limit the conditions offered by listing them in `conditions` - a single
 condition removes the selector entirely. A condition may also map to a raw SQL statement using the
 placeholders `:value` (plus `:min`/`:max` for number, `:after`/`:before` for date):
 
@@ -218,7 +218,7 @@ id:
         between: true
 ```
 
-**group** — filter by a set of selected options with include/exclude modes and a searchable option
+**group** - filter by a set of selected options with include/exclude modes and a searchable option
 list. Options come from a model relationship named by the scope (searchable via `nameFrom`), an
 `options` array, or an `optionsMethod`:
 
@@ -263,7 +263,7 @@ domain:
 ## Scope dependencies
 
 The `dependsOn` property links scopes together: when a dependency changes, the dependent scope resets
-and re-renders. Combine it with `optionsMethod` to narrow the dependent scope's options — the method
+and re-renders. Combine it with `optionsMethod` to narrow the dependent scope's options - the method
 receives the full set of scope definitions with their current values:
 
 ```yaml
@@ -317,10 +317,10 @@ whenever the filter renders.
 
 These October CMS filter features are not available in Amber yet:
 
-- Backend user preference storage — scope values persist in the session.
-- The Pikaday date picker — date scopes use native `<input type="date">` controls instead.
+- Backend user preference storage - scope values persist in the session.
+- The Pikaday date picker - date scopes use native `<input type="date">` controls instead.
 
 ## Next steps
 
-- [Lists](lists.md) — the record list this filter constrains
-- [Forms](forms.md) — build the edit form the list links to
+- [Lists](lists.md) - the record list this filter constrains
+- [Forms](forms.md) - build the edit form the list links to

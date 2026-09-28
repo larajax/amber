@@ -5,17 +5,17 @@ subtitle: Drive Amber from plain Eloquent models.
 
 Amber originated against October Rain's model class, which extends Eloquent with relation
 definitions, tree structures and deferred bindings. Amber also works with **plain `Illuminate`
-Eloquent models** — most widgets run on them without any changes to the model.
+Eloquent models** - most widgets run on them without any changes to the model.
 
 ## What works out of the box
 
 With a stock Eloquent model (like Laravel's default `User`):
 
-- **Forms** — all basic field types, tabs, contexts, `getSaveData()`
-- **Lists** — all column types (including relation columns), sorting, pagination and **searching**
+- **Forms** - all basic field types, tabs, contexts, `getSaveData()`
+- **Lists** - all column types (including relation columns), sorting, pagination and **searching**
   (Amber registers the `searchWhere` query methods as Eloquent builder macros)
-- **Filters** — every scope type, including the text/number/date/group popover scopes
-- **Toolbar** — buttons and search
+- **Filters** - every scope type, including the text/number/date/group popover scopes
+- **Toolbar** - buttons and search
 - **Relation form fields** driven by your Eloquent relation methods
 - Field and column **options methods**, model **query scopes** via `modelScope`, and the
   `filterFields` / `filterScopes` model hooks
@@ -23,11 +23,11 @@ With a stock Eloquent model (like Laravel's default `User`):
 ## How model flavors are bridged
 
 October Rain models declare relations in configuration arrays; plain Eloquent models declare them as
-methods. Amber never asks the model directly — widgets probe models through the **model inspector**
+methods. Amber never asks the model directly - widgets probe models through the **model inspector**
 service (`amber.model.inspector`), which reads Rain's array definitions when present and derives the
 same metadata from your relation methods otherwise.
 
-This means a plain Eloquent model needs **no trait and no changes** — declare relations the normal
+This means a plain Eloquent model needs **no trait and no changes** - declare relations the normal
 Laravel way and Amber understands them:
 
 ```php
@@ -42,8 +42,8 @@ class User extends Authenticatable
 }
 ```
 
-The inspector exposes the metadata surface widgets rely on — `hasRelation()`, `getRelationType()`,
-`makeRelation()`, `isRelationTypeSingular()`, `getRelationSimpleValue()` — and can be used from your
+The inspector exposes the metadata surface widgets rely on - `hasRelation()`, `getRelationType()`,
+`makeRelation()`, `isRelationTypeSingular()`, `getRelationSimpleValue()` - and can be used from your
 own extensions:
 
 ```php
@@ -53,7 +53,7 @@ app('amber.model.inspector')->getRelationType($model, 'groups'); // 'belongsToMa
 
 ## Relation form fields
 
-`type: relation` fields work against your Eloquent relation methods — singular relations
+`type: relation` fields work against your Eloquent relation methods - singular relations
 (`belongsTo`, `hasOne`) render as dropdowns, multi relations (`belongsToMany`, `hasMany`) as checkbox
 lists, with the current selection applied and `scope` constraints supported:
 
@@ -78,7 +78,7 @@ $user->groups()->sync($saveData['groups'] ?? []);
 
 ## Reorderable lists
 
-Flat reorderable lists work on any model. Persisting the order needs a sortable implementation —
+Flat reorderable lists work on any model. Persisting the order needs a sortable implementation -
 on plain Eloquent, implement `October\Contracts\Database\SortableInterface` with a `sort_order`
 column, as shown in [tree and reorderable lists](lists.md#tree-and-reorderable-lists).
 
@@ -86,12 +86,12 @@ column, as shown in [tree and reorderable lists](lists.md#tree-and-reorderable-l
 
 These features depend on Rain model subsystems and are not supported on plain Eloquent:
 
-- **File upload fields** (`type: fileupload`) — built on Rain's file attachment models and deferred
+- **File upload fields** (`type: fileupload`) - built on Rain's file attachment models and deferred
   binding.
-- **Tree structures** in ListStructure — require a model implementing October's `TreeInterface`
+- **Tree structures** in ListStructure - require a model implementing October's `TreeInterface`
   (nested-tree or simple-tree traits).
 
-For these, use an October Rain model (`October\Rain\Database\Model`) as the base class — Rain installs
+For these, use an October Rain model (`October\Rain\Database\Model`) as the base class - Rain installs
 alongside Amber and works in a plain Laravel application.
 
 ## Next steps

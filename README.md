@@ -1,6 +1,6 @@
 # Amber
 
-A sample Laravel application demonstrating [`larajax/ui`](https://github.com/larajax/ui) —
+A sample Laravel application demonstrating [`larajax/ui`](https://github.com/larajax/ui),
 the Form, List and UI widget engine (the same one behind the October CMS admin panel),
 packaged for any Laravel app. No CMS dependency, no JavaScript framework, no build step.
 
@@ -24,7 +24,7 @@ build them in [`app/Controllers`](app/Controllers).
 
 - PHP 8.3+
 - Composer
-- SQLite (default) — or any database Laravel supports
+- SQLite (default), or any database Laravel supports
 
 ## Getting started
 
@@ -36,7 +36,7 @@ cd amber
 # database and run migrations + seeders.
 composer setup
 
-# Serve the app. There is no build step — assets load from a CDN and the
+# Serve the app. There is no build step; assets load from a CDN and the
 # published vendor/larajax files.
 composer dev
 ```
@@ -62,7 +62,7 @@ php artisan serve
 ## How it fits together
 
 A controller extends `App\Classes\ControllerBase` (itself a `Larajax\LarajaxController`),
-builds one or more widgets from YAML, and passes them to a Blade view that echoes them —
+builds one or more widgets from YAML, and passes them to a Blade view that echoes them;
 widgets render as safe HTML, so `{{ $widget }}` works directly. Because the widgets are
 Larajax view components, their AJAX handlers (`onStore`, `onUpdate`, `onDestroy`, sorting,
 pagination, filtering) route automatically back to the controller that created them.

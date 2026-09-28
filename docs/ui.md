@@ -3,7 +3,7 @@ subtitle: Render buttons, inputs and callouts with the Ui facade.
 ---
 # UI Elements
 
-Amber owns the **`Ui` facade** — a small factory for rendering common UI elements (buttons, search
+Amber owns the **`Ui` facade** - a small factory for rendering common UI elements (buttons, search
 inputs, dropdowns, callouts) from your views. Each call returns a renderable object, so you drop it
 straight into Blade.
 
@@ -74,7 +74,7 @@ Argument | Description
 
 ### Popup button
 
-`Ui::popupButton()` opens the handler's response in a popup — a modal dialog built on Bootstrap 5.
+`Ui::popupButton()` opens the handler's response in a popup - a modal dialog built on Bootstrap 5.
 The handler returns the modal contents (header/body/footer markup), and elements inside carrying
 `data-dismiss="popup"` close it:
 
@@ -138,9 +138,9 @@ Method | Style
 
 Amber deliberately keeps the same call for every engine rather than wrapping these in component tags:
 
-- **Blade** — call the facade directly: <span v-pre>`{{ Ui::button(label: 'Save', primary: true) }}`</span>.
-- **Twig** *(when supported)* — the same element via a markup function taking an options hash:
+- **Blade** - call the facade directly: <span v-pre>`{{ Ui::button(label: 'Save', primary: true) }}`</span>.
+- **Twig** *(when supported)* - the same element via a markup function taking an options hash:
   <span v-pre>`{{ ui_button({ label: 'Save', primary: true }) }}`</span>.
 
 Both share one underlying `Ui` implementation, so the argument names and behavior are identical across
-engines — only the surrounding call syntax differs, staying idiomatic to each.
+engines - only the surrounding call syntax differs, staying idiomatic to each.

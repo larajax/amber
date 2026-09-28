@@ -3,7 +3,7 @@ subtitle: Render sortable, paginated record lists from YAML.
 ---
 # Lists
 
-The List widget renders a table of model records from a `columns.yaml` definition — with sorting,
+The List widget renders a table of model records from a `columns.yaml` definition - with sorting,
 searching, pagination and row selection wired up through AJAX automatically. You describe the columns;
 Amber builds the query and the markup. A [tree and reorderable variant](#tree-and-reorderable-lists)
 is available for hierarchical data.
@@ -126,7 +126,7 @@ Property | Description
 ### Value selection
 
 Source the column value from another attribute with `valueFrom`, or keep the source value (for sorting
-and searching) while displaying something else with `displayFrom` — useful with a model accessor:
+and searching) while displaying something else with `displayFrom` - useful with a model accessor:
 
 ```yaml
 status_code:
@@ -142,7 +142,7 @@ full_name:
     select: concat(first_name, ' ', last_name)
 ```
 
-Display related data as part of the database query — so it stays searchable and sortable — by naming
+Display related data as part of the database query - so it stays searchable and sortable - by naming
 the relationship in `relation`:
 
 ```yaml
@@ -162,7 +162,7 @@ users_count:
     relationCount: true
 ```
 
-Retrieve a value from nested data (a loaded relation or a jsonable array) with bracket syntax — the
+Retrieve a value from nested data (a loaded relation or a jsonable array) with bracket syntax - the
 PHP equivalent of `$record->content->title`. Nested columns cannot be searched or sorted:
 
 ```yaml
@@ -186,9 +186,9 @@ count:
 
 All columns are identified by their **type** property; `text` is the default.
 
-**text** — displays the value as escaped text. An optional `format` is applied with `sprintf`.
+**text** - displays the value as escaped text. An optional `format` is applied with `sprintf`.
 
-**number** — same as text with right-aligned styling.
+**number** - same as text with right-aligned styling.
 
 ```yaml
 age:
@@ -196,7 +196,7 @@ age:
     type: number
 ```
 
-**datetime / date / time** — formats a date value. Without a `format`, sensible long-form defaults are
+**datetime / date / time** - formats a date value. Without a `format`, sensible long-form defaults are
 used (e.g. *Sat, Aug 8, 2026 2:00 PM*).
 
 ```yaml
@@ -206,11 +206,11 @@ created_at:
     format: d/m/Y
 ```
 
-**timesince** — human readable difference: *10 minutes ago*.
+**timesince** - human readable difference: *10 minutes ago*.
 
-**timetense** — day with grammatical tense: *Today at 12:49*.
+**timetense** - day with grammatical tense: *Today at 12:49*.
 
-**switch** — renders a boolean as a yes/no indicator. Override the labels with `options`:
+**switch** - renders a boolean as a yes/no indicator. Override the labels with `options`:
 
 ```yaml
 is_enabled:
@@ -219,10 +219,10 @@ is_enabled:
     options: [Inactive, Active]
 ```
 
-**summary** — strips HTML and truncates the value. Configure with `limitChars` (default 40),
+**summary** - strips HTML and truncates the value. Configure with `limitChars` (default 40),
 `limitWords` and `endChars` (default `...`).
 
-**image** — displays image thumbnails from a file attachment, path or URL. Configure `width`, `height`
+**image** - displays image thumbnails from a file attachment, path or URL. Configure `width`, `height`
 and `limit` (maximum images shown, default 3).
 
 ```yaml
@@ -233,9 +233,9 @@ avatar:
     height: 48
 ```
 
-**file** — displays icons for file attachments, with `limit` (default 3).
+**file** - displays icons for file attachments, with `limit` (default 3).
 
-**selectable** — looks up the display value from a defined options set, the same way a dropdown form
+**selectable** - looks up the display value from a defined options set, the same way a dropdown form
 field does. Uses the column's `options` array or an options method on the model.
 
 ```yaml
@@ -247,7 +247,7 @@ status:
         active: Active
 ```
 
-**linkage** — renders the value as a hyperlink. Use `linkUrl` (with `:attribute` substitution from the
+**linkage** - renders the value as a hyperlink. Use `linkUrl` (with `:attribute` substitution from the
 record) and `linkText`, or supply an array value of `[$url, $text]`.
 
 ```yaml
@@ -256,7 +256,7 @@ website:
     type: linkage
 ```
 
-**partial** — renders custom markup from a view. `path` accepts a namespaced Laravel view
+**partial** - renders custom markup from a view. `path` accepts a namespaced Laravel view
 (`myviews::users.actions`) or a path symbol resolved against the controller (`~/resources/views/users/_actions.php`);
 the partial receives `$record`, `$column` and `$value`.
 
@@ -268,7 +268,7 @@ actions:
     clickable: false
 ```
 
-**colorpicker** — displays the value as a color swatch.
+**colorpicker** - displays the value as a color swatch.
 
 ## Row selection
 
@@ -331,8 +331,8 @@ $widget->addFilter(function ($query) {
 ## Tree and reorderable lists
 
 The **ListStructure** widget is a drop-in variant of the List widget that displays parent/child
-relationships as an expandable tree and lets users reorder records. Build it the same way — every list
-option above applies — plus the structure options:
+relationships as an expandable tree and lets users reorder records. Build it the same way - every list
+option above applies - plus the structure options:
 
 ```php
 use October\Amber\Widgets\ListStructure;
@@ -357,7 +357,7 @@ Option | Description
 
 ### Model requirements
 
-- **Tree display** (`showTree`) requires a model implementing October's `TreeInterface` — an October
+- **Tree display** (`showTree`) requires a model implementing October's `TreeInterface` - an October
   Rain model using the nested-tree or simple-tree traits. For flat reorderable lists on any model, set
   `showTree: false`.
 - **Reorder persistence** uses whichever the model supports: nested-set moves, a `parent` relation, or
@@ -385,12 +385,12 @@ search term also switches to flat results until cleared.
 
 ## Checked-state buttons
 
-Buttons linked to a list — inside a container carrying `data-list-linkage="<list id>"`, such as a
-[Toolbar](toolbar.md) — can react to row selection:
+Buttons linked to a list - inside a container carrying `data-list-linkage="<list id>"`, such as a
+[Toolbar](toolbar.md) - can react to row selection:
 
-- `data-list-checked-trigger` — the button stays disabled until rows are checked. A nested element
+- `data-list-checked-trigger` - the button stays disabled until rows are checked. A nested element
   with `data-list-checked-counter` displays the selected count.
-- `data-list-checked-request` — AJAX requests from the button include the checked row ids as
+- `data-list-checked-request` - AJAX requests from the button include the checked row ids as
   `checked`, readable server-side with `$widget->getAllCheckedIds()`.
 
 Checkboxes also support **shift-click** to select a range of rows.
@@ -401,10 +401,10 @@ These October CMS list features are not available in Amber yet:
 
 - Custom column types registered by plugins (`registerListColumnTypes`), including the `currency` column.
 - Client-side timezone conversion for date columns (values render pre-formatted from the server).
-- Drag-scrollable headers — wide tables scroll natively instead.
+- Drag-scrollable headers - wide tables scroll natively instead.
 - Tree structures on plain Eloquent models (the tree contracts come from October Rain).
 
 ## Next steps
 
-- [Filters](filters.md) — add scope-based filtering to a list
-- [Forms](forms.md) — build the edit form the list links to
+- [Filters](filters.md) - add scope-based filtering to a list
+- [Forms](forms.md) - build the edit form the list links to

@@ -40,7 +40,7 @@ The `listWidgetId` property links the toolbar to a list element for button integ
 $toolbar->listWidgetId = $widget->getId();
 ```
 
-With the linkage in place, toolbar buttons can react to the list's row selection — see
+With the linkage in place, toolbar buttons can react to the list's row selection - see
 [checked-state buttons](lists.md#checked-state-buttons).
 
 ## Button definitions
@@ -77,7 +77,7 @@ Option | Description
 **handler** | renders the button as an AJAX button posting to this handler (`data-request`).
 **popup** | set to `true` to load the handler response in a popup instead.
 **confirm** | a confirmation message displayed before the AJAX request runs.
-**checked** | set to `true` to link the button to the checked rows of the bound list — the button stays disabled until rows are checked, and the checked ids are included with its request (see [checked-state buttons](lists.md#checked-state-buttons)).
+**checked** | set to `true` to link the button to the checked rows of the bound list - the button stays disabled until rows are checked, and the checked ids are included with its request (see [checked-state buttons](lists.md#checked-state-buttons)).
 **visible** | a boolean, or the name of a controller method resolved when the toolbar renders.
 **permissions** | one or more gate abilities the user must have for the button to display.
 **hotkey** | a hotkey binding for the button, for example `ctrl+n`.
@@ -139,7 +139,7 @@ fluent calls, such as `->label('New Label')`.
 ## Button partials
 
 When a toolbar is mostly conditional markup, skip the definitions and supply a partial name to the
-`buttons` config instead — the partial renders through the controller, so the controller needs the
+`buttons` config instead - the partial renders through the controller, so the controller needs the
 `ViewMaker` trait (see [Installation](installation.md)). Compose the buttons with the
 [`Ui` facade](ui.md):
 
@@ -177,7 +177,7 @@ The search term persists in the session, so it survives page reloads until clear
 ### Wiring search to a list
 
 The search widget fires a `search.submit` event when a term is entered. Connect it to the list in your
-controller action — apply the active term for the initial render, then bind the event to refresh the
+controller action - apply the active term for the initial render, then bind the event to refresh the
 list when the term changes:
 
 ```php
@@ -206,5 +206,5 @@ works against plain `Illuminate` models as well as October Rain models.
 
 ## Next steps
 
-- [Lists](lists.md) — the record list this toolbar controls
-- [UI Elements](ui.md) — the buttons rendered inside the toolbar
+- [Lists](lists.md) - the record list this toolbar controls
+- [UI Elements](ui.md) - the buttons rendered inside the toolbar
