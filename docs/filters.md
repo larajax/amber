@@ -148,9 +148,9 @@ verified:
     conditions: email_verified_at is not null
 ```
 
-**switch** - a three-state toggle: indeterminate (no filter), off and on. Supply `conditions` as an
-array of two raw SQL statements - the first applies in the off state, the second in the on state.
-Without conditions, the column is compared against `false`/`true`:
+**switch** - a three-state toggle that cycles unchecked (no filter), indeterminate (off) and checked
+(on). Supply `conditions` as an array of two raw SQL statements - the first applies in the off state,
+the second in the on state. Without conditions, the column is compared against `false`/`true`:
 
 ```yaml
 is_approved:
