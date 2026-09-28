@@ -11,9 +11,9 @@ Illuminate Eloquent models, driving every screen from YAML configuration.
 
 | Screen | URL | Widgets |
 | --- | --- | --- |
-| Users list | `/users` | Toolbar (buttons + search), Filter (scopes), List (sortable, paginated) |
+| Users list | `/users` | Toolbar (declarative buttons + search), Filter (checkbox, dropdown and popover scopes), List (sortable, paginated) |
 | Users reorder | `/users/structure` | ListStructure (drag-to-reorder, persisted via `SortableInterface`) |
-| Create / edit user | `/users/create`, `/users/{id}/edit` | Form (tabs, contexts, relation fields, validation, AJAX save/delete) |
+| Create / edit user | `/users/create`, `/users/{id}/edit` | Form (tabs, contexts, relation fields, repeater, validation, AJAX save/delete) |
 | Groups list | `/user-groups` | Toolbar, List |
 | Create / edit group | `/user-groups/create`, `/user-groups/{id}/edit` | Form |
 
@@ -62,25 +62,25 @@ php artisan serve
 ## How it fits together
 
 A controller extends `App\Classes\ControllerBase` (itself a `Larajax\LarajaxController`),
-builds one or more widgets from YAML, and passes them to a Blade view that calls
-`$widget->render()`. Because the widgets are Larajax view components, their AJAX handlers
-(`onStore`, `onUpdate`, `onDestroy`, sorting, pagination, filtering) route automatically
-back to the controller that created them.
+builds one or more widgets from YAML, and passes them to a Blade view that echoes them —
+widgets render as safe HTML, so `{{ $widget }}` works directly. Because the widgets are
+Larajax view components, their AJAX handlers (`onStore`, `onUpdate`, `onDestroy`, sorting,
+pagination, filtering) route automatically back to the controller that created them.
 
 ```php
 // app/Controllers/UsersController.php
-$list = Lists::make([
-    'model' => new User,
-    'columns' => '~/resources/ui/user/columns.yaml',
-    'recordsPerPage' => 10,
-]);
+$list = Lists::make(
+    model: new User,
+    columns: '~/resources/ui/user/columns.yaml',
+    recordsPerPage: 10,
+);
 
 return view('users.index', ['list' => $list]);
 ```
 
 ```blade
 {{-- resources/views/users/index.blade.php --}}
-{!! $list->render() !!}
+{{ $list }}
 ```
 
 For the full documentation see the [`docs/`](docs) directory (a VitePress site) or the
