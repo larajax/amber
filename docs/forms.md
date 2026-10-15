@@ -256,6 +256,22 @@ groups:
     nameFrom: name
 ```
 
+Quick-create adds a "Create New" option to a singular relation dropdown. Picking it opens a popup
+with a form for the related model; the new record is saved and selected. Set `quickCreate` to the
+fields file for that form:
+
+```yaml
+primary_group:
+    label: Primary Group
+    type: relation
+    quickCreate: ~/resources/ui/user_group/fields.yaml
+```
+
+Or pass an array to change the defaults: `fields` (the fields file), `title` (popup title,
+default `New :name`), `optionText` (default `- Create New :name -`), `context` (form context,
+default `quickcreate`) and `popupSize`. `:name` is the field label. Quick-create is not offered in
+preview or read-only mode.
+
 **fileupload** - file/image uploader bound to a file attachment:
 
 ```yaml

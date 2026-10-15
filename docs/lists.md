@@ -81,7 +81,7 @@ Option | Description
 **model** | the model instance the list reads from.
 **recordsPerPage** | maximum rows per page. Pagination is enabled automatically when set.
 **recordUrl** | link for each row. Model attributes are substituted, e.g. `users/edit/:id`.
-**recordOnClick** | JavaScript to run when a row is clicked, with the same `:id` substitution.
+**recordOnClick** | JavaScript to run when a row is clicked, with the same `:id` substitution. Use `popup` (or `popup@context`) to open the record in a popup instead, see below.
 **noRecordsMessage** | message shown when the list is empty. Default: `No records found.`
 **defaultSort** | column to sort by initially: a column name, or `{column: name, direction: desc}`.
 **showSorting** | display sorting links on column headers. Default: `true`.
@@ -279,6 +279,29 @@ with:
 ```php
 $ids = $widget->getAllCheckedIds();
 ```
+
+## Editing records in a popup
+
+Set `recordOnClick` to `popup` and a row click opens that record in a popup, loaded from an
+`onLoadPopupForm` handler on your controller. The handler receives `form_record_id`, and
+`form_context` when the list uses `popup@context`. It returns the popup markup: a header, body and
+footer, usually around a form widget:
+
+```php
+public function onLoadPopupForm()
+{
+    $group = UserGroup::findOrFail(input('form_record_id'));
+
+    $this->formWidget = Form::make(model: $group, fields: '~/resources/ui/user_group/fields.yaml');
+
+    return view('user_groups._popup_form', ['group' => $group, 'formWidget' => $this->formWidget])->render();
+}
+```
+
+Inside the popup, a form posting to its own handler with `data-popup-load-indicator` closes the
+popup once the request succeeds; return the list's `onRefresh()` from that handler to update the
+rows. The shorthand calls the global `jax` object, which the browser bundle provides; Vite
+applications that import `jax` should also assign it to `window.jax`.
 
 ## List setup and user preferences
 

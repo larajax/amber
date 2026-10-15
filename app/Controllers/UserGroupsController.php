@@ -20,16 +20,18 @@ class UserGroupsController extends ControllerBase
 {
     public ?Form $formWidget = null;
 
+    public ?Lists $listWidget = null;
+
     /**
-     * Display a list of user groups.
+     * Display a list of user groups. Clicking a row edits the group in a popup.
      */
     public function index()
     {
-        $list = Lists::make(
+        $list = $this->listWidget = Lists::make(
             model: new UserGroup,
             columns: '~/resources/ui/user_group/columns.yaml',
             recordsPerPage: 10,
-            recordUrl: 'user-groups/:id/edit',
+            recordOnClick: 'popup',
         );
 
         $toolbar = Toolbar::make(
@@ -43,6 +45,37 @@ class UserGroupsController extends ControllerBase
             'list' => $list,
             'toolbar' => $toolbar,
         ]);
+    }
+
+    /**
+     * Render a group's form in a popup. AJAX handler for the list's "popup" record click.
+     */
+    public function onLoadPopupForm()
+    {
+        $group = UserGroup::findOrFail(input('form_record_id'));
+
+        $this->formWidget = $this->makeForm($group, 'update');
+
+        return view('user_groups._popup_form', [
+            'group' => $group,
+            'formWidget' => $this->formWidget,
+        ])->render();
+    }
+
+    /**
+     * Save a group from the popup form and refresh the list.
+     */
+    public function onSavePopupForm()
+    {
+        $group = UserGroup::findOrFail(input('form_record_id'));
+
+        $this->formWidget = $this->makeForm($group, 'update');
+
+        $this->saveForm($group);
+
+        return ajax()
+            ->flash('success', 'Group updated.')
+            ->update($this->listWidget->onRefresh());
     }
 
     /**

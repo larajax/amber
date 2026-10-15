@@ -82,7 +82,32 @@ The handler returns the modal contents (header/body/footer markup), and elements
 {{ Ui::popupButton(label: 'Edit', handler: 'onEditForm') }}
 ```
 
-Pass a size through the attribute bag: `dataSize: 'large'` (sizes: `small`, `large`, `huge`, `giant`).
+Pass a size through the attribute bag: `dataSize: 'large'` (sizes: `tiny`, `small`, `large`, `huge`,
+`giant`). The handler can also set it from the response with a `data-popup-size` attribute on its
+first element:
+
+```blade
+<div data-popup-size="large">
+    <div class="modal-header">...</div>
+    <div class="modal-body">...</div>
+</div>
+```
+
+While the popup loads, a backdrop with a loading indicator is shown. A request button inside the popup
+can do the same: add `data-popup-load-indicator` next to its `data-request` and the popup hides behind
+the indicator while the request runs, closes when it succeeds, and shakes when it fails:
+
+```html
+<button data-request="onSave" data-popup-load-indicator class="btn btn-primary">Save</button>
+```
+
+Popups can also be opened from JavaScript, and announce themselves with `popup:show`, `popup:shown`,
+`popup:hide`, `popup:hidden`, `popup:complete` and `popup:error` events on the element that opened
+them:
+
+```js
+jax.popup.open({ handler: 'onEditForm', extraData: { id: 3 } });
+```
 
 ### Icon button
 

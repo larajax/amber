@@ -76,6 +76,7 @@ tabs:
             tab: Account
             type: relation
             scope: withoutGuest
+            quickCreate: ~/resources/ui/user_group/fields.yaml
 
         groups:
             label: Secondary Groups
