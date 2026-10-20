@@ -244,7 +244,7 @@ content:
 
 ### Form widgets
 
-Richer fields with their own assets and AJAX handlers. Amber currently ships five:
+Richer fields with their own assets and AJAX handlers. Amber currently ships six:
 
 **relation** - displays a dropdown (singular relations) or checkbox list (multiple relations) sourced
 from a model relationship, with optional inline quick-create:
@@ -374,6 +374,29 @@ Supported properties: `options` (fixed options, otherwise the related records), 
 related column shown as the label, default `name`), `customTags` (allow typing new tags; in relation
 mode new records are created), `separator` (`comma` or `space`, default `comma`), `useKey` (store
 option keys rather than labels, default `true`, off with `customTags`), `placeholder` and `maxItems`.
+
+**recordfinder** - shows the selected record and finds another in a popup with a searchable,
+paginated list. Clicking a row picks it:
+
+```yaml
+primary_group:
+    label: Primary Group
+    type: recordfinder
+    list: ~/resources/ui/user_group/columns.yaml
+    nameFrom: name
+    descriptionFrom: code
+```
+
+By default the field name is a relation on the model and the related key is stored. Set
+`useRelation: false` with a `modelClass` to store the key of any model in a plain attribute.
+
+Supported properties: `list` (the columns for the popup list), `nameFrom` (default `name`) and
+`descriptionFrom` (columns shown for the selected record), `keyFrom` (the key column), `title`
+(popup title, default `Find Record`), `recordsPerPage` (default 10), `scope` or `modelScope`
+(a model scope that narrows the records), `conditions` (a raw SQL condition), `searchMode`
+(`all`, `any` or `exact`), `searchScope` (a model scope that performs the search), `filter` (scopes
+for a filter above the list), `defaultSort`, `showSetup`, `structure` (show a tree for tree models),
+`inlineOptions` (buttons beside the record, default `true`) and `popupSize` (default `huge`).
 
 Relation fields work with both October Rain and plain Eloquent models - see
 [Using Eloquent models](eloquent.md).

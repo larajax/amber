@@ -43,8 +43,9 @@ class User extends Authenticatable
 ```
 
 The inspector exposes the metadata surface widgets rely on - `hasRelation()`, `getRelationType()`,
-`makeRelation()`, `isRelationTypeSingular()`, `getRelationSimpleValue()`, `isJsonable()` (Rain's
-`$jsonable`, or an array, json, object or collection cast) - and can be used from your
+`makeRelation()`, `isRelationTypeSingular()`, `getRelationSimpleValue()`, `setRelationValue()` (a
+`belongsTo` is associated, other relations hold the related record in memory), `isJsonable()`
+(Rain's `$jsonable`, or an array, json, object or collection cast) - and can be used from your
 own extensions:
 
 ```php
