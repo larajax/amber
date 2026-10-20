@@ -310,8 +310,7 @@ applications that import `jax` should also assign it to `window.jax`.
 Enable `showSetup` to let users choose visible columns, column order and page size through a setup
 popup. Choices persist per list.
 
-October CMS stores these preferences against the backend user; Amber runs standalone, so preferences
-are kept in the **session** by default. To store them durably (e.g. per user in your database), subclass
+Preferences are kept in the **session** by default. To store them durably (e.g. per user in your database), subclass
 the widget and override `getPreferenceStorage()` to return your own store with `get`/`set`/`reset`
 methods.
 
@@ -422,10 +421,8 @@ Checkboxes also support **shift-click** to select a range of rows.
 
 ## Not yet supported
 
-These October CMS list features are not available in Amber yet:
-
-- Custom column types registered by plugins (`registerListColumnTypes`), including the `currency` column.
-- Drag-scrollable headers - wide tables scroll natively instead.
+- Custom column types (`registerListColumnTypes`), including the `currency` column.
+- Drag-scrollable headers - wide tables scroll natively.
 - Tree structures on plain Eloquent models (the tree contracts come from October Rain).
 
 ## Next steps

@@ -314,12 +314,7 @@ Available overrides: `eventExtendScopesBefore`, `eventExtendScopes`, `eventOverr
 Models can also filter their own scopes by defining a `filterScopes($scopes, $context)` method, called
 whenever the filter renders.
 
-## Not yet supported
-
-These October CMS filter features are not available in Amber yet:
-
-- Backend user preference storage - scope values persist in the session.
-- The Pikaday date picker - date scopes use native `<input type="date">` controls instead.
+Applied scope values persist in the session.
 
 ## Next steps
 
