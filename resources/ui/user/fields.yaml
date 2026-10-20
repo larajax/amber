@@ -15,6 +15,13 @@ tabs:
             tab: Account
             span: full
 
+        email_verified_at:
+            label: Email Verified
+            comment: Leave blank while the address is unverified.
+            tab: Account
+            type: datepicker
+            span: left
+
         send_invite:
             type: checkbox
             label: Send invitation by email

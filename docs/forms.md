@@ -244,7 +244,7 @@ content:
 
 ### Form widgets
 
-Richer fields with their own assets and AJAX handlers. Amber currently ships three:
+Richer fields with their own assets and AJAX handlers. Amber currently ships four:
 
 **relation** - displays a dropdown (singular relations) or checkbox list (multiple relations) sourced
 from a model relationship, with optional inline quick-create:
@@ -335,6 +335,26 @@ content:
                     type: textarea
                 attribution: {}
 ```
+
+**datepicker** - a calendar for the date and a clock for the time. The value is stored as
+`Y-m-d H:i:s`, or just the date (`Y-m-d`) or time (`H:i:s`) in those modes:
+
+```yaml
+published_at:
+    label: Published
+    type: datepicker
+    mode: date
+    format: d/m/Y
+```
+
+Supported properties: `mode` (`datetime`, `date` or `time`; default `datetime`), `format` (a PHP
+date format for the date input, using day, month and year characters), `minDate`, `maxDate`,
+`yearRange` (years either side of the current one, or bounds like `[1990, 2030]`), `disableDays`
+(weekday numbers where 0 is Sunday, `Y-m-d` dates, or a `Class::method` that returns them),
+`firstDay`, `twelveHour`, `hoursOnly`, `showWeekNumber` and `defaultTimeMidnight` (when only a date
+is picked, store 00:00 instead of the current time). Preview mode shows the value in the long locale
+format, or in `format` when set. Values are not converted between timezones yet: they are shown and
+stored in the application timezone.
 
 Relation fields work with both October Rain and plain Eloquent models - see
 [Using Eloquent models](eloquent.md).

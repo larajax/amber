@@ -22,6 +22,7 @@ use October\Contracts\Database\SortableInterface;
 #[Fillable([
     'name',
     'email',
+    'email_verified_at',
     'password',
     'notes',
     'links',
