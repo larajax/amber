@@ -244,7 +244,7 @@ content:
 
 ### Form widgets
 
-Richer fields with their own assets and AJAX handlers. Amber currently ships four:
+Richer fields with their own assets and AJAX handlers. Amber currently ships five:
 
 **relation** - displays a dropdown (singular relations) or checkbox list (multiple relations) sourced
 from a model relationship, with optional inline quick-create:
@@ -356,6 +356,24 @@ is picked, store 00:00 instead of the current time). Preview mode shows the valu
 format, or in `format` when set. In `datetime` mode the value is shown in the user's timezone and
 saved in the application timezone once a [timezone resolver](installation.md#timezones) is set;
 `useTimezone: false` turns that off.
+
+**taglist** - a tag input for picking several values, with typed-in tags when `customTags` is on:
+
+```yaml
+users:
+    label: Members
+    type: taglist
+    nameFrom: name
+```
+
+The value is stored to match the attribute: a relation stores the related record keys, a JSON cast
+attribute stores an array, and anything else stores a string joined by the separator. Set `mode` to
+`relation`, `array` or `string` to choose explicitly.
+
+Supported properties: `options` (fixed options, otherwise the related records), `nameFrom` (the
+related column shown as the label, default `name`), `customTags` (allow typing new tags; in relation
+mode new records are created), `separator` (`comma` or `space`, default `comma`), `useKey` (store
+option keys rather than labels, default `true`, off with `customTags`), `placeholder` and `maxItems`.
 
 Relation fields work with both October Rain and plain Eloquent models - see
 [Using Eloquent models](eloquent.md).

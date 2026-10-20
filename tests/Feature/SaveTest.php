@@ -33,6 +33,25 @@ class SaveTest extends TestCase
         $this->assertSame(1, $user->groups()->count());
     }
 
+    public function test_on_update_clears_all_secondary_groups(): void
+    {
+        $group = UserGroup::factory()->create(['code' => 'editors']);
+        $user = User::factory()->create();
+        $user->groups()->attach($group);
+
+        // An empty checkbox list submits only its empty hidden input
+        $this->withHeaders([
+            'X-AJAX-HANDLER' => 'onUpdate',
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->post("/users/{$user->id}/edit", [
+            'name' => $user->name,
+            'email' => $user->email,
+            'groups' => '',
+        ])->assertOk();
+
+        $this->assertSame(0, $user->groups()->count());
+    }
+
     public function test_on_update_clears_an_emptied_field(): void
     {
         // A posted empty string must clear the field even when middleware converts it to null

@@ -18,3 +18,10 @@ fields:
         type: textarea
         size: small
         span: full
+
+    users:
+        label: Members
+        type: taglist
+        nameFrom: name
+        placeholder: Add members
+        context: [create, update]

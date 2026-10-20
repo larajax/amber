@@ -164,6 +164,15 @@ class UserGroupsController extends ControllerBase
             throw new ValidationException(['name' => 'The name field is required.']);
         }
 
+        // The members field submits related user ids, synced once the group exists
+        $hasMembers = array_key_exists('users', $data);
+        $members = ($data['users'] ?? null) ?: [];
+        unset($data['users']);
+
         $group->fill($data)->save();
+
+        if ($hasMembers) {
+            $group->users()->sync($members);
+        }
     }
 }

@@ -24,7 +24,7 @@ With a stock Eloquent model (like Laravel's default `User`):
 
 October Rain models declare relations in configuration arrays; plain Eloquent models declare them as
 methods. Amber never asks the model directly - widgets probe models through the **model inspector**
-service (`amber.model.inspector`), which reads Rain's array definitions when present and derives the
+service (`model.inspector`), which reads Rain's array definitions when present and derives the
 same metadata from your relation methods otherwise.
 
 This means a plain Eloquent model needs **no trait and no changes** - declare relations the normal
@@ -43,12 +43,13 @@ class User extends Authenticatable
 ```
 
 The inspector exposes the metadata surface widgets rely on - `hasRelation()`, `getRelationType()`,
-`makeRelation()`, `isRelationTypeSingular()`, `getRelationSimpleValue()` - and can be used from your
+`makeRelation()`, `isRelationTypeSingular()`, `getRelationSimpleValue()`, `isJsonable()` (Rain's
+`$jsonable`, or an array, json, object or collection cast) - and can be used from your
 own extensions:
 
 ```php
-app('amber.model.inspector')->hasRelation($model, 'groups');    // true
-app('amber.model.inspector')->getRelationType($model, 'groups'); // 'belongsToMany'
+app('model.inspector')->hasRelation($model, 'groups');    // true
+app('model.inspector')->getRelationType($model, 'groups'); // 'belongsToMany'
 ```
 
 ## Relation form fields
@@ -65,7 +66,8 @@ groups:
 ```
 
 **Saving** relation values is where the flavors differ: October Rain models accept relation values as
-attributes, while plain Eloquent needs the relation set explicitly in your save handler:
+attributes, while plain Eloquent needs the relation set explicitly in your save handler. The same
+applies to `taglist` fields bound to a relation:
 
 ```php
 $saveData = $widget->getSaveData();
@@ -73,7 +75,10 @@ $saveData = $widget->getSaveData();
 $user->fill(Arr::except($saveData, ['groups']));
 $user->save();
 
-$user->groups()->sync($saveData['groups'] ?? []);
+// An empty selection submits an empty string; a missing key means the field was not on the form
+if (array_key_exists('groups', $saveData)) {
+    $user->groups()->sync($saveData['groups'] ?: []);
+}
 ```
 
 ## Reorderable lists

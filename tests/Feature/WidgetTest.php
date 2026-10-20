@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Controllers\UsersController;
 use App\Models\User;
+use App\Models\UserGroup;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
@@ -97,5 +98,23 @@ class WidgetTest extends TestCase
         $this->assertStringContainsString('<div class="form-control" readonly>', $html);
         $this->assertStringContainsString('value="quote&quot;value"', $html);
         $this->assertStringNotContainsString('value="quote"value"', $html);
+    }
+
+    public function test_a_relation_field_without_a_scope_renders_for_a_plain_eloquent_model(): void
+    {
+        $group = UserGroup::factory()->create(['name' => 'Unscoped Group', 'code' => 'unscoped']);
+
+        $form = Form::createIn(new UsersController, [
+            'model' => User::factory()->create(),
+            'fields' => [
+                'groups' => ['label' => 'Groups', 'type' => 'relation'],
+            ],
+        ]);
+
+        $form->bindToController();
+        $html = (string) $form->render();
+
+        $this->assertStringContainsString('Unscoped Group', $html);
+        $this->assertStringContainsString('value="'.$group->id.'"', $html);
     }
 }

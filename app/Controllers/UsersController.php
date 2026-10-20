@@ -206,12 +206,14 @@ class UsersController extends ControllerBase
             $data['primary_group_id'] = $data['primary_group'] ?: null;
         }
 
-        $secondaryGroups = $data['groups'] ?? null;
+        // An empty selection submits an empty string, which clears the groups
+        $hasSecondaryGroups = array_key_exists('groups', $data);
+        $secondaryGroups = ($data['groups'] ?? null) ?: [];
         unset($data['groups'], $data['primary_group'], $data['password_confirmation'], $data['send_invite']);
 
         $user->fill($data)->save();
 
-        if (is_array($secondaryGroups)) {
+        if ($hasSecondaryGroups) {
             $user->groups()->sync($secondaryGroups);
         }
     }
