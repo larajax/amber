@@ -197,8 +197,9 @@ id:
     type: number
 ```
 
-**date** - filter a date column by `equals`, `notEquals`, `between`, `before` or `after`, using native
-date inputs:
+**date** - filter a date column by `equals`, `notEquals`, `between`, `before` or `after`, using a date
+picker. Picked days are read in the user's timezone once a [timezone resolver](installation.md#timezones)
+is set (`useTimezone: false` turns that off):
 
 ```yaml
 created_at:

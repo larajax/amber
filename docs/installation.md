@@ -150,6 +150,26 @@ Render it in the view. Wrap it in a `<form>` element and add your own submit con
 That is a complete, working Amber form: the fields render from YAML, bind to the model's attributes, and
 post back through Larajax.
 
+## Timezones
+
+Dates are stored in the application timezone (`app.timezone`). To show them in each person's own
+timezone, tell Amber how to find it, usually in a service provider's `boot` method:
+
+```php
+use Larajax\Ui\Facades\Ui;
+
+Ui::resolveTimezoneUsing(fn () => auth()->user()?->timezone);
+```
+
+Datetime list columns, the datepicker form widget and the date filter then convert between the two:
+values are shown in the user's timezone and saved back in the application timezone. A resolver that
+returns `null` or an unknown timezone keeps the application timezone. `Ui::timezone()` returns the
+resolved timezone for your own views.
+
+Set `useTimezone: false` on a field, column or scope to show the stored value as it is. Date-only and
+time-only pickers are never converted, and `date` and `time` list columns only convert when they set
+`useTimezone: true`.
+
 ## Next steps
 
 - [Forms](forms.md) - every field, UI element and widget type available in a form

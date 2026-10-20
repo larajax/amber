@@ -197,7 +197,9 @@ age:
 ```
 
 **datetime / date / time** - formats a date value. Without a `format`, sensible long-form defaults are
-used (e.g. *Sat, Aug 8, 2026 2:00 PM*).
+used (e.g. *Sat, Aug 8, 2026 2:00 PM*). Datetime columns show the value in the user's timezone once a
+[timezone resolver](installation.md#timezones) is set; `date` and `time` columns only do so with
+`useTimezone: true`, and `useTimezone: false` keeps a datetime column as stored.
 
 ```yaml
 created_at:
@@ -423,7 +425,6 @@ Checkboxes also support **shift-click** to select a range of rows.
 These October CMS list features are not available in Amber yet:
 
 - Custom column types registered by plugins (`registerListColumnTypes`), including the `currency` column.
-- Client-side timezone conversion for date columns (values render pre-formatted from the server).
 - Drag-scrollable headers - wide tables scroll natively instead.
 - Tree structures on plain Eloquent models (the tree contracts come from October Rain).
 

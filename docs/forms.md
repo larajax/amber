@@ -353,8 +353,9 @@ date format for the date input, using day, month and year characters), `minDate`
 (weekday numbers where 0 is Sunday, `Y-m-d` dates, or a `Class::method` that returns them),
 `firstDay`, `twelveHour`, `hoursOnly`, `showWeekNumber` and `defaultTimeMidnight` (when only a date
 is picked, store 00:00 instead of the current time). Preview mode shows the value in the long locale
-format, or in `format` when set. Values are not converted between timezones yet: they are shown and
-stored in the application timezone.
+format, or in `format` when set. In `datetime` mode the value is shown in the user's timezone and
+saved in the application timezone once a [timezone resolver](installation.md#timezones) is set;
+`useTimezone: false` turns that off.
 
 Relation fields work with both October Rain and plain Eloquent models - see
 [Using Eloquent models](eloquent.md).
