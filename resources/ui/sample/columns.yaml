@@ -1,0 +1,45 @@
+# ===================================
+#  Kitchen Sink Sample List Column Definitions
+# ===================================
+
+columns:
+    name:
+        label: Name
+        searchable: true
+        sortable: true
+
+    # The status shows the label of its balloon selector option.
+    status:
+        label: Status
+        type: selectable
+        options:
+            draft: Draft
+            active: Active
+            archived: Archived
+
+    # The owner's name comes through the belongsTo relation.
+    user:
+        label: Owner
+        relation: user
+        select: name
+        searchable: true
+
+    # A number column formatted as a price.
+    price:
+        label: Price
+        type: number
+        format: '$ %.2f'
+        sortable: true
+
+    color:
+        label: Color
+        type: colorpicker
+
+    is_featured:
+        label: Featured
+        type: switch
+
+    updated_at:
+        label: Updated
+        type: timetense
+        sortable: true

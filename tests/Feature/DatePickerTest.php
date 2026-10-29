@@ -96,6 +96,17 @@ class DatePickerTest extends TestCase
         $this->assertStringNotContainsString('data-timepicker', $html);
     }
 
+    public function test_a_pair_of_disabled_weekdays_is_a_list_and_not_a_callable(): void
+    {
+        $html = $this->renderField(['mode' => 'date', 'disableDays' => [0, 6]]);
+
+        $this->assertStringContainsString('data-disable-days="[0,6]"', $html);
+
+        $html = $this->renderField(['mode' => 'date', 'disableDays' => [self::class, 'weekendDays']]);
+
+        $this->assertStringContainsString('data-disable-days="[0,6]"', $html);
+    }
+
     public function test_first_day_renders_only_when_configured_so_the_locale_applies_otherwise(): void
     {
         $this->assertStringNotContainsString('data-first-day', $this->renderField([]));

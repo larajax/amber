@@ -1,0 +1,30 @@
+# ===================================
+#  Category Form Field Definitions
+# ===================================
+
+fields:
+
+    name:
+        label: Name
+        span: left
+
+    slug:
+        label: Slug
+        span: right
+        comment: Filled in from the name while you type.
+        preset:
+            field: name
+            type: slug
+
+    parent:
+        label: Parent Category
+        type: relation
+        span: left
+        emptyOption: No parent, show at the top level
+        comment: The options follow the tree, and the category being edited is left out.
+
+    description:
+        label: Description
+        type: textarea
+        size: small
+        span: full

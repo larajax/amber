@@ -56,6 +56,9 @@ class DatabaseSeeder extends Seeder
         User::query()->orderBy('id')->get()->each(function (User $user, int $index) {
             $user->forceFill(['sort_order' => $index + 1])->saveQuietly();
         });
+
+        $this->call(PostsSeeder::class);
+        $this->call(SampleSeeder::class);
     }
 
     /**

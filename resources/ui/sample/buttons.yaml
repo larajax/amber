@@ -1,0 +1,10 @@
+# ===================================
+#  Kitchen Sink Toolbar Button Definitions
+# ===================================
+
+buttons:
+    create:
+        label: New Sample
+        icon: ph ph-plus
+        type: primary
+        url: kitchen-sink/create

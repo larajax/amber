@@ -1,0 +1,159 @@
+# ===================================
+#  Post Form Field Definitions
+# ===================================
+
+fields:
+
+    title:
+        label: Title
+        span: left
+        required: true
+
+    slug@create:
+        label: Slug
+        span: right
+        required: true
+        comment: Filled in from the title while you type.
+        preset:
+            field: title
+            type: slug
+
+    slug@update:
+        label: Slug
+        span: right
+        readOnly: true
+        comment: Fixed once the post exists, so links to it keep working.
+
+tabs:
+    fields:
+
+        category:
+            label: Category
+            tab: Details
+            type: relation
+            span: left
+            required: true
+            emptyOption: Choose a category
+
+        status:
+            label: Status
+            tab: Details
+            type: dropdown
+            span: right
+            comment: The options and their icons come from the model.
+
+        _permalink:
+            label: Permalink
+            tab: Details
+            readOnly: true
+            dependsOn: [category, slug]
+            comment: Built from the category path and the slug, and refreshed when either changes.
+
+        excerpt:
+            label: Excerpt
+            tab: Details
+            type: textarea
+            size: small
+
+        tags:
+            label: Tags
+            tab: Details
+            type: taglist
+            mode: relation
+            nameFrom: name
+            customTags: true
+            placeholder: Add tags
+            span: left
+            comment: Pick existing tags, or type a new one and press Enter to create it.
+
+        keywords:
+            label: Keywords
+            tab: Details
+            type: taglist
+            mode: array
+            customTags: true
+            placeholder: Add keywords
+            span: right
+            comment: Saved on the post as a JSON array.
+            options:
+                - accessibility
+                - performance
+                - security
+                - testing
+                - tutorial
+
+        published:
+            label: Published
+            tab: Publishing
+            type: switch
+            comment: Turn on to choose when the post goes live.
+
+        published_at:
+            label: Publish Date
+            tab: Publishing
+            type: datepicker
+            mode: datetime
+            span: left
+            comment: Shown only while the post is published.
+            trigger:
+                action: show
+                field: published
+                condition: checked
+
+        review_on:
+            label: Review Date
+            tab: Publishing
+            type: datepicker
+            mode: date
+            span: left
+            showWeekNumber: true
+            comment: When the content should be checked for accuracy.
+
+        share_time:
+            label: Social Share Time
+            tab: Publishing
+            type: datepicker
+            mode: time
+            twelveHour: true
+            span: right
+            comment: The time of day the post is shared to social channels.
+
+        views:
+            label: Views
+            tab: Publishing
+            type: number
+            span: left
+            min: 0
+
+        featured_image:
+            label: Featured Image
+            tab: Appearance
+            type: fileupload
+            mode: image
+            imageWidth: 260
+            imageHeight: 160
+            fileTypes: jpg,jpeg,png,gif,webp
+            span: left
+
+        featured_color:
+            label: Accent Color
+            tab: Appearance
+            type: colorpicker
+            span: right
+            comment: Used as the post's highlight color.
+
+secondaryTabs:
+    fields:
+
+        content:
+            tab: Content
+            type: codeeditor
+            language: html
+            size: huge
+            commentAbove: The post body, written in HTML.
+
+        notes:
+            tab: Editor Notes
+            type: markdown
+            size: large
+            commentAbove: Private notes for editors, written in Markdown.

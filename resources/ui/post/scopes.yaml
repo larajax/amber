@@ -1,0 +1,61 @@
+# ===================================
+#  Post Filter Scope Definitions
+# ===================================
+
+scopes:
+    published:
+        label: Published
+        type: switch
+        conditions:
+            - published = false
+            - published = true
+
+    category:
+        label: Category
+        type: group
+        modelClass: App\Models\Category
+        nameFrom: name
+        optionsScope: hasPosts
+
+    tags:
+        label: Tags
+        type: group
+        nameFrom: name
+        emptyOption: Untagged
+
+    status:
+        label: Status
+        type: group
+        optionsMethod: 'App\Models\Post::listStatusOptions'
+
+    hide_archived:
+        label: Hide archived
+        type: checkbox
+        default: 1
+        conditions: status <> 'archived'
+
+    published_at:
+        label: Published
+        type: daterange
+
+    views:
+        label: Views
+        type: numberrange
+
+    comment_count:
+        label: Comments
+        type: number
+        conditions:
+            greater: (select count(*) from comments where comments.post_id = posts.id) >= :value
+            lesser: (select count(*) from comments where comments.post_id = posts.id) <= :value
+
+    review_on:
+        label: Review Date
+        type: date
+        conditions:
+            before: review_on <= :valueDate
+            after: review_on >= :valueDate
+
+    title:
+        label: Title
+        type: text

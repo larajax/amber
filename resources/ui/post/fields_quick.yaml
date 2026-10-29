@@ -1,0 +1,36 @@
+# ===================================
+#  Quick Post Form Field Definitions
+# ===================================
+
+fields:
+
+    title:
+        label: Title
+        span: full
+        required: true
+        autoFocus: true
+
+    slug:
+        label: Slug
+        span: left
+        required: true
+        preset:
+            field: title
+            type: slug
+
+    category:
+        label: Category
+        type: relation
+        span: right
+        required: true
+        emptyOption: Choose a category
+
+    excerpt:
+        label: Excerpt
+        type: textarea
+        size: small
+
+    published:
+        label: Publish now
+        type: switch
+        comment: Publishes the post straight away instead of saving a draft.

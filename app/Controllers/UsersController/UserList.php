@@ -98,6 +98,6 @@ trait UserList
 
         return ajax()
             ->flash('success', 'Users deleted.')
-            ->redirect('users');
+            ->redirect(route('users.index'));
     }
 }

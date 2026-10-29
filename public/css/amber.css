@@ -133,6 +133,129 @@
 }
 
 /*
+ * UI element pages: each example shows the live element above the Blade that renders it
+ */
+
+.amber-layout {
+    .ui-page-nav .nav-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .ui-section {
+        margin-bottom: 3rem;
+        scroll-margin-top: 1.5rem;
+
+        > h2 {
+            margin-bottom: 0.25rem;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        > p {
+            max-width: 75ch;
+            margin-bottom: 1rem;
+        }
+    }
+
+    .ui-example {
+        overflow: hidden;
+        border: 1px solid var(--amber-border);
+        border-radius: 8px;
+        background: var(--amber-surface);
+
+        &.is-stacked > .ui-example-preview {
+            display: block;
+        }
+    }
+
+    .ui-example-preview {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1.5rem;
+
+        /* Elements that carry their own bottom margin, such as callouts, end flush with the padding */
+        > :nth-last-child(1 of :not(script, template)) {
+            margin-bottom: 0;
+        }
+    }
+
+    .ui-example-source {
+        border-top: 1px solid var(--amber-border);
+        background: var(--amber-canvas);
+
+        pre {
+            margin: 0;
+            padding: 1rem 1.5rem;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+    }
+
+    .ui-example-caption {
+        padding: 0.75rem 1.5rem 0;
+        font-size: 13px;
+        color: var(--amber-muted);
+    }
+
+    .ui-field-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem 1.5rem;
+    }
+
+    .ui-narrow {
+        max-width: 420px;
+    }
+
+    .ui-load-box {
+        min-height: 110px;
+        padding: 1rem;
+        border: 1px dashed var(--amber-border);
+        border-radius: 8px;
+    }
+
+    /* The change monitor adds oc-data-changed to the form, which swaps the status badge */
+    .ui-change-status {
+        .is-changed {
+            display: none;
+        }
+    }
+
+    .oc-data-changed .ui-change-status {
+        .is-changed {
+            display: inline-flex;
+        }
+
+        .is-saved {
+            display: none;
+        }
+    }
+}
+
+/*
+ * Kitchen sink: the cssClass demo field and the headline stats partial
+ */
+
+.amber-layout {
+    .form-group.kitchen-sink-highlight {
+        padding-inline-start: 0.75rem;
+        border-inline-start: 3px solid var(--amber-brand);
+    }
+
+    .kitchen-sink-stats {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+    }
+}
+
+/*
  * Brand
  */
 

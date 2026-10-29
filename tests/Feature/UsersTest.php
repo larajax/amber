@@ -71,4 +71,26 @@ class UsersTest extends TestCase
             ->assertOk()
             ->assertSee($user->email);
     }
+
+    public function test_deleting_a_user_from_its_edit_page_redirects_to_the_absolute_list_url(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->withHeaders([
+            'X-AJAX-HANDLER' => 'onDestroy',
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->post("/users/{$user->id}/edit");
+
+        $this->assertSame(route('users.index'), $response->json('__ajax.redirect'));
+        $this->assertNull(User::find($user->id));
+    }
+
+    public function test_the_group_edit_page_posts_the_form_session_key(): void
+    {
+        $group = UserGroup::factory()->create(['code' => 'editors']);
+
+        $html = $this->get("/user-groups/{$group->id}/edit")->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/<input type="hidden" name="_session_key" value="[^"]+"/', $html);
+    }
 }

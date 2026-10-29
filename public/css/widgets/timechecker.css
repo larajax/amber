@@ -1,0 +1,51 @@
+/*
+ * Time checker form widget
+ * --------------------------------------------------
+ * Loaded by App\FormWidgets\TimeChecker through loadAssets(), so it only reaches pages that render the widget.
+ */
+
+.time-checker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px dashed var(--bs-border-color);
+    border-radius: 8px;
+
+    .time-checker-readings {
+        display: flex;
+        flex: 1 1 auto;
+        flex-wrap: wrap;
+        gap: 0.75rem 2rem;
+        margin: 0;
+    }
+
+    .time-checker-reading {
+        min-width: 9rem;
+
+        dt {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--bs-fg-3);
+        }
+
+        dd {
+            margin: 0;
+            font-variant-numeric: tabular-nums;
+            font-size: 1.05rem;
+        }
+    }
+
+    [data-timechecker-drift] {
+        &.is-close {
+            color: var(--bs-success-fg, var(--bs-success-base));
+        }
+
+        &.is-far {
+            color: var(--bs-danger-fg, var(--bs-danger-base));
+        }
+    }
+}

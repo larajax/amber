@@ -1,0 +1,1226 @@
+# ===================================
+#  Kitchen Sink Sample Form Field Definitions
+# ===================================
+
+# Fields outside the tabs sit above them on every tab.
+fields:
+
+    # The model's validation rules mark this field required, and autoFocus focuses it when the form loads.
+    name:
+        label: Name
+        span: left
+        placeholder: Give the sample a name
+        autoFocus: true
+        comment: Required by the model's validation rules, so the label shows the required marker.
+
+    # The input preset API types a slug from the name as you type.
+    slug:
+        label: Slug
+        span: right
+        placeholder: typed-from-the-name
+        preset:
+            field: name
+            type: slug
+        comment: Typed from the name with preset type slug, until you edit it yourself.
+
+tabs:
+
+    # Fields without a tab property land in this tab.
+    defaultTab: Text
+
+    # These tabs render their fields only when first opened, through the form's onLazyLoadTab handler.
+    lazy:
+        - Code
+
+    # Each tab title can carry an icon, given as icon classes.
+    icons:
+        Text: ph ph-text-aa
+        Choices: ph ph-list-checks
+        Dates & Colors: ph ph-calendar-dots
+        Code: ph ph-code
+        Relations: ph ph-link
+        Files: ph ph-paperclip
+        Repeaters: ph ph-stack
+        Structured: ph ph-brackets-curly
+        Behaviour: ph ph-lightning
+        Layout: ph ph-layout
+        Custom: ph ph-puzzle-piece
+
+    fields:
+
+        # ----------------------------------------------------------------
+        #  Text, the default tab since these fields name no tab
+        # ----------------------------------------------------------------
+
+        _text_section:
+            label: Text inputs
+            type: section
+            comment: Single line inputs, each with its own input type, placeholder or preset.
+
+        # The camel preset converts the name into camelCase.
+        code:
+            label: Code
+            span: left
+            placeholder: typedFromTheName
+            preset:
+                field: name
+                type: camel
+            comment: Typed from the name with preset type camel.
+
+        # The email type renders an email input that the browser checks.
+        email:
+            label: Email
+            type: email
+            span: right
+            placeholder: name@example.com
+            comment: An email input, also checked by the model's email rule.
+
+        # A number input with a minimum and a step of one cent.
+        price:
+            label: Price
+            type: number
+            span: left
+            min: 0
+            step: 0.01
+            placeholder: '0.00'
+            comment: A number with min and step, saved as a decimal.
+
+        # A whole number input with both bounds.
+        quantity:
+            label: Quantity
+            type: number
+            span: right
+            min: 0
+            max: 999
+            step: 1
+            comment: Whole numbers from 0 to 999, checked again by the model.
+
+        _secret_section:
+            label: Secrets
+            type: section
+            comment: Values that should stay out of sight.
+
+        # Names starting with an underscore are purged by the form saver, so this value is never stored.
+        _password:
+            label: Password
+            type: password
+            span: left
+            comment: Purged before saving because its name starts with an underscore.
+
+        # The sensitive widget keeps the stored value off the page until it is revealed.
+        api_key:
+            label: API Key
+            type: sensitive
+            span: right
+            allowCopy: true
+            comment: Revealing fetches the value over AJAX, and a copy button sits beside it.
+
+        # The sensitive widget in textarea mode, for multi-line secrets.
+        private_notes:
+            label: Private Notes
+            type: sensitive
+            mode: textarea
+            comment: The sensitive widget in textarea mode.
+
+        _textarea_section:
+            label: Textarea sizes
+            type: section
+            comment: The size property sets the height of a textarea, from tiny to giant.
+
+        excerpt:
+            label: Excerpt (tiny)
+            type: textarea
+            size: tiny
+            span: left
+
+        summary:
+            label: Summary (small)
+            type: textarea
+            size: small
+            span: right
+
+        description:
+            label: Description (large, the default)
+            type: textarea
+
+        body:
+            label: Body (huge)
+            type: textarea
+            size: huge
+
+        notes:
+            label: Notes (giant)
+            type: textarea
+            size: giant
+
+        # ----------------------------------------------------------------
+        #  Choices
+        # ----------------------------------------------------------------
+
+        # A balloon selector picks one value from a row of pills.
+        status:
+            label: Status
+            type: balloon-selector
+            tab: Choices
+            span: left
+            default: draft
+            options:
+                draft: Draft
+                active: Active
+                archived: Archived
+            comment: A balloon selector, defaulting to Draft on new samples.
+
+        # A switch saves a boolean, cast on the model.
+        is_featured:
+            label: Featured
+            type: switch
+            tab: Choices
+            span: right
+            comment: A switch, saved as a boolean.
+
+        _dropdown_section:
+            label: Dropdowns
+            type: section
+            tab: Choices
+            comment: Dropdowns use a searchable select, and their options can come from YAML, a model method or a preset.
+
+        # An empty option saves an empty value instead of the first option.
+        priority:
+            label: Priority
+            type: dropdown
+            tab: Choices
+            span: left
+            emptyOption: Not set
+            options:
+                low: Low
+                normal: Normal
+                high: High
+            comment: Inline options with an emptyOption for no value.
+
+        # Options from a named model method, nested under option group headings.
+        category:
+            label: Category
+            type: dropdown
+            tab: Choices
+            span: right
+            emptyOption: Pick a category
+            optionsMethod: getCategoryOptions
+            comment: Options from the getCategoryOptions model method, in option groups.
+
+        # The phosphor icon preset lists every icon with its preview.
+        icon:
+            label: Icon
+            type: dropdown
+            tab: Choices
+            span: left
+            emptyOption: No icon
+            optionsPreset: icons@phosphor
+            comment: The icons@phosphor preset, with an icon beside each option.
+
+        # Without options the field calls getLevelOptions by convention, whose options carry icons, a color, a disabled entry and children.
+        level:
+            label: Level
+            type: dropdown
+            tab: Choices
+            span: right
+            emptyOption: Pick a level
+            comment: Options from getLevelOptions by convention, with icons, a color, a disabled entry and nested children.
+
+        # A partial field renders its own markup, here a dropdown that searches the controller's onSearchTimezones handler.
+        timezone:
+            label: Timezone
+            type: partial
+            tab: Choices
+            span: left
+            path: ~/resources/views/kitchen_sink/_field_timezone.php
+            comment: A partial field whose options load over AJAX after two letters are typed.
+
+        _radio_section:
+            label: Radios and checkboxes
+            type: section
+            tab: Choices
+
+        # Radio options shown on one line.
+        size:
+            label: Size
+            type: radio
+            tab: Choices
+            span: left
+            inlineOptions: true
+            options:
+                s: Small
+                m: Medium
+                l: Large
+            comment: Simple radio options, shown inline.
+
+        # Radio options given as a label and a description.
+        plan:
+            label: Plan
+            type: radio
+            tab: Choices
+            span: right
+            options:
+                starter: [Starter, For a single person]
+                team: [Team, For up to ten people]
+                business: [Business, For any number of people]
+            comment: Each option is a label with a description.
+
+        # Inline checkboxes with the select all and select none controls.
+        features:
+            label: Features
+            type: checkboxlist
+            tab: Choices
+            span: left
+            inlineOptions: true
+            quickselect: true
+            options:
+                wifi: Wi-Fi
+                parking: Parking
+                pool: Pool
+                gym: Gym
+            comment: Inline options with quickselect, saved as a JSON array.
+
+        # Ticking a parent option ticks its child options too.
+        permissions:
+            label: Permissions
+            type: checkboxlist
+            tab: Choices
+            span: right
+            cumulative: true
+            options:
+                content:
+                    label: Manage content
+                    comment: Ticks every content permission below it
+                    children:
+                        content_create: Create entries
+                        content_publish: Publish entries
+                users:
+                    label: Manage users
+                    children:
+                        users_invite: Invite users
+                        users_remove: Remove users
+            comment: Cumulative options, where ticking a parent ticks its children.
+
+        # More than ten options make the list scroll, with quickselect turned on automatically.
+        interests:
+            label: Interests
+            type: checkboxlist
+            tab: Choices
+            options:
+                astronomy: Astronomy
+                baking: Baking
+                calligraphy: Calligraphy
+                climbing: Climbing
+                cycling: Cycling
+                gardening: Gardening
+                hiking: Hiking
+                knitting: Knitting
+                painting: Painting
+                photography: Photography
+                pottery: Pottery
+                sailing: Sailing
+                surfing: Surfing
+                woodworking: Woodworking
+            comment: A long list scrolls inside its box and offers quick selection.
+
+        # ----------------------------------------------------------------
+        #  Dates & Colors
+        # ----------------------------------------------------------------
+
+        # Datetime mode limited to a date range.
+        published_at:
+            label: Published
+            type: datepicker
+            tab: Dates & Colors
+            span: left
+            minDate: '2020-01-01'
+            maxDate: '2035-12-31'
+            comment: Datetime mode, limited to dates from 2020 to 2035.
+
+        # Date mode with a custom display format, Monday weeks, week numbers and weekends disabled.
+        starts_on:
+            label: Starts On
+            type: datepicker
+            mode: date
+            tab: Dates & Colors
+            span: right
+            format: d.m.Y
+            firstDay: 1
+            showWeekNumber: true
+            disableDays: [0, 6]
+            comment: Shown as d.m.Y, weeks start on Monday with week numbers, and weekends are disabled.
+
+        # Date mode whose disabled days come from a static model method.
+        ends_on:
+            label: Ends On
+            type: datepicker
+            mode: date
+            tab: Dates & Colors
+            span: left
+            yearRange: 3
+            disableDays: App\Models\Sample::getHolidayDates
+            comment: The end of year holidays are disabled by a static model method.
+
+        # Time mode on a twelve hour clock.
+        opens_at:
+            label: Opens At
+            type: datepicker
+            mode: time
+            tab: Dates & Colors
+            span: right
+            twelveHour: true
+            comment: Time mode on a twelve hour clock.
+
+        # Time mode that only asks for the hour.
+        reminder_at:
+            label: Reminder Hour
+            type: datepicker
+            mode: time
+            tab: Dates & Colors
+            span: left
+            hoursOnly: true
+            comment: Time mode where only the hour is picked.
+
+        _color_section:
+            label: Colors
+            type: section
+            tab: Dates & Colors
+
+        # The color picker with its default swatches and any custom color.
+        color:
+            label: Color
+            type: colorpicker
+            tab: Dates & Colors
+            span: left
+            comment: The default swatches, and any custom color.
+
+        # Only the given swatches can be picked.
+        accent_color:
+            label: Accent Color
+            type: colorpicker
+            tab: Dates & Colors
+            span: right
+            allowCustom: false
+            availableColors: ['#6a6cf7', '#1abc9c', '#f39c12', '#e74c3c', '#34495e']
+            comment: Custom swatches with allowCustom false, so only these colors can be picked.
+
+        # An opacity slider stores eight digit hex, and the clear button empties the value.
+        overlay_color:
+            label: Overlay Color
+            type: colorpicker
+            tab: Dates & Colors
+            span: left
+            showAlpha: true
+            allowEmpty: true
+            comment: The alpha slider stores 8 digit hex, and allowEmpty adds a clear button.
+
+        # ----------------------------------------------------------------
+        #  Code, loaded lazily when the tab is first opened
+        # ----------------------------------------------------------------
+
+        # A small code editor for CSS.
+        css_code:
+            label: CSS
+            type: codeeditor
+            tab: Code
+            language: css
+            size: small
+            commentAbove: A small CSS editor, rendered only when this lazy tab is first opened.
+
+        # A large code editor for HTML with word wrap.
+        html_code:
+            label: HTML
+            type: codeeditor
+            tab: Code
+            language: html
+            size: large
+            wordWrap: fluid
+            commentAbove: A large HTML editor with word wrap, where Emmet abbreviations expand.
+
+        # ----------------------------------------------------------------
+        #  Relations
+        # ----------------------------------------------------------------
+
+        # The record finder picks the owner from a popup list, narrowed by a static scope and searched by a model scope.
+        user:
+            label: Owner
+            type: recordfinder
+            tab: Relations
+            list: ~/resources/ui/user/columns.yaml
+            title: Pick an owner
+            nameFrom: name
+            descriptionFrom: email
+            recordsPerPage: 5
+            scope: App\Models\Sample::applyOwnerScope
+            searchScope: searchNameOrEmail
+            comment: Lists verified users only through scope, and searchScope matches the start of a name or email.
+
+        # A tag list on a many-to-many relation stores the related group keys.
+        groups:
+            label: Groups
+            type: taglist
+            tab: Relations
+            nameFrom: name
+            placeholder: Add groups
+            comment: A tag list on a belongsToMany relation, picking from every group.
+
+        _taglist_section:
+            label: Tag list modes
+            type: section
+            tab: Relations
+            comment: Without a relation, a tag list stores an array or a string.
+
+        # Custom tags typed into a JSON array.
+        tags:
+            label: Tags (array)
+            type: taglist
+            tab: Relations
+            span: left
+            mode: array
+            customTags: true
+            placeholder: Type a tag and press Enter
+            comment: Typed tags saved as a JSON array.
+
+        # Custom tags joined into one string by spaces.
+        keywords:
+            label: Keywords (string)
+            type: taglist
+            tab: Relations
+            span: right
+            mode: string
+            separator: space
+            customTags: true
+            placeholder: Type keywords
+            comment: Typed tags saved as one string, separated by spaces.
+
+        # Fixed options that store their keys, limited to three picks.
+        topics:
+            label: Topics (useKey)
+            type: taglist
+            tab: Relations
+            mode: array
+            useKey: true
+            maxItems: 3
+            placeholder: Pick up to three topics
+            options:
+                design: Design
+                engineering: Engineering
+                marketing: Marketing
+                research: Research
+                support: Support
+            comment: Fixed options saved by their keys, with maxItems limiting the picks to three.
+
+        # ----------------------------------------------------------------
+        #  Files
+        # ----------------------------------------------------------------
+
+        _files_hint:
+            type: hint
+            mode: info
+            tab: Files
+            label: Uploads wait for the save
+            comment: New uploads and removals are held against the form's session key, and saving the form commits them.
+
+        # Image mode on a many-file relation lets several images be uploaded and sorted.
+        gallery:
+            label: Gallery (image, multi)
+            type: fileupload
+            tab: Files
+            mode: image
+            imageWidth: 120
+            imageHeight: 120
+            maxFiles: 6
+            fileTypes: jpg,jpeg,png,gif,webp
+            thumbOptions:
+                mode: crop
+                extension: auto
+            comment: Up to six images, cropped into square thumbnails and sorted by dragging.
+
+        # File mode on a single-file relation, limited to PDF by extension and content.
+        brochure:
+            label: Brochure (file, single)
+            type: fileupload
+            tab: Files
+            span: left
+            mode: file
+            fileTypes: pdf
+            mimeTypes: pdf
+            maxFilesize: 2
+            comment: One PDF file, checked by extension and MIME type, up to 2 MB.
+
+        # A private attachment is stored in the protected uploads folder.
+        contract:
+            label: Contract (private)
+            type: fileupload
+            tab: Files
+            span: right
+            mode: file
+            comment: An attachOne relation with public false, stored in the protected uploads folder.
+
+        # File mode on a many-file relation with a limit on the count.
+        attachments:
+            label: Attachments (file, multi)
+            type: fileupload
+            tab: Files
+            mode: file
+            maxFiles: 3
+            comment: Up to three files of the default types.
+
+        # ----------------------------------------------------------------
+        #  Repeaters
+        # ----------------------------------------------------------------
+
+        # Builder mode lists the blocks in a sidebar, each block made from one of several groups.
+        content:
+            label: Content Blocks
+            type: repeater
+            tab: Repeaters
+            displayMode: builder
+            prompt: Add content block
+            groups:
+                heading:
+                    name: Heading
+                    description: A title with an optional subtitle
+                    icon: ph ph-text-h
+                    titleFrom: title
+                    fields:
+                        title:
+                            label: Title
+                            span: left
+                        subtitle:
+                            label: Subtitle
+                            span: right
+                paragraph:
+                    name: Paragraph
+                    description: Text with its options on a second tab
+                    icon: ph ph-paragraph
+                    titleFrom: text
+                    useTabs: true
+                    fields:
+                        text:
+                            label: Text
+                            type: textarea
+                            size: small
+                            tab: Content
+                        align:
+                            label: Alignment
+                            type: radio
+                            inlineOptions: true
+                            tab: Options
+                            default: left
+                            options:
+                                left: Left
+                                center: Center
+                                right: Right
+                quote:
+                    name: Quote
+                    description: A quote and who said it
+                    icon: ph ph-quotes
+                    titleFrom: author
+                    fields:
+                        quote:
+                            label: Quote
+                            type: textarea
+                            size: tiny
+                        author:
+                            label: Author
+                checklist:
+                    name: Checklist
+                    description: A nested repeater of checklist items
+                    icon: ph ph-list-checks
+                    fields:
+                        items:
+                            label: Items
+                            type: repeater
+                            prompt: Add item
+                            titleFrom: label
+                            form:
+                                fields:
+                                    label:
+                                        label: Item
+                                        span: left
+                                    done:
+                                        label: Done
+                                        type: checkbox
+                                        span: right
+            comment: Builder mode with four groups, one using tabs and one holding a nested repeater.
+
+        # Fields inside each step watch this dropdown through a trigger on the parent field.
+        step_style:
+            label: Step Style
+            type: balloon-selector
+            tab: Repeaters
+            default: simple
+            options:
+                simple: Simple
+                detailed: Detailed
+            comment: Detailed shows the details field inside every step, through a trigger on ^step_style.
+
+        # An accordion repeater that starts collapsed, keeps one to five steps and nests a task repeater.
+        steps:
+            label: Steps
+            type: repeater
+            tab: Repeaters
+            prompt: Add step
+            titleFrom: title
+            minItems: 1
+            maxItems: 5
+            itemsExpanded: false
+            form:
+                fields:
+                    title:
+                        label: Title
+                        span: left
+                    minutes:
+                        label: Minutes
+                        type: number
+                        span: right
+                        min: 0
+                    details:
+                        label: Details
+                        type: textarea
+                        size: tiny
+                        trigger:
+                            action: show
+                            field: ^step_style
+                            condition: value[detailed]
+                    tasks:
+                        label: Tasks
+                        type: repeater
+                        prompt: Add task
+                        form:
+                            fields:
+                                task:
+                                    label: Task
+            comment: Between one and five steps, collapsed until opened, each holding a nested task repeater.
+
+        # ----------------------------------------------------------------
+        #  Structured
+        # ----------------------------------------------------------------
+
+        # A nested form saves its fields as one JSON object, and brings its own tabs.
+        address:
+            label: Address
+            type: nestedform
+            tab: Structured
+            comment: A nested form saved as a JSON object, with tabs of its own.
+            form:
+                fields:
+                    recipient:
+                        label: Recipient
+                tabs:
+                    fields:
+                        line1:
+                            label: Street
+                            tab: Street
+                        suburb:
+                            label: Suburb
+                            span: left
+                            tab: Street
+                        region_code:
+                            label: Postal Code
+                            span: right
+                            tab: Street
+                        instructions:
+                            label: Delivery Instructions
+                            type: textarea
+                            size: tiny
+                            tab: Delivery
+                        leave_at_door:
+                            label: Leave at the door
+                            type: switch
+                            tab: Delivery
+
+        # A data table with numeric columns that scrolls inside a fixed height.
+        line_items:
+            label: Line Items
+            type: datatable
+            tab: Structured
+            height: 220
+            comment: Numeric columns validated in the browser, scrolling inside a 220 pixel height.
+            columns:
+                item:
+                    title: Item
+                quantity:
+                    title: Qty
+                    type: numeric
+                    width: 90px
+                    validation:
+                        integer:
+                            allowNegative: false
+                            message: Enter a whole number.
+                price:
+                    title: Unit Price
+                    type: numeric
+                    width: 120px
+                    validation:
+                        float:
+                            allowNegative: false
+                            message: Enter a price.
+                taxable:
+                    title: Taxable
+                    type: checkbox
+                    width: 90px
+
+        _meta_section:
+            label: Nested names
+            type: section
+            tab: Structured
+            comment: Names like meta[seo][title] save into keys of the one JSON meta column.
+
+        meta[seo][title]:
+            label: SEO Title
+            tab: Structured
+            span: left
+            comment: Saved as meta.seo.title.
+
+        meta[seo][robots]:
+            label: Robots
+            type: dropdown
+            tab: Structured
+            span: right
+            options:
+                index: Index and follow
+                noindex: Do not index
+            comment: Saved as meta.seo.robots.
+
+        meta[seo][description]:
+            label: SEO Description
+            type: textarea
+            size: tiny
+            tab: Structured
+            comment: Saved as meta.seo.description.
+
+        # ----------------------------------------------------------------
+        #  Behaviour
+        # ----------------------------------------------------------------
+
+        _depends_section:
+            label: Dependent fields
+            type: section
+            tab: Behaviour
+            comment: Changing a field refreshes the fields that name it in dependsOn, and the model reads the new values.
+
+        # The country starts the chain, with its options from getCountryOptions.
+        country:
+            label: Country
+            type: dropdown
+            tab: Behaviour
+            span: left
+            emptyOption: Pick a country
+            comment: Starts the chain of dependent dropdowns.
+
+        # The states reload from getStateOptions when the country changes.
+        state:
+            label: State
+            type: dropdown
+            tab: Behaviour
+            span: right
+            emptyOption: Pick a state
+            dependsOn: country
+            comment: Reloads when the country changes.
+
+        # The cities reload when either the country or the state changes.
+        city:
+            label: City
+            type: dropdown
+            tab: Behaviour
+            span: left
+            emptyOption: Pick a city
+            dependsOn: [country, state]
+            comment: Reloads when the country or the state changes.
+
+        # The model's filterFields hides this field until a country is picked, and relabels it for the United States.
+        postcode:
+            label: Postcode
+            tab: Behaviour
+            span: right
+            dependsOn: country
+            comment: Hidden by the model's filterFields until a country is picked, and called ZIP Code for the United States.
+
+        _trigger_section:
+            label: Triggers
+            type: section
+            tab: Behaviour
+            comment: Triggers show, hide, enable or disable a field in the browser from another field's value.
+
+        # The checkbox that drives the two discount fields below.
+        has_discount:
+            label: Offer a discount
+            type: checkbox
+            tab: Behaviour
+            comment: Shows the discount code and enables the percentage.
+
+        # Shown only while the discount box is checked.
+        discount_code:
+            label: Discount Code
+            tab: Behaviour
+            span: left
+            trigger:
+                action: show
+                field: has_discount
+                condition: checked
+            comment: Shown with trigger action show on checked.
+
+        # Enabled only while the discount box is checked.
+        discount_percent:
+            label: Discount Percent
+            type: number
+            tab: Behaviour
+            span: right
+            min: 1
+            max: 90
+            trigger:
+                action: enable
+                field: has_discount
+                condition: checked
+            comment: Enabled with trigger action enable on checked.
+
+        # The dropdown that drives the delivery fields below.
+        delivery:
+            label: Delivery
+            type: dropdown
+            tab: Behaviour
+            span: left
+            emptyOption: Pick a method
+            options:
+                pickup: Pick up in store
+                courier: Courier
+                post: Post
+            comment: Pick a method to show the matching field.
+
+        # Shown for either of two values.
+        delivery_address:
+            label: Delivery Address
+            tab: Behaviour
+            span: right
+            trigger:
+                action: show
+                field: delivery
+                condition: value[courier][post]
+            comment: Shown for courier or post through condition value[courier][post].
+
+        # A hint can take a trigger too.
+        _pickup_hint:
+            type: hint
+            mode: success
+            tab: Behaviour
+            label: Ready for pick up
+            comment: Shown for pick up through condition value[pickup].
+            trigger:
+                action: show
+                field: delivery
+                condition: value[pickup]
+
+        _change_section:
+            label: Change handler
+            type: section
+            tab: Behaviour
+            comment: A changeHandler calls a controller handler whenever the field changes.
+
+        # Changing this field calls the controller's onChangeHeadline handler.
+        headline:
+            label: Headline
+            tab: Behaviour
+            placeholder: Write a headline, then leave the field
+            changeHandler: onChangeHeadline
+            comment: The onChangeHeadline handler refreshes the stats below from the posted headline.
+
+        # An app partial refreshed by the headline's change handler.
+        _headline_stats:
+            label: Headline Stats
+            type: partial
+            tab: Behaviour
+            path: ~/resources/views/kitchen_sink/_field_headline_stats.php
+
+        _context_section:
+            label: Contexts
+            type: section
+            tab: Behaviour
+            comment: The form context picks which definitions apply, here create on the new page and update on the edit page.
+
+        # Shown only on the new page.
+        _create_hint:
+            type: hint
+            mode: tip
+            tab: Behaviour
+            context: create
+            label: Creating
+            comment: This hint has context create, so it only shows on the new page.
+
+        # Shown only on the edit page.
+        _update_hint:
+            type: hint
+            mode: success
+            tab: Behaviour
+            context: update
+            label: Editing
+            comment: This hint has context update, so it only shows on the edit page.
+
+        # Editable while creating, from a name with the @create suffix.
+        reference@create:
+            label: Reference
+            tab: Behaviour
+            placeholder: REF-0001
+            comment: Editable now, then read-only once saved, through the @create and @update name suffixes.
+
+        # Read-only once saved, from a name with the @update suffix.
+        reference@update:
+            label: Reference
+            tab: Behaviour
+            readOnly: true
+            comment: Read-only on the edit page, from the reference@update definition.
+
+        # ----------------------------------------------------------------
+        #  Layout, whose demo fields save into the meta JSON column
+        # ----------------------------------------------------------------
+
+        _span_section:
+            label: Spans
+            type: section
+            tab: Layout
+            comment: The span property places a field on the left, the right, the full width, or the next free side.
+
+        meta[layout][left]:
+            label: Left
+            tab: Layout
+            span: left
+            placeholder: span left
+
+        meta[layout][right]:
+            label: Right
+            tab: Layout
+            span: right
+            placeholder: span right
+
+        meta[layout][full]:
+            label: Full
+            tab: Layout
+            span: full
+            placeholder: span full
+
+        meta[layout][auto_one]:
+            label: Auto
+            tab: Layout
+            span: auto
+            placeholder: span auto lands on the left
+
+        meta[layout][auto_two]:
+            label: Auto
+            tab: Layout
+            span: auto
+            placeholder: span auto lands on the right
+
+        # Fields with span row share a grid row, sized by their spanClass column classes.
+        meta[layout][row_one]:
+            label: Row, a third
+            tab: Layout
+            span: row
+            spanClass: md:col-4
+            placeholder: md:col-4
+
+        meta[layout][row_two]:
+            label: Row, a third
+            tab: Layout
+            span: row
+            spanClass: md:col-4
+            placeholder: md:col-4
+
+        meta[layout][row_three]:
+            label: Row, a third
+            tab: Layout
+            span: row
+            spanClass: md:col-4
+            placeholder: md:col-4
+
+        _ruler_layout:
+            type: ruler
+            tab: Layout
+
+        _options_section:
+            label: Field options
+            type: section
+            tab: Layout
+            comment: Options shared by every field type.
+
+        # Comments can sit above or below, and commentHtml allows markup.
+        meta[options][comments]:
+            label: Comments
+            tab: Layout
+            span: left
+            commentAbove: A commentAbove sits between the label and the field.
+            comment: This comment allows <strong>HTML markup</strong> because commentHtml is true.
+            commentHtml: true
+
+        # A tooltip adds an icon beside the label that explains the field.
+        meta[options][tooltip]:
+            label: Tooltip
+            tab: Layout
+            span: right
+            placeholder: Hover the icon beside the label
+            tooltip:
+                title: Tooltips can explain a field without a comment.
+                icon: ph ph-question
+            comment: The tooltip property adds an icon with a hint beside the label.
+
+        # The required property adds the marker, while the model rules enforce it.
+        meta[options][required]:
+            label: Required Marker
+            tab: Layout
+            span: left
+            required: true
+            comment: The required property shows the marker only, and validation is the model's job.
+
+        # Attributes are added to the input element, here a pattern the browser checks.
+        meta[options][attributes]:
+            label: Attributes
+            tab: Layout
+            span: right
+            placeholder: ABC-123
+            attributes:
+                pattern: '[A-Z]{3}-[0-9]{3}'
+                maxlength: 7
+                title: Three capital letters, a dash and three digits
+            comment: The attributes property adds pattern, maxlength and title to the input.
+
+        # A CSS class added to the field container, styled in amber.css.
+        meta[options][css_class]:
+            label: CSS Class
+            tab: Layout
+            span: left
+            cssClass: kitchen-sink-highlight
+            placeholder: Highlighted by a container class
+            comment: The cssClass property styles this field's container.
+
+        # Container attributes are added to the wrapping element.
+        meta[options][container]:
+            label: Container Attributes
+            tab: Layout
+            span: right
+            containerAttributes:
+                data-kitchen-sink: container
+            placeholder: Inspect the wrapping element
+            comment: The containerAttributes property adds data-kitchen-sink to the wrapping element.
+
+        # A read-only field keeps its value in the saved data.
+        meta[options][read_only]:
+            label: Read-only
+            tab: Layout
+            span: left
+            readOnly: true
+            default: Saved, but not editable
+            comment: Read-only fields still save their value.
+
+        # A disabled field is left out of the saved data.
+        meta[options][disabled]:
+            label: Disabled
+            tab: Layout
+            span: right
+            disabled: true
+            default: Never saved
+            comment: Disabled fields are left out of the saved data.
+
+        # Read-only also applies to choice fields.
+        meta[options][read_only_choice]:
+            label: Read-only Dropdown
+            type: dropdown
+            tab: Layout
+            span: left
+            readOnly: true
+            default: two
+            options:
+                one: One
+                two: Two
+            comment: A read-only dropdown shows its value as text.
+
+        # A read-only switch keeps its value and ignores clicks.
+        meta[options][read_only_switch]:
+            label: Read-only Switch
+            type: switch
+            tab: Layout
+            span: right
+            readOnly: true
+            default: true
+            comment: A read-only switch ignores clicks.
+
+        _hint_section:
+            label: Hints
+            type: section
+            tab: Layout
+            comment: Hints render callouts in five modes.
+
+        _hint_info:
+            type: hint
+            mode: info
+            tab: Layout
+            label: Info
+            comment: An info hint, which matches the tip style.
+
+        _hint_success:
+            type: hint
+            mode: success
+            tab: Layout
+            label: Success
+            comment: A success hint.
+
+        _hint_warning:
+            type: hint
+            mode: warning
+            tab: Layout
+            label: Warning
+            comment: A warning hint.
+
+        _hint_danger:
+            type: hint
+            mode: danger
+            tab: Layout
+            label: Danger
+            comment: A danger hint, whose comment also supports **Markdown**.
+
+        # ----------------------------------------------------------------
+        #  Custom
+        # ----------------------------------------------------------------
+
+        _custom_hint:
+            type: hint
+            mode: tip
+            tab: Custom
+            label: An app widget
+            comment: App\FormWidgets\TimeChecker is registered in AppServiceProvider as timechecker, and loads its own script and stylesheet from the public folder.
+
+        # The app's own form widget, with its own partials, assets and AJAX handler.
+        checked_at:
+            label: Server Time Check
+            type: timechecker
+            tab: Custom
+            format: D j M Y, H:i:s T
+            comment: Checking calls the widget's onCheckTime handler, which stamps the server time into this field for saving.
+
+# Secondary tabs render as a second tab set below the primary one.
+secondaryTabs:
+
+    # The second tab opens first, chosen by name.
+    activeTab: Readme
+
+    icons:
+        Template: ph ph-file-html
+        Readme: ph ph-markdown-logo
+
+    fields:
+
+        # A huge code editor in the secondary tabs.
+        template:
+            label: Template
+            type: codeeditor
+            tab: Template
+            language: html
+            size: huge
+            commentAbove: A huge HTML editor in the secondary tabs.
+
+        # The Markdown editor opens with its preview beside the text.
+        readme:
+            label: Readme
+            type: markdown
+            tab: Readme
+            sideBySide: true
+            commentAbove: The Markdown editor starting side by side, in the tab chosen by activeTab.

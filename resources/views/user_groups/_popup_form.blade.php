@@ -1,4 +1,6 @@
 <form data-request="onSavePopupForm" data-request-flash data-popup-load-indicator>
+    {{-- Deferred uploads and removals are committed by the save that posts this same key --}}
+    <input type="hidden" name="_session_key" value="{{ $formWidget->getSessionKey() }}" />
     <input type="hidden" name="form_record_id" value="{{ $group->id }}" />
 
     <div class="dialog-header">

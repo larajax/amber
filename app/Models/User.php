@@ -82,6 +82,18 @@ class User extends Authenticatable implements SortableInterface
     }
 
     /**
+     * Search users by the start of their name or email, used as the kitchen sink owner finder's searchScope.
+     *
+     * @param  array<int, string>  $columns
+     */
+    public function scopeSearchNameOrEmail(\Illuminate\Database\Eloquent\Builder $query, string $term, array $columns = []): \Illuminate\Database\Eloquent\Builder
+    {
+        return $query->where(function ($query) use ($term) {
+            $query->where('name', 'like', $term.'%')->orWhere('email', 'like', $term.'%');
+        });
+    }
+
+    /**
      * Options for the "Name" group filter scope.
      *
      * @return array<string, string>

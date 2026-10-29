@@ -26,6 +26,52 @@
             'href' => url('user-groups'),
             'active' => request()->is('user-groups', 'user-groups/*'),
         ],
+        [
+            'label' => 'Kitchen Sink',
+            'icon' => 'ph-flask',
+            'href' => url('kitchen-sink'),
+            'active' => request()->is('kitchen-sink', 'kitchen-sink/*'),
+        ],
+        [
+            'label' => 'Posts',
+            'icon' => 'ph-article',
+            'href' => url('posts'),
+            'active' => request()->is('posts', 'posts/*') && ! request()->is('posts/create'),
+            'children' => [
+                [
+                    'label' => 'Categories',
+                    'icon' => 'ph-folders',
+                    'href' => url('categories'),
+                    'active' => request()->is('categories', 'categories/*'),
+                ],
+                [
+                    'label' => 'New Post',
+                    'icon' => 'ph-note-pencil',
+                    'href' => url('posts/create'),
+                    'active' => request()->is('posts/create'),
+                ],
+            ],
+        ],
+        [
+            'label' => 'UI Elements',
+            'icon' => 'ph-squares-four',
+            'href' => url('ui'),
+            'active' => request()->is('ui'),
+            'children' => [
+                [
+                    'label' => 'Feedback',
+                    'icon' => 'ph-chat-centered-text',
+                    'href' => url('ui/feedback'),
+                    'active' => request()->is('ui/feedback'),
+                ],
+                [
+                    'label' => 'Controls',
+                    'icon' => 'ph-sliders-horizontal',
+                    'href' => url('ui/controls'),
+                    'active' => request()->is('ui/controls'),
+                ],
+            ],
+        ],
     ];
 @endphp
 

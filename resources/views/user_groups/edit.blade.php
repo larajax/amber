@@ -3,6 +3,8 @@
 @section('content')
 
 <form data-request-flash>
+    {{-- Deferred uploads and removals are committed by the save that posts this same key --}}
+    <input type="hidden" name="_session_key" value="{{ $formWidget->getSessionKey() }}" />
     <div class="d-flex align-items-center justify-content-between mb-7">
         <h1 class="mb-0">
             Edit Group

@@ -178,6 +178,18 @@ Method | Style
 `->warning()` | warning
 `->danger()` | danger
 
+The first argument is the body, as a string, a closure or another element, and a closure can return a
+view. Each type shows its icon from the icon pack (the `callout.info`, `callout.success`,
+`callout.warning` and `callout.danger` keys); `->icon()` takes another icon, or `false` to leave it out,
+and `->action()` places a button on the right:
+
+```blade
+{{ Ui::callout(fn () => view('billing._card_help'))
+    ->danger()
+    ->label('Card expired')
+    ->action(Ui::ajaxButton(label: 'Update', handler: 'onUpdateCard', danger: true)) }}
+```
+
 ## A note on syntax
 
 Amber deliberately keeps the same call for every engine rather than wrapping these in component tags:

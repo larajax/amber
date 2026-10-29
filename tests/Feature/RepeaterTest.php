@@ -1,7 +1,9 @@
 <?php
 namespace Tests\Feature;
+use App\Controllers\UsersController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Larajax\Ui\Widgets\Form;
 use Tests\TestCase;
 
 class RepeaterTest extends TestCase
@@ -98,5 +100,37 @@ class RepeaterTest extends TestCase
         $content = $resp->getContent();
         $this->assertStringContainsString('links[1][title]', $content);
         $this->assertStringContainsString('field-repeater-item', $content);
+    }
+
+    public function test_use_tabs_moves_item_fields_into_tabs_named_by_their_tab_property(): void
+    {
+        $user = User::factory()->create([
+            'links' => [['title' => 'Blog', 'url' => 'https://example.com/blog']],
+        ]);
+
+        $form = Form::createIn(new UsersController, [
+            'model' => $user,
+            'fields' => [
+                'links' => [
+                    'type' => 'repeater',
+                    'useTabs' => true,
+                    'form' => [
+                        'fields' => [
+                            'title' => ['label' => 'Title', 'tab' => 'Content'],
+                            'url' => ['label' => 'URL', 'tab' => 'Options'],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $form->bindToController();
+        $html = (string) $form->render();
+
+        $this->assertStringContainsString('secondary-tabs', $html);
+        $this->assertMatchesRegularExpression('/<span class="title">\s*<span>\s*Content\s*<\/span>/', $html);
+        $this->assertMatchesRegularExpression('/<span class="title">\s*<span>\s*Options\s*<\/span>/', $html);
+        $this->assertMatchesRegularExpression('/name="links\[0\]\[title\]"[^>]*value="Blog"/', $html);
+        $this->assertMatchesRegularExpression('/name="links\[0\]\[url\]"[^>]*value="https:\/\/example.com\/blog"/', $html);
     }
 }

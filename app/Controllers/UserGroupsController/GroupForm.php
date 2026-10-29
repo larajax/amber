@@ -58,7 +58,7 @@ trait GroupForm
 
         return ajax()
             ->flash('success', 'Group created.')
-            ->redirect('user-groups');
+            ->redirect(route('user-groups.index'));
     }
 
     /**
@@ -82,7 +82,7 @@ trait GroupForm
 
         return ajax()
             ->flash('success', 'Group deleted.')
-            ->redirect('user-groups');
+            ->redirect(route('user-groups.index'));
     }
 
     /**

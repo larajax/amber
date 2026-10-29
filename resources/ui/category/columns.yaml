@@ -1,0 +1,28 @@
+# ===================================
+#  Category List Column Definitions
+# ===================================
+
+columns:
+    name:
+        label: Category
+        searchable: true
+        sortable: true
+
+    slug:
+        label: Slug
+        searchable: true
+        sortable: true
+
+    posts_count:
+        label: Posts
+        type: number
+        relation: posts
+        relationCount: true
+        sortable: true
+        width: 100px
+
+    updated_at:
+        label: Updated
+        type: timesince
+        sortable: true
+        width: 160px

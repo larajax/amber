@@ -1,0 +1,16 @@
+# ===================================
+#  Category Toolbar Button Definitions
+# ===================================
+
+buttons:
+    create:
+        label: New Category
+        icon: ph ph-plus
+        type: primary
+        url: categories/create
+
+    posts:
+        label: Posts
+        icon: ph ph-article
+        type: secondary
+        url: posts

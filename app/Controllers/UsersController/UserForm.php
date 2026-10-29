@@ -27,7 +27,7 @@ trait UserForm
 
         return ajax()
             ->flash('success', 'User created.')
-            ->redirect('users');
+            ->redirect(route('users.index'));
     }
 
     /**
@@ -51,7 +51,7 @@ trait UserForm
 
         return ajax()
             ->flash('success', 'User deleted.')
-            ->redirect('users');
+            ->redirect(route('users.index'));
     }
 
     /**

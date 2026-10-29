@@ -1,0 +1,106 @@
+# ===================================
+#  Post List Column Definitions
+# ===================================
+#
+# Columns marked invisible start hidden and can be shown from the list setup.
+
+columns:
+    id:
+        label: ID
+        sortable: true
+        invisible: true
+        width: 70px
+
+    featured_image:
+        label: Image
+        type: image
+        sortable: false
+
+    title:
+        label: Title
+        searchable: true
+        sortable: true
+
+    category:
+        label: Category
+        type: linkage
+        relation: category
+        select: name
+        linkUrl: categories/:category_id/edit
+        sortable: true
+
+    tags:
+        label: Tags
+        type: partial
+        path: ~/resources/views/posts/_column_tags.php
+        relationWith: tags
+        sortable: false
+        tooltip:
+            title: Up to three tags show here, open the post to see all of them.
+            icon: ph ph-info
+
+    status:
+        label: Status
+        type: selectable
+        sortable: true
+        width: 140px
+
+    published:
+        label: Live
+        type: switch
+        sortable: true
+        width: 80px
+        options:
+            0: Not published
+            1: Published
+
+    published_at:
+        label: Published
+        type: timetense
+        sortable: true
+
+    comments_count:
+        label: Comments
+        type: number
+        relation: comments
+        relationCount: true
+        sortable: true
+        width: 110px
+
+    featured_color:
+        label: Color
+        type: colorpicker
+        sortable: false
+        width: 70px
+
+    views:
+        label: Views
+        type: number
+        sortable: true
+        invisible: true
+        format: '%s views'
+
+    excerpt:
+        label: Excerpt
+        type: summary
+        limitWords: 10
+        searchable: true
+        invisible: true
+
+    review_on:
+        label: Review Date
+        type: date
+        sortable: true
+        invisible: true
+
+    share_time:
+        label: Share Time
+        type: time
+        sortable: true
+        invisible: true
+
+    created_at:
+        label: Created
+        type: timesince
+        sortable: true
+        invisible: true
