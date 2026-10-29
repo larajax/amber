@@ -2,7 +2,7 @@
 @section('title', 'New User')
 @section('content')
 
-<form data-request-flash>
+<form data-request="onStore" data-request-flash>
     <div class="d-flex align-items-center justify-content-between mb-7">
         <h1 class="mb-0">
             New User

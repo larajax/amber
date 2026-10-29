@@ -244,7 +244,7 @@ content:
 
 ### Form widgets
 
-Richer fields with their own assets and AJAX handlers. Amber currently ships twelve:
+Richer fields with their own assets and AJAX handlers. Amber currently ships thirteen:
 
 **relation** - displays a dropdown (singular relations) or checkbox list (multiple relations) sourced
 from a model relationship, with optional inline quick-create:
@@ -336,7 +336,9 @@ content:
                 attribution: {}
 ```
 
-**datepicker** - a calendar for the date and a clock for the time. The value is stored as
+**datepicker** - a date and time input with a calendar, which Bootstrap 6 styles as its Datepicker. In
+`datetime` mode one input holds the date and the time, and the calendar has hour and minute controls
+below the dates; `time` mode shows those hour and minute controls on their own. The value is stored as
 `Y-m-d H:i:s`, or just the date (`Y-m-d`) or time (`H:i:s`) in those modes:
 
 ```yaml
@@ -349,10 +351,12 @@ published_at:
 
 Supported properties: `mode` (`datetime`, `date` or `time`; default `datetime`), `format` (a PHP
 date format for the date input, using day, month and year characters), `minDate`, `maxDate`,
-`yearRange` (years either side of the current one, or bounds like `[1990, 2030]`), `disableDays`
-(weekday numbers where 0 is Sunday, `Y-m-d` dates, or a `Class::method` that returns them),
-`firstDay`, `twelveHour`, `hoursOnly`, `showWeekNumber` and `defaultTimeMidnight` (when only a date
-is picked, store 00:00 instead of the current time). Preview mode shows the value in the long locale
+`yearRange` (years offered either side of the shown year in the calendar's year view, or bounds like
+`[1990, 2030]`), `disableDays` (weekday numbers where 0 is Sunday, `Y-m-d` dates, or a
+`Class::method` that returns them), `firstDay`, `twelveHour`, `hoursOnly`, `showWeekNumber` and
+`defaultTimeMidnight` (when a date is picked without a time, store 00:00 instead of the current
+time). The page language (`<html lang>`) sets the default date format, the first day of the week and
+the month and weekday names. Preview mode shows the value in the long locale
 format, or in `format` when set. In `datetime` mode the value is shown in the user's timezone and
 saved in the application timezone once a [timezone resolver](installation.md#timezones) is set;
 `useTimezone: false` turns that off.
@@ -566,6 +570,118 @@ preview, default `true`; `false` shows HTML in the Markdown as written), `size` 
 height), `readOnly` and `disabled` (both show the rendered Markdown in place of the editor).
 
 EasyMDE loads the first time a page shows a Markdown field.
+
+**datatable** - an editable grid of rows, like a small spreadsheet, built on Hotsheet (the
+library's own data grid). Cells are edited in place, and the rows are saved as a JSON array of
+objects keyed by column name:
+
+```yaml
+contacts:
+    label: Contacts
+    type: datatable
+    columns:
+        name:
+            title: Name
+        type:
+            title: Type
+            type: dropdown
+            options:
+                work: Work
+                personal: Personal
+        primary:
+            title: Primary
+            type: checkbox
+        since:
+            title: Since
+            type: date
+```
+
+Cast the attribute with `'array'` or `'json'` on a plain Eloquent model (or list it in
+`$jsonable` on an October Rain model). Rows with no values are left out when saving.
+
+Column types: `string` (the default, plain text), `numeric`, `checkbox` (stores `1` or `0`),
+`dropdown` (pick one of the options; the option key is stored and its label shown), `autocomplete`
+(suggests the options as you type and accepts any text), `date` and `time`. Each column takes a
+`title`, a `width` (pixels such as `100px`, or a percentage of the table such as `20%`; columns
+without one share the remaining space), `readOnly`, `wrap` (wrap long text instead of cutting it
+off), `dateFormat` (default `YYYY-MM-DD`) or `timeFormat` (default `HH:mm`), and `validation`.
+
+A `dropdown` or `autocomplete` column without `options` asks the model for them over AJAX, calling
+`get<FieldName>DataTableOptions($column, $rowData)` or, failing that,
+`getDataTableOptions($fieldName, $column, $rowData)`. `$rowData` holds the row's current values, so
+`dependsOn` can make one column's options follow another: changing the country clears the city and
+loads the cities again.
+
+```yaml
+columns:
+    country:
+        title: Country
+        type: dropdown
+        options:
+            au: Australia
+            nz: New Zealand
+    city:
+        title: City
+        type: dropdown
+        dependsOn: country
+```
+
+```php
+public function getDataTableOptions($fieldName, $column, $rowData)
+{
+    if ($column === 'city') {
+        return City::where('country', $rowData['country'] ?? null)->pluck('name', 'code')->all();
+    }
+
+    return [];
+}
+```
+
+`validation` checks cells in the browser and flags the invalid ones. The rules are `required`,
+`integer` and `float` (with `allowNegative`, `min` and `max`), `length` (`min`, `max`) and `regex`
+(`pattern`, `modifiers`); each takes a `message`, and `requiredWith` applies a rule only when
+another column of the row has a value. `min` and `max` take `{ value, message }`. With
+`requireValid: true` the form does not save while a row with values has an invalid cell; the first
+one is selected and its message flashed. A request counts as saving when its handler is the form's
+own `data-request` (as in `<form data-request="onUpdate">`) or is named `onSave`:
+
+```yaml
+email:
+    title: Email
+    validation:
+        required:
+            message: Enter an email address.
+        regex:
+            pattern: '^[^@\s]+@[^@\s]+\.[^@\s]+$'
+```
+
+Field properties: `adding` and `deleting` (default `true`) allow adding and removing rows, `toolbar`
+(default `true`) shows the toolbar with the Insert Row and Delete Row buttons, `searching` adds a
+search box that highlights matching cells, `csvExport` and `csvImport` add Export and Import
+buttons, `sorting` sorts by a column when its header is clicked (for viewing; the saved order stays),
+`reorderRows` adds row handles for dragging rows into a new order, `reorderColumns` lets column
+headers be dragged and frozen (for viewing), `height` sets a height in pixels so the grid scrolls
+inside itself, `placeholder` shows a message while there are no rows (the table otherwise starts
+with one empty row), `multiSelect` (default `true`) allows selecting a range of cells, and
+`requireValid`.
+
+Export downloads the rows as a CSV file with the column titles as its header row, and values a
+spreadsheet would read as a formula are prefixed with an apostrophe. Import reads a CSV file
+separated by commas, semicolons or tabs and appends its rows; a header row is matched to the column
+titles or names, otherwise the values are read in column order.
+
+The grid works like a spreadsheet from the keyboard: arrow keys, Tab and Enter move between cells,
+typing replaces a cell, Enter or F2 edits it, Escape cancels, Delete clears the selection, and
+`Ctrl+C`, `Ctrl+X`, `Ctrl+V`, `Ctrl+Z` and `Ctrl+Y` copy, cut, paste, undo and redo, also between
+the grid and a spreadsheet. `Alt+A` adds a row below the selected one (`Alt+Shift+A` above it) and
+`Alt+D` deletes it. A right click opens a menu for inserting and removing rows. Listen for the
+`datatable:new-row` event to give new rows default values:
+
+```js
+addEventListener('datatable:new-row', (event) => {
+    event.detail.row.type = 'work';
+});
+```
 
 Relation fields work with both October Rain and plain Eloquent models - see
 [Using Eloquent models](eloquent.md).

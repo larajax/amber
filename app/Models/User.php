@@ -26,6 +26,7 @@ use October\Contracts\Database\SortableInterface;
     'password',
     'notes',
     'links',
+    'contacts',
     'is_mail_blocked',
     'is_two_factor_enabled',
     'primary_group_id',
@@ -47,6 +48,7 @@ class User extends Authenticatable implements SortableInterface
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'links' => 'array',
+            'contacts' => 'array',
             'is_mail_blocked' => 'boolean',
             'is_two_factor_enabled' => 'boolean',
         ];
@@ -87,6 +89,28 @@ class User extends Authenticatable implements SortableInterface
     public static function getNameGroupOptions(): array
     {
         return static::query()->orderBy('name')->pluck('name', 'name')->all();
+    }
+
+    /**
+     * Options for the AJAX dropdown columns of the "Contacts" data table, where
+     * the cities depend on the country picked in the same row.
+     *
+     * @param  array<string, mixed>  $rowData
+     * @return array<string, string>
+     */
+    public function getDataTableOptions(string $fieldName, ?string $column, array $rowData = []): array
+    {
+        if ($fieldName !== 'contacts' || $column !== 'city') {
+            return [];
+        }
+
+        $cities = [
+            'au' => ['sydney' => 'Sydney', 'melbourne' => 'Melbourne', 'brisbane' => 'Brisbane'],
+            'nz' => ['auckland' => 'Auckland', 'wellington' => 'Wellington'],
+            'us' => ['new-york' => 'New York', 'chicago' => 'Chicago', 'seattle' => 'Seattle'],
+        ];
+
+        return $cities[$rowData['country'] ?? ''] ?? [];
     }
 
     /**

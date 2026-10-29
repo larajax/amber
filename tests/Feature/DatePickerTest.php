@@ -54,8 +54,9 @@ class DatePickerTest extends TestCase
         $this->get("/users/{$user->id}/edit")
             ->assertOk()
             ->assertSee('data-control="datepicker"', false)
+            ->assertSee('data-mode="datetime"', false)
             ->assertSee('data-datepicker', false)
-            ->assertSee('data-timepicker', false)
+            ->assertDontSee('data-timepicker', false)
             ->assertSee('value="2026-10-20 14:30:00"', false);
     }
 
@@ -105,6 +106,7 @@ class DatePickerTest extends TestCase
     {
         $html = $this->renderField(['mode' => 'time', 'twelveHour' => true]);
 
+        $this->assertStringContainsString('data-mode="time"', $html);
         $this->assertStringContainsString('data-timepicker', $html);
         $this->assertStringNotContainsString('data-datepicker', $html);
         $this->assertStringContainsString('data-twelve-hour="1"', $html);

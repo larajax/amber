@@ -113,3 +113,53 @@ tabs:
                     url:
                         label: URL
                         span: auto
+
+        contacts:
+            label: Contacts
+            tab: Profile
+            type: datatable
+            comment: The city list follows the country picked in the same row.
+            searching: true
+            csvExport: true
+            csvImport: true
+            requireValid: true
+            columns:
+                name:
+                    title: Name
+                email:
+                    title: Email
+                    validation:
+                        required:
+                            message: Enter an email address.
+                        regex:
+                            pattern: '^[^@\s]+@[^@\s]+\.[^@\s]+$'
+                            message: Enter a valid email address.
+                type:
+                    title: Type
+                    type: dropdown
+                    width: 110px
+                    options:
+                        work: Work
+                        personal: Personal
+                        billing: Billing
+                country:
+                    title: Country
+                    type: dropdown
+                    width: 140px
+                    options:
+                        au: Australia
+                        nz: New Zealand
+                        us: United States
+                city:
+                    title: City
+                    type: dropdown
+                    dependsOn: country
+                    width: 130px
+                primary:
+                    title: Primary
+                    type: checkbox
+                    width: 80px
+                since:
+                    title: Since
+                    type: date
+                    width: 130px

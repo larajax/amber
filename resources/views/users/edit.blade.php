@@ -2,7 +2,7 @@
 @section('title', 'Edit User')
 @section('content')
 
-<form data-request-flash>
+<form data-request="onUpdate" data-request-flash>
     <div class="d-flex align-items-center justify-content-between mb-7">
         <h1 class="mb-0">
             Edit User
