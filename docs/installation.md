@@ -180,6 +180,50 @@ Render it in the view. Wrap it in a `<form>` element and add your own submit con
 That is a complete, working Amber form: the fields render from YAML, bind to the model's attributes, and
 post back through Larajax.
 
+## Organising a controller
+
+As a controller grows, keep the class to its page actions and move each widget's setup, together with
+the AJAX handlers that belong to it, into a trait in a folder named after the controller:
+
+```
+app/Controllers/UsersController.php
+app/Controllers/UsersController/UserList.php    list, filter and toolbar, plus the bulk delete handler
+app/Controllers/UsersController/UserForm.php    the form, saving, and the store, update and destroy handlers
+```
+
+The controller then reads as a list of its pages:
+
+```php
+namespace App\Controllers;
+
+use App\Controllers\UsersController\UserForm;
+use App\Controllers\UsersController\UserList;
+use App\Models\User;
+
+class UsersController extends ControllerBase
+{
+    use UserList;
+    use UserForm;
+
+    public function index()
+    {
+        return view('users.index', $this->prepareListVars());
+    }
+
+    public function edit(User $user)
+    {
+        $this->formWidget = $this->makeFormWidget($user, 'update');
+
+        return view('users.edit', ['user' => $user, 'formWidget' => $this->formWidget]);
+    }
+}
+```
+
+Each trait is plain code you own: it declares the widget properties it uses, builds its widgets with
+`Form::make()`, `Lists::make()` and friends, and holds its handlers. The traits share one class, so give
+methods a name that says which concern they belong to (`makeListWidget()`, `makeRelationListWidget()`),
+and add a relation trait the same way once a controller manages related records.
+
 ## Timezones
 
 Dates are stored in the application timezone (`app.timezone`). To show them in each person's own
