@@ -94,8 +94,10 @@ tabs:
 
         notes:
             label: Notes
-            type: textarea
+            type: richeditor
             size: small
+            toolbarButtons: [paragraphFormat, bold, italic, underline, '|', formatOL, formatUL, '|', insertLink, insertImage, insertFile, insertTable, '|', html]
+            uploadDisk: public
 
         links:
             label: Links

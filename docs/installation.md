@@ -61,6 +61,14 @@ requires.
 That is everything the browser needs. Amber ships no framework dependency - the CSS and JS are
 self-contained.
 
+If you write your own widgets that load extra files with `addJs()` or `addCss()` in `loadAssets()`,
+print them at the end of `<head>`. AJAX responses carry the same files when a widget is created
+during a request, and the browser skips files the page head already has.
+
+```blade
+{{ \Larajax\Ui\Facades\Ui::renderAssets() }}
+```
+
 ### Using with Vite
 
 If your application already runs a [Vite](https://laravel.com/docs/vite) pipeline, you can skip

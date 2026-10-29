@@ -169,7 +169,8 @@ class UserGroupsController extends ControllerBase
         $members = ($data['users'] ?? null) ?: [];
         unset($data['users']);
 
-        $group->fill($data)->save();
+        // The session key commits the file changes the upload fields deferred, such as a removed document
+        $group->fill($data)->save(null, $this->formWidget->getSessionKey());
 
         if ($hasMembers) {
             $group->users()->sync($members);

@@ -61,6 +61,11 @@ class UsersController extends ControllerBase
             search: ['prompt' => 'Search users...'],
         );
 
+        // The top bar search submits here as ?q=
+        if (request()->filled('q')) {
+            $toolbar->getSearchWidget()->setActiveTerm(request('q'));
+        }
+
         $toolbar->bindToListWidget($list);
 
         return view('users.index', [

@@ -95,6 +95,12 @@ class DatePickerTest extends TestCase
         $this->assertStringNotContainsString('data-timepicker', $html);
     }
 
+    public function test_first_day_renders_only_when_configured_so_the_locale_applies_otherwise(): void
+    {
+        $this->assertStringNotContainsString('data-first-day', $this->renderField([]));
+        $this->assertStringContainsString('data-first-day="0"', $this->renderField(['firstDay' => 0]));
+    }
+
     public function test_time_mode_renders_only_the_time_picker(): void
     {
         $html = $this->renderField(['mode' => 'time', 'twelveHour' => true]);

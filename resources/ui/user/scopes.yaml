@@ -34,3 +34,4 @@ scopes:
         label: Name
         type: group
         optionsMethod: 'App\Models\User::getNameGroupOptions'
+        dependsOn: domain

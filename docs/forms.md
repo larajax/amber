@@ -244,7 +244,7 @@ content:
 
 ### Form widgets
 
-Richer fields with their own assets and AJAX handlers. Amber currently ships six:
+Richer fields with their own assets and AJAX handlers. Amber currently ships twelve:
 
 **relation** - displays a dropdown (singular relations) or checkbox list (multiple relations) sourced
 from a model relationship, with optional inline quick-create:
@@ -397,6 +397,175 @@ Supported properties: `list` (the columns for the popup list), `nameFrom` (defau
 (`all`, `any` or `exact`), `searchScope` (a model scope that performs the search), `filter` (scopes
 for a filter above the list), `defaultSort`, `showSetup`, `structure` (show a tree for tree models),
 `inlineOptions` (buttons beside the record, default `true`) and `popupSize` (default `huge`).
+
+**nestedform** - a form inside the form, for a JSON attribute or a related record:
+
+```yaml
+address:
+    label: Address
+    type: nestedform
+    form:
+        fields:
+            street:
+                label: Street
+            city:
+                label: City
+                span: left
+            postcode:
+                label: Postcode
+                span: right
+```
+
+On a JSON cast attribute the nested values are stored as an object. When the field name is a
+relation, the related record is edited directly and saved with the form; `defaultCreate: true`
+creates the related record if there is none. `showPanel: false` drops the panel styling. The
+`form` property takes inline fields or a YAML file path.
+
+**sensitive** - a masked value, such as an API key, that can be revealed on demand:
+
+```yaml
+api_key:
+    label: API Key
+    type: sensitive
+    allowCopy: true
+```
+
+The stored value is never sent with the page. Revealing it fetches it through the widget's AJAX
+handler, and saving the form without changes keeps it. Supported properties: `mode` (`text` or
+`textarea`), `allowCopy` (adds a copy button), `hideOnTabChange` (hides a revealed value when the
+browser tab is hidden, default `true`) and `hiddenPlaceholder`.
+
+**colorpicker** - a color input that opens a picker ([Coloris](https://coloris.js.org)), with the
+preset colors shown as swatches:
+
+```yaml
+brand_color:
+    label: Brand Color
+    type: colorpicker
+    availableColors: ['#1abc9c', '#3498db', '#e74c3c']
+```
+
+Values are saved as hex, with a leading `#`. Supported properties: `availableColors` (the swatches,
+or the name of a model method that returns them; a default set of 20 is used otherwise),
+`allowCustom` (pick any color, default `true`; `false` limits the picker to the swatches),
+`allowEmpty` (adds a clear button), `showAlpha` (adds an opacity slider and stores 8 digit hex),
+`showInput` (no swatches), `readOnly` and `disabled`.
+
+**richeditor** - a rich text editor that saves HTML, built on [TipTap](https://tiptap.dev):
+
+```yaml
+content:
+    label: Content
+    type: richeditor
+    toolbarButtons: [paragraphFormat, bold, italic, '|', formatUL, insertLink, insertImage, '|', html]
+```
+
+`toolbarButtons` takes a list, or a string where `|` separates buttons and `||` adds a divider.
+Without it the editor shows a default toolbar. Other properties: `size` (`tiny`, `small`,
+`large`, `huge` or `giant` sets the editing height), `useLineBreaks` (Enter inserts a line break
+instead of a new paragraph), `readOnly`, `disabled`, `safeMode` (cleans the HTML shown in preview
+mode, default `true`) and `editorOptions` (extra editor settings, such as `paragraphStyles: { lead:
+Lead }` or `imageResize: false`).
+
+`uploadDisk` turns on uploads from the editor: images and file links are stored on that
+filesystem disk with hashed names, and the editor inserts the disk's URL for them. `uploadPath`
+sets the folder (default `uploads/richeditor`) and `uploadMaxSize` the largest file in megabytes
+(default `10`). Images accept jpg, jpeg, png, gif and webp; file links also accept pdf, doc, docx,
+xls, xlsx, ppt, pptx, txt, csv and zip. Both the file name and its content must match.
+
+```yaml
+content:
+    label: Content
+    type: richeditor
+    uploadDisk: public
+```
+
+Media pickers and link pickers are left to the page, and so are uploads when a page prefers its
+own endpoint. Connect them with hooks on the shared `richEditor` object before the editors load,
+and the matching menu items appear. A page `uploadFile` hook replaces the `uploadDisk` upload, and
+its second argument says whether an `image` or a `file` link is being uploaded:
+
+```js
+import { richEditor } from '/vendor/larajax/ui/index.js';
+
+richEditor.hooks.uploadFile = async (file, { type }) => {
+    const data = new FormData();
+    data.append('file', file);
+    const response = await fetch('/uploads', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+        body: data
+    });
+    return (await response.json()).url;
+};
+
+richEditor.registerButton('insertSignature', {
+    label: 'Insert Signature',
+    icon: 'ph ph-signature',
+    toolbar: 'end',
+    onClick: (editor) => editor.insertHtml('<p>Kind regards</p>')
+});
+```
+
+The available hooks are `uploadFile`, `browseMedia`, `browseLinks`, `resolveLink`,
+`browseSnippets`, `mountSnippet`, `editSnippet`, `alert` and `tooltip`. Pages that display the
+saved HTML can include `/vendor/larajax/ui/vendor/richarea/base-styles.css` and wrap the content
+in an element with the `rich-editor-content` class. The toolbar and menu icons come from the
+configured icon pack (the `richeditor.*` keys), and the editor's labels and messages pass through
+`__()`, so they follow the app locale. Without a `mountSnippet` hook, snippets show as a labelled
+placeholder with their snippet code and component class.
+
+**codeeditor** - a code editor built on [Monaco](https://microsoft.github.io/monaco-editor/),
+the editor behind VS Code:
+
+```yaml
+template:
+    label: Template
+    type: codeeditor
+    language: html
+    size: huge
+```
+
+Languages: `php` (the default), `html`, `css`, `less`, `scss`, `javascript`, `json`,
+`markdown`, `twig`, `yaml` and `plain_text`. HTML, CSS and JSON also get completion and
+validation, and Emmet abbreviations expand in the HTML and CSS languages. The toolbar has undo
+and redo, find and replace, format (for languages with a formatter, such as HTML, CSS and JSON),
+a word wrap toggle (`Alt+Z`) and fullscreen (`Ctrl+Shift+F`, `Esc` to leave), with the language
+name on the right.
+
+Other properties: `theme` (`vs`, `vs-dark`, `hc-black` or `hc-light`; without it the editor
+follows the page's light or dark mode), `fontSize`, `tabSize`, `useSoftTabs`, `wordWrap` (`off`,
+`fluid`, `40` or `80`), `showGutter`, `showInvisibles`, `highlightActiveLine`,
+`displayIndentGuides`, `showPrintMargin`, `codeFolding` (`manual` shows fold controls on hover,
+`markbegin` always), `autoClosing`, `autocompletion` (`live` suggests while typing, `manual` and
+`basic` on `Ctrl+Space`), `enableSnippets`, `margin`, `readOnly` and `disabled`.
+
+Monaco loads the first time a page shows a code field, so other pages don't pay for its size.
+Monaco has one theme per page, so fields that name different themes share the last one applied.
+
+**markdown** - a Markdown editor with a formatting toolbar and preview, built on
+[EasyMDE](https://github.com/Ionaru/easy-markdown-editor):
+
+```yaml
+content:
+    label: Content
+    type: markdown
+    sideBySide: true
+```
+
+The toolbar has bold, italic, strikethrough, headings 1 to 3, code blocks, quotes, lists, clean
+block, links, images, tables and horizontal rules, then preview, side by side and fullscreen, with
+icons from the configured icon pack. EasyMDE's keyboard shortcuts work as well, such as `Ctrl+B`,
+`Ctrl+I`, `Ctrl+K` for a link, `Ctrl+P` for the preview, `F9` for side by side and `F11` for
+fullscreen.
+
+The preview is rendered in the browser with [marked](https://marked.js.org) and cleaned with
+[DOMPurify](https://github.com/cure53/DOMPurify). Other properties: `sideBySide` (start side by
+side), `mode` (`tab` or `split`, another way to make the same choice), `safeMode` (DOMPurify on the
+preview, default `true`; `false` shows HTML in the Markdown as written), `size` (sets the editor
+height), `readOnly` and `disabled` (both show the rendered Markdown in place of the editor).
+
+EasyMDE loads the first time a page shows a Markdown field.
 
 Relation fields work with both October Rain and plain Eloquent models - see
 [Using Eloquent models](eloquent.md).
