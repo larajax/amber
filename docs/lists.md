@@ -41,7 +41,7 @@ view. The `columns` value may be a YAML file path or an inline array of definiti
 namespace App\Controllers;
 
 use App\Models\User;
-use October\Amber\Widgets\Lists;
+use Larajax\Ui\Widgets\Lists;
 
 class UserController extends ControllerBase
 {
@@ -319,7 +319,7 @@ methods.
 Subclass the widget and override its extension points, declared in `HasListEvents`:
 
 ```php
-use October\Amber\Widgets\Lists;
+use Larajax\Ui\Widgets\Lists;
 
 class UserList extends Lists
 {
@@ -359,7 +359,7 @@ relationships as an expandable tree and lets users reorder records. Build it the
 option above applies - plus the structure options:
 
 ```php
-use October\Amber\Widgets\ListStructure;
+use Larajax\Ui\Widgets\ListStructure;
 
 $widget = ListStructure::make(
     alias: 'list',

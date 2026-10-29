@@ -10,7 +10,7 @@ pagination, searching, validation, uploads - wired up automatically.
 It is the same widget engine that powers the [October CMS](https://octobercms.com) admin panel,
 packaged as a standalone library for any Laravel application. There is no CMS dependency, no
 JavaScript framework and no build step: the browser assets are plain CSS and ES modules, styled on
-top of Bootstrap 5.
+top of Bootstrap 6.
 
 ## The sixty second version
 

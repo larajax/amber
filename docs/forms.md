@@ -36,7 +36,7 @@ view. The `fields` value may be a YAML file path or an inline array of definitio
 namespace App\Controllers;
 
 use App\Models\User;
-use October\Amber\Widgets\Form;
+use Larajax\Ui\Widgets\Form;
 
 class UserController extends ControllerBase
 {
@@ -614,7 +614,7 @@ Available presets: `timezones`, `locales`, `flags`, `flags@short`, `icons`, `ico
 `icons@bootstrap`. Applications can register or extend presets through the preset manager:
 
 ```php
-use October\Amber\Classes\PresetManager;
+use Larajax\Ui\Classes\PresetManager;
 
 PresetManager::instance()->registerPreset('priorities', function () {
     return ['low' => 'Low', 'high' => 'High'];
@@ -640,7 +640,7 @@ name with `@` for per-context field variants (`password@create`).
 Subclass the widget and override its extension points, declared in `HasFormEvents`:
 
 ```php
-use October\Amber\Widgets\Form;
+use Larajax\Ui\Widgets\Form;
 use October\Rain\Element\ElementHolder;
 
 class UserForm extends Form

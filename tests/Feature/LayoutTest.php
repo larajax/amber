@@ -23,6 +23,20 @@ class LayoutTest extends TestCase
             ->assertSee('js/amber.js', false);
     }
 
+    public function test_the_colour_mode_is_set_before_the_stylesheets_load(): void
+    {
+        $html = $this->get('users')->assertOk()->getContent();
+
+        $themeScriptAt = strpos($html, "document.documentElement.setAttribute('data-bs-theme'");
+        $stylesheetAt = strpos($html, 'rel="stylesheet"');
+
+        $this->assertNotFalse($themeScriptAt);
+        $this->assertNotFalse($stylesheetAt);
+        $this->assertLessThan($stylesheetAt, $themeScriptAt);
+        $this->assertStringContainsString("localStorage.getItem('amber-theme')", $html);
+        $this->assertStringContainsString("matchMedia('(prefers-color-scheme: dark)')", $html);
+    }
+
     public function test_the_current_page_is_marked_in_the_sidebar(): void
     {
         $html = $this->get('users')->assertOk()->getContent();

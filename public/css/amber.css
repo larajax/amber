@@ -25,13 +25,18 @@
     --amber-sidebar-text: #ffffff;
     --amber-focus-ring: rgba(var(--amber-brand-rgb), 0.25);
 
-    --bs-primary: var(--amber-brand);
-    --bs-primary-rgb: var(--amber-brand-rgb);
-    --bs-link-color: var(--amber-brand-deep);
-    --bs-link-color-rgb: var(--amber-brand-deep-rgb);
-    --bs-link-hover-color: var(--amber-brand-hover);
-    --bs-link-hover-color-rgb: 85, 87, 230;
-    --bs-focus-ring-color: var(--amber-focus-ring);
+    /* Bootstrap's primary set, derived from the brand the same way Bootstrap derives it from a palette step */
+    --bs-primary-base: var(--amber-brand);
+    --bs-primary-fg: light-dark(var(--amber-brand-deep), #a5a6ff);
+    --bs-primary-fg-emphasis: light-dark(color-mix(in oklch, var(--bs-black) 48%, var(--amber-brand)), color-mix(in oklch, var(--bs-white) 60%, var(--amber-brand)));
+    --bs-primary-bg: var(--amber-brand);
+    --bs-primary-bg-subtle: light-dark(color-mix(in oklch, var(--bs-white) 80%, var(--amber-brand)), color-mix(in oklch, var(--bs-black) 64%, var(--amber-brand)));
+    --bs-primary-bg-muted: light-dark(color-mix(in oklch, var(--bs-white) 60%, var(--amber-brand)), color-mix(in oklch, var(--bs-black) 48%, var(--amber-brand)));
+    --bs-primary-border: light-dark(color-mix(in oklch, var(--bs-white) 40%, var(--amber-brand)), color-mix(in oklch, var(--bs-black) 16%, var(--amber-brand)));
+    --bs-primary-focus-ring: light-dark(color-mix(in oklch, var(--amber-brand) 50%, var(--bs-bg-body)), color-mix(in oklch, var(--amber-brand) 75%, var(--bs-bg-body)));
+    --bs-primary-contrast: var(--bs-white);
+    --bs-link-color: var(--bs-primary-fg);
+    --bs-link-hover-color: light-dark(var(--amber-brand-hover), var(--amber-accent));
 
     --oc-accent: var(--amber-brand);
     --oc-selection: var(--amber-brand);
@@ -46,59 +51,6 @@
     --amber-text: #e6e6f0;
     --amber-muted: #9a9bb3;
     --amber-sidebar-bg: #25265f;
-
-    --bs-link-color: #a5a6ff;
-    --bs-link-color-rgb: 165, 166, 255;
-    --bs-link-hover-color: #c7c8ff;
-    --bs-link-hover-color-rgb: 199, 200, 255;
-}
-
-/*
- * Bootstrap components compile their own blue, so they take the brand here
- */
-
-.btn-primary {
-    --bs-btn-bg: var(--amber-brand);
-    --bs-btn-border-color: var(--amber-brand);
-    --bs-btn-hover-bg: var(--amber-brand-hover);
-    --bs-btn-hover-border-color: var(--amber-brand-hover);
-    --bs-btn-active-bg: var(--amber-brand-hover);
-    --bs-btn-active-border-color: var(--amber-brand-hover);
-    --bs-btn-disabled-bg: var(--amber-brand);
-    --bs-btn-disabled-border-color: var(--amber-brand);
-    --bs-btn-focus-shadow-rgb: var(--amber-brand-rgb);
-}
-
-.btn-outline-primary {
-    --bs-btn-color: var(--amber-brand-deep);
-    --bs-btn-border-color: var(--amber-brand);
-    --bs-btn-hover-bg: var(--amber-brand);
-    --bs-btn-hover-border-color: var(--amber-brand);
-    --bs-btn-active-bg: var(--amber-brand-hover);
-    --bs-btn-active-border-color: var(--amber-brand-hover);
-    --bs-btn-focus-shadow-rgb: var(--amber-brand-rgb);
-}
-
-.form-control:focus,
-.form-select:focus {
-    border-color: var(--amber-brand);
-    box-shadow: 0 0 0 0.25rem var(--amber-focus-ring);
-}
-
-.form-check-input {
-    &:focus {
-        border-color: var(--amber-brand);
-        box-shadow: 0 0 0 0.25rem var(--amber-focus-ring);
-    }
-
-    &:checked {
-        background-color: var(--amber-brand);
-        border-color: var(--amber-brand);
-    }
-}
-
-.dropdown-menu {
-    --bs-dropdown-link-active-bg: var(--amber-brand);
 }
 
 /*
@@ -168,6 +120,16 @@
     .sidebar-scrim {
         display: none;
     }
+}
+
+/*
+ * Page content
+ */
+
+/* Spacing lives here because the library's unlayered form-group padding outranks Bootstrap 6 utilities */
+.amber-layout .form-group.ruler-field {
+    margin-block: 0.5rem;
+    padding-bottom: 1rem;
 }
 
 /*
@@ -459,6 +421,7 @@
         border-color: var(--amber-border);
         border-radius: 8px;
         background: var(--amber-canvas);
+        box-shadow: none;
         font-size: 14px;
 
         &::placeholder {
@@ -501,10 +464,10 @@
 }
 
 /*
- * Tablet and mobile: the sidebar slides in over the page
+ * Tablet and mobile: below Bootstrap's lg breakpoint the sidebar slides in over the page
  */
 
-@media (max-width: 991.98px) {
+@media (width < 1024px) {
     .amber-layout {
         .app-shell {
             grid-template-columns: minmax(0, 1fr);
@@ -516,7 +479,7 @@
             top: 0;
             bottom: 0;
             left: 0;
-            z-index: 1040;
+            z-index: var(--bs-z-drawer);
             width: min(300px, 88vw);
             min-height: 100dvh;
             overflow-y: auto;
@@ -528,7 +491,7 @@
         .sidebar-scrim {
             position: fixed;
             inset: 0;
-            z-index: 1030;
+            z-index: calc(var(--bs-z-drawer) - 1);
             display: block;
             border: 0;
             background: rgba(var(--amber-brand-deep-rgb), 0.4);

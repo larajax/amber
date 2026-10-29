@@ -41,7 +41,6 @@ tabs:
         _password_ruler:
             type: ruler
             tab: Account
-            cssClass: pb-3 my-2
 
         password@create:
             label: Create Password
@@ -76,7 +75,6 @@ tabs:
         _group_ruler:
             type: ruler
             tab: Account
-            cssClass: pb-3 my-2
 
         primary_group:
             label: Primary Group

@@ -8,25 +8,33 @@
             @yield('title', 'Amber') - {{ config('app.name', 'Amber') }}
         </title>
 
-        {{-- Applies the saved theme before the page paints --}}
+        {{-- Sets data-bs-theme before the page paints, from the saved choice or else the OS preference --}}
         <script>
-            try {
-                var amberTheme = localStorage.getItem('amber-theme');
-                if (amberTheme) {
-                    document.documentElement.setAttribute('data-bs-theme', amberTheme);
+            (function () {
+                var amberTheme = null;
+
+                try {
+                    amberTheme = localStorage.getItem('amber-theme');
                 }
-            }
-            catch (e) {
-            }
+                catch (e) {
+                    // Storage can be unavailable, so the OS preference applies
+                }
+
+                if (amberTheme !== 'light' && amberTheme !== 'dark') {
+                    amberTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+
+                document.documentElement.setAttribute('data-bs-theme', amberTheme);
+            })();
         </script>
 
         {{-- No build step: assets load from a CDN and the published vendor/larajax files. --}}
         <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2"></script>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
         <link href="{{ asset('vendor/larajax/ui/ui.css') }}" rel="stylesheet">
         <link href="{{ asset('css/amber.css') }}" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js"></script>
         <script src="{{ asset('vendor/larajax/framework-bundle.js') }}"></script>
         <script type="module" src="{{ asset('vendor/larajax/ui/ui.js') }}"></script>
         <script src="{{ asset('js/amber.js') }}" defer></script>

@@ -15,21 +15,39 @@ application. This page gets it installed and wired into a layout.
   and HTML helpers Amber builds on
 - [larajax/larajax](https://larajax.org) - provides the view component interface that Amber widgets
   implement, and the `window.jax` browser API their controls register against
-- [Bootstrap 5](https://getbootstrap.com) - Amber's styles layer over Bootstrap's, and the popup
-  control wraps the Bootstrap Modal. Load the Bootstrap CSS and bundle JS in your layout before
-  Amber's assets.
+- [Bootstrap 6](https://getbootstrap.com) - Amber's styles layer over Bootstrap's, and its menus use
+  Bootstrap's data API. Load the Bootstrap CSS and its JavaScript module in your layout before
+  Amber's assets (see [Bootstrap 6](#bootstrap-6) below).
 
 You do not need October CMS itself. Amber runs against a plain Laravel install.
+
+### Bootstrap 6
+
+Amber targets Bootstrap `6.0.0-alpha.1`. Bootstrap 6 is still an alpha release, so its class names
+and tokens may change before the stable version, and a few things follow from it:
+
+- **Modern browsers only.** Bootstrap 6 needs Chrome or Edge 130, Firefox 132 or Safari 18 and
+  newer, with no fallbacks below that.
+- **ES modules only.** Bootstrap's JavaScript loads with `<script type="module">` or an `import` in
+  your bundle. There is no `window.bootstrap` global, and Amber does not need one.
+- **Amber owns its popups.** A popup is Amber's own native `<dialog>`, styled with Bootstrap's
+  `dialog-*` classes, so it needs no Bootstrap JavaScript. Menus open through Bootstrap's
+  `data-bs-toggle="menu"` data API, which the Bootstrap module provides.
+- **Set the colour mode on `<html>`.** Bootstrap follows the operating system's light or dark
+  preference when no `data-bs-theme` attribute is set, but Amber's palette follows the attribute. Set
+  `data-bs-theme="light"` or `data-bs-theme="dark"` on `<html>` before the page paints, from a saved
+  choice or the system preference, as in Bootstrap's
+  [color modes guide](https://getbootstrap.com/docs/6.0/customize/color-modes/).
 
 ## Install the package
 
 Require the package with Composer:
 
 ```bash
-composer require october/amber
+composer require larajax/ui
 ```
 
-The package registers its `AmberServiceProvider` automatically through Laravel's package discovery, so
+The package registers its `UiServiceProvider` automatically through Laravel's package discovery, so
 there is no provider to add by hand.
 
 ## Publish the assets
@@ -40,26 +58,29 @@ copies it verbatim, so the published paths always match the source paths. Publis
 installing, and again after upgrading:
 
 ```bash
-php artisan vendor:publish --tag=amber-assets
+php artisan vendor:publish --tag=larajax-ui-assets
 ```
 
-The files are copied into `public/vendor/amber/`.
+The files are copied into `public/vendor/larajax/ui/`.
 
 ## Include the assets in your layout
 
-Add the stylesheet and scripts to your Blade layout. Larajax must load **first**, because Amber widgets
+Add the stylesheets and scripts to your Blade layout. Bootstrap's stylesheet comes before Amber's, so
+Amber's rules layer over it. Larajax must load **before** Amber's script, because Amber widgets
 register their controls against the `window.jax` API it exposes. Use the larajax **bundle** build - the
 plain `framework.js` build does not include the control API (`jax.registerControl`) that Amber
 requires.
 
 ```blade
-<link rel="stylesheet" href="{{ asset('vendor/amber/amber.css') }}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{ asset('vendor/larajax/ui/ui.css') }}">
+<script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('vendor/larajax/framework-bundle.js') }}"></script>
-<script type="module" src="{{ asset('vendor/amber/amber.js') }}"></script>
+<script type="module" src="{{ asset('vendor/larajax/ui/ui.js') }}"></script>
 ```
 
-That is everything the browser needs. Amber ships no framework dependency - the CSS and JS are
-self-contained.
+That is everything the browser needs. Beyond Bootstrap and Larajax, Amber ships no framework
+dependency - the CSS and JS are self-contained.
 
 If you write your own widgets that load extra files with `addJs()` or `addCss()` in `loadAssets()`,
 print them at the end of `<head>`. AJAX responses carry the same files when a widget is created
@@ -77,15 +98,16 @@ resolves the same way the published tree does:
 
 ```js
 // resources/js/app.js
-import '../../vendor/october/amber/resources/assets/amber.js';
+import '../../vendor/larajax/ui/resources/assets/ui.js';
 ```
 
 ```css
 /* resources/css/app.css */
-@import '../../vendor/october/amber/resources/assets/amber.css';
+@import '../../vendor/larajax/ui/resources/assets/ui.css';
 ```
 
-Vite bundles Amber into your application build. Larajax must still load before your bundle runs.
+Vite bundles Amber into your application build. Larajax must still load before your bundle runs, and
+Bootstrap's stylesheet before `ui.css`.
 
 ## Prepare your controller
 
@@ -102,7 +124,7 @@ use Larajax\LarajaxController;
 
 abstract class ControllerBase extends LarajaxController
 {
-    use \October\Amber\Traits\ViewMaker;
+    use \Larajax\Ui\Traits\ViewMaker;
 }
 ```
 
@@ -128,7 +150,7 @@ the view:
 namespace App\Controllers;
 
 use App\Models\User;
-use October\Amber\Widgets\Form;
+use Larajax\Ui\Widgets\Form;
 
 class UserController extends ControllerBase
 {

@@ -5,12 +5,24 @@
  * - data-amber-menu-toggle - opens the sidebar on small screens
  * - data-amber-menu-close - closes the sidebar on small screens
  * - data-amber-nav-group-toggle - expands or collapses a sidebar group
- * - data-amber-theme-toggle - switches between the light and dark theme
+ * - data-amber-theme-toggle - switches between the light and dark theme and remembers the choice
+ *
+ * The layout head sets data-bs-theme before paint; until the toggle stores a choice, the page follows the OS.
  */
 'use strict';
 
 (function () {
     var THEME_KEY = 'amber-theme';
+
+    function getStoredTheme() {
+        try {
+            var theme = localStorage.getItem(THEME_KEY);
+            return theme === 'light' || theme === 'dark' ? theme : null;
+        }
+        catch (e) {
+            return null;
+        }
+    }
 
     function openMenu() {
         document.body.classList.add('sidebar-open');
@@ -72,6 +84,13 @@
     document.addEventListener('keydown', function (ev) {
         if (ev.key === 'Escape' && document.body.classList.contains('sidebar-open')) {
             closeMenu();
+        }
+    });
+
+    // Follows OS colour scheme changes until the visitor picks a theme with the toggle.
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (ev) {
+        if (!getStoredTheme()) {
+            document.documentElement.setAttribute('data-bs-theme', ev.matches ? 'dark' : 'light');
         }
     });
 })();

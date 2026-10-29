@@ -2,7 +2,9 @@
 @section('title', 'Users')
 @section('content')
 
-<h1 class="mb-4">Users</h1>
+<h1 class="mb-7">
+    Users
+</h1>
 
 {{ $toolbar }}
 

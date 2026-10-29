@@ -33,7 +33,7 @@ Build the widget with `Filter::make(...)`. The `scopes` value may be a YAML file
 array:
 
 ```php
-use October\Amber\Widgets\Filter;
+use Larajax\Ui\Widgets\Filter;
 
 $filter = Filter::make(
     alias: 'filter',
@@ -64,7 +64,7 @@ the re-rendered list - changing a scope then updates both widgets in one AJAX ro
 ```php
 namespace App\Widgets;
 
-use October\Amber\Widgets\Filter;
+use Larajax\Ui\Widgets\Filter;
 
 class UserFilter extends Filter
 {
@@ -295,7 +295,7 @@ public function getStateOptionsForFilter($scopes = null)
 Subclass the widget and override its extension points, declared in `HasFilterEvents`:
 
 ```php
-use October\Amber\Widgets\Filter;
+use Larajax\Ui\Widgets\Filter;
 
 class UserFilter extends Filter
 {
