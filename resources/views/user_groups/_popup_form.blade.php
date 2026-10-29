@@ -16,7 +16,7 @@
         <button type="submit" class="btn-solid theme-primary">
             Save
         </button>
-        <button type="button" class="btn btn-default" data-dismiss="popup">
+        <button type="button" class="btn-solid theme-secondary" data-dismiss="popup">
             Cancel
         </button>
     </div>
