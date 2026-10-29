@@ -610,7 +610,9 @@ A `dropdown` or `autocomplete` column without `options` asks the model for them 
 `get<FieldName>DataTableOptions($column, $rowData)` or, failing that,
 `getDataTableOptions($fieldName, $column, $rowData)`. `$rowData` holds the row's current values, so
 `dependsOn` can make one column's options follow another: changing the country clears the city and
-loads the cities again.
+loads the cities again. So saved values show their labels straight away, the field also calls the
+method while rendering, once for each set of `dependsOn` values among the saved rows (once in all
+for a column without `dependsOn`), and the grid only asks over AJAX for values it hasn't seen.
 
 ```yaml
 columns:
@@ -663,7 +665,9 @@ buttons, `sorting` sorts by a column when its header is clicked (for viewing; th
 headers be dragged and frozen (for viewing), `height` sets a height in pixels so the grid scrolls
 inside itself, `placeholder` shows a message while there are no rows (the table otherwise starts
 with one empty row), `multiSelect` (default `true`) allows selecting a range of cells, and
-`requireValid`.
+`requireValid`. With `readOnly`, `disabled` or a form in preview mode, the rows can be selected,
+copied, searched, sorted and exported but not edited, and the Insert Row, Delete Row and Import
+buttons are left out.
 
 Export downloads the rows as a CSV file with the column titles as its header row, and values a
 spreadsheet would read as a formula are prefixed with an apostrophe. Import reads a CSV file
@@ -671,7 +675,8 @@ separated by commas, semicolons or tabs and appends its rows; a header row is ma
 titles or names, otherwise the values are read in column order.
 
 The grid works like a spreadsheet from the keyboard: arrow keys, Tab and Enter move between cells,
-typing replaces a cell, Enter or F2 edits it, Escape cancels, Delete clears the selection, and
+typing replaces a cell, Enter or F2 edits it, Escape cancels an edit, list, menu or drag (with
+nothing to cancel it closes a popup holding the grid), Delete clears the selection, and
 `Ctrl+C`, `Ctrl+X`, `Ctrl+V`, `Ctrl+Z` and `Ctrl+Y` copy, cut, paste, undo and redo, also between
 the grid and a spreadsheet. `Alt+A` adds a row below the selected one (`Alt+Shift+A` above it) and
 `Alt+D` deletes it. A right click opens a menu for inserting and removing rows. Listen for the

@@ -247,6 +247,117 @@ class DataTableTest extends TestCase
         $this->assertSame(['options' => []], $form->getFormWidget('contacts')->onGetDropdownOptions());
     }
 
+    public function test_saved_dropdown_values_render_with_their_options_resolved_once_per_dependency_value(): void
+    {
+        $user = new class extends User {
+            protected $table = 'users';
+
+            public array $lookups = [];
+
+            public function getDataTableOptions(string $fieldName, ?string $column, array $rowData = []): array
+            {
+                $this->lookups[] = [$column, $rowData];
+
+                return parent::getDataTableOptions($fieldName, $column, $rowData);
+            }
+        };
+
+        $user->contacts = [
+            ['name' => 'Ada', 'country' => 'us', 'city' => 'new-york'],
+            ['name' => 'Bob', 'country' => 'au', 'city' => 'sydney'],
+            ['name' => 'Cy', 'country' => 'us', 'city' => 'chicago'],
+            ['name' => 'Di', 'country' => 'nz'],
+            ['name' => 'Ed'],
+        ];
+
+        $html = (string) $this->makeTableForm($user)->render();
+
+        $this->assertSame(['city' => [
+            ['values' => ['country' => 'us'], 'options' => ['new-york' => 'New York', 'chicago' => 'Chicago', 'seattle' => 'Seattle']],
+            ['values' => ['country' => 'au'], 'options' => ['sydney' => 'Sydney', 'melbourne' => 'Melbourne', 'brisbane' => 'Brisbane']],
+            ['values' => ['country' => 'nz'], 'options' => ['auckland' => 'Auckland', 'wellington' => 'Wellington']],
+        ]], $this->attributeJson($html, 'data-preloaded-options'));
+
+        $this->assertSame([
+            ['city', ['name' => 'Ada', 'country' => 'us', 'city' => 'new-york']],
+            ['city', ['name' => 'Bob', 'country' => 'au', 'city' => 'sydney']],
+            ['city', ['name' => 'Di', 'country' => 'nz', 'city' => null]],
+        ], $user->lookups);
+    }
+
+    public function test_a_column_without_dependencies_preloads_its_options_once_and_empty_tables_preload_nothing(): void
+    {
+        $user = new class extends User {
+            protected $table = 'users';
+
+            public int $lookups = 0;
+
+            public function getContactsDataTableOptions($column, $rowData): array
+            {
+                $this->lookups++;
+
+                return ['web' => 'Website', 'event' => 'Event'];
+            }
+        };
+
+        $columns = ['columns' => ['name' => ['title' => 'Name'], 'source' => ['title' => 'Source', 'type' => 'autocomplete']]];
+
+        $html = (string) $this->makeTableForm($user, $columns)->render();
+        $this->assertStringContainsString("data-preloaded-options='{}'", $html);
+        $this->assertSame(0, $user->lookups);
+
+        $user->contacts = [['name' => 'Ada', 'source' => 'web'], ['name' => 'Bob', 'source' => 'event'], ['name' => 'Cy']];
+
+        $html = (string) $this->makeTableForm($user, $columns)->render();
+        $this->assertSame(['source' => [['values' => [], 'options' => ['web' => 'Website', 'event' => 'Event']]]], $this->attributeJson($html, 'data-preloaded-options'));
+        $this->assertSame(1, $user->lookups);
+    }
+
+    public function test_preview_read_only_and_disabled_render_a_read_only_grid_without_row_buttons(): void
+    {
+        $user = User::factory()->create();
+        $config = ['searching' => true, 'csvExport' => true, 'csvImport' => true, 'requireValid' => true];
+
+        $editable = (string) $this->makeTableForm($user, $config)->render();
+        $this->assertStringContainsString('data-read-only="false"', $editable);
+        $this->assertStringContainsString('data-table-add', $editable);
+        $this->assertStringContainsString('data-table-import-file', $editable);
+        $this->assertStringContainsString('data-require-valid="true"', $editable);
+        $this->assertMatchesRegularExpression('/name="contacts" value="\[\]"\s+\/>/', $editable);
+
+        $modes = [
+            'preview' => [(string) $this->makeTableForm($user, $config)->render(['preview' => true]), true],
+            'readOnly' => [(string) $this->makeTableForm($user, $config + ['readOnly' => true])->render(), false],
+            'disabled' => [(string) $this->makeTableForm($user, $config + ['disabled' => true])->render(), true],
+        ];
+
+        foreach ($modes as $mode => [$html, $inputDisabled]) {
+            $this->assertStringContainsString('data-read-only="true"', $html, $mode);
+            $this->assertStringContainsString('data-adding="false"', $html, $mode);
+            $this->assertStringContainsString('data-deleting="false"', $html, $mode);
+            $this->assertStringContainsString('data-require-valid="false"', $html, $mode);
+            $this->assertStringNotContainsString('data-table-add', $html, $mode);
+            $this->assertStringNotContainsString('data-table-delete', $html, $mode);
+            $this->assertStringNotContainsString('data-table-import', $html, $mode);
+            $this->assertStringContainsString('data-table-export', $html, $mode);
+            $this->assertStringContainsString('data-table-search', $html, $mode);
+            $this->assertSame($inputDisabled, (bool) preg_match('/name="contacts" value="\[\]" disabled \/>/', $html), $mode);
+        }
+
+        $bare = (string) $this->makeTableForm($user, ['readOnly' => true])->render();
+        $this->assertStringNotContainsString('data-table-toolbar', $bare);
+    }
+
+    public function test_the_validation_messages_pass_through_the_translator(): void
+    {
+        $html = (string) $this->makeTableForm(User::factory()->create())->render();
+        $lang = $this->attributeJson($html, 'data-lang');
+
+        $this->assertSame('The value should not be empty.', $lang['ruleRequired']);
+        $this->assertSame('The value should not be more than :max', $lang['ruleMax']);
+        $this->assertSame('Invalid value format.', $lang['ruleRegex']);
+    }
+
     public function test_csv_export_downloads_the_posted_rows_under_the_column_titles(): void
     {
         $response = $this->ajax(User::factory()->create(), 'formContacts::onExportCsv', [
