@@ -217,6 +217,19 @@
         @include('reference._form_example', ['name' => 'hint'])
     </section>
 
+    <section class="ui-section" id="hint-partial">
+        <h2>
+            Hint from a partial
+        </h2>
+        <p class="fg-3">
+            With <code>path</code>, the hint renders an app partial inside the callout, with <code>$formModel</code>, <code>$field</code> and <code>$value</code> in scope. The label and mode still apply.
+        </p>
+        @include('reference._form_example', ['name' => 'hint-partial'])
+        <div class="ui-example reference-forms-related">
+            @include('reference._source', ['path' => 'resources/views/reference/forms/_hint_record_checklist.php', 'caption' => 'The partial'])
+        </div>
+    </section>
+
     <section class="ui-section" id="ruler">
         <h2>
             Ruler

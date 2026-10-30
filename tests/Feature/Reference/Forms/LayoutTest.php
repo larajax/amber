@@ -318,6 +318,9 @@ class LayoutTest extends TestCase
         $this->assertMatchesRegularExpression('/id="Form-exampleReadOnly-field-has_discount"[^>]*checked[^>]*readonly="readonly" onclick="return false;"/s', $readOnly);
         $this->assertMatchesRegularExpression('/id="Form-exampleReadOnly-field-is_featured"[^>]*checked[^>]*readonly="readonly" onclick="return false;"/s', $readOnly);
         $this->assertSame(4, substr_count($readOnly, 'onclick="return false"'));
+        $this->assertSame(3, preg_match_all('/type="radio"[^>]*readonly="readonly" onclick="return false;"/s', $readOnly));
+        $this->assertMatchesRegularExpression('/readonly\s+data-field-checkboxlist-all>/', $readOnly);
+        $this->assertMatchesRegularExpression('/readonly\s+data-field-checkboxlist-none>/', $readOnly);
     }
 
     public function test_a_read_only_dropdown_escapes_the_value_it_posts(): void

@@ -27,10 +27,21 @@ fields:
         span: right
         readOnly: true
 
+    size:
+        label: Size
+        type: radio
+        inlineOptions: true
+        readOnly: true
+        options:
+            small: Small
+            medium: Medium
+            large: Large
+
     features:
         label: Features
         type: checkboxlist
         inlineOptions: true
+        quickselect: true
         readOnly: true
         options:
             wifi: Wi-Fi

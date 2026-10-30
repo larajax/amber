@@ -1,0 +1,6 @@
+fields:
+    _record_hint:
+        label: Before you publish
+        type: hint
+        mode: warning
+        path: ~/resources/views/reference/forms/_hint_record_checklist.php

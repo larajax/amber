@@ -28,7 +28,7 @@ class FormsController extends ReferenceControllerBase
             'dropdown', 'dropdown-model-options', 'dropdown-preset', 'option-styles',
             'radio', 'checkbox', 'switch', 'checkboxlist', 'checkboxlist-nested', 'checkboxlist-scrollable',
             'balloon-selector', 'balloon-allow-empty', 'balloon-read-only',
-            'section', 'hint', 'ruler', 'partial', 'partial-ajax',
+            'section', 'hint', 'hint-partial', 'ruler', 'partial', 'partial-ajax',
         ]);
 
         return view('reference.forms.fields', $this->exampleVars());

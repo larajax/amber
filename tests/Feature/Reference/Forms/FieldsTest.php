@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use Larajax\Ui\Widgets\Filter;
+use Larajax\Ui\Widgets\Form;
 use Tests\TestCase;
 
 class FieldsTest extends TestCase
@@ -22,7 +23,7 @@ class FieldsTest extends TestCase
         'dropdown', 'dropdown-model-options', 'dropdown-preset', 'option-styles',
         'radio', 'checkbox', 'switch', 'checkboxlist', 'checkboxlist-nested', 'checkboxlist-scrollable',
         'balloon-selector', 'balloon-allow-empty', 'balloon-read-only',
-        'section', 'hint', 'ruler', 'partial', 'partial-ajax',
+        'section', 'hint', 'hint-partial', 'ruler', 'partial', 'partial-ajax',
     ];
 
     /**
@@ -44,6 +45,23 @@ class FieldsTest extends TestCase
             'icon' => 'ph ph-lamp',
             'timezone' => 'Australia/Sydney',
         ]);
+    }
+
+    /**
+     * renderField renders one field on the given sample in a form outside the page.
+     *
+     * @param  array<string, mixed>  $config
+     */
+    protected function renderField(Sample $sample, string $name, array $config): string
+    {
+        $form = Form::createIn(new FormsController, [
+            'model' => $sample,
+            'fields' => [$name => $config],
+        ]);
+
+        $form->bindToController();
+
+        return (string) $form->render();
     }
 
     /**
@@ -317,6 +335,41 @@ class FieldsTest extends TestCase
 
         $this->assertSame(2, substr_count($html, '<div class="field-horizontalrule">'));
         $this->assertMatchesRegularExpression('/class="form-label">\s*Packaging\s*<\/label>\s*<div class="field-horizontalrule">/', $html);
+    }
+
+    public function test_a_hint_with_a_path_renders_the_partial_inside_its_callout(): void
+    {
+        $html = $this->pageHtml(['name' => 'Aurora Desk Lamp', 'slug' => 'aurora-desk-lamp']);
+
+        $this->assertMatchesRegularExpression('/id="Form-exampleHintPartial-field-_record_hint-group"><div class="callout fade show callout-warning [^"]*">\s*<div class="header">.*?<h3>Before you publish<\/h3>\s*<\/div>\s*<div class="content">\s*<ul class="mb-0">\s*<li>\s*Aurora Desk Lamp needs a price/s', $html);
+        $this->assertStringContainsString('The slug <code>aurora-desk-lamp</code>', $html);
+    }
+
+    public function test_a_read_only_dropdown_shows_a_saved_value_inside_an_option_group_or_among_children(): void
+    {
+        $sample = $this->makeSample(['category' => 'lamps', 'level' => 'pro-yearly']);
+
+        $grouped = $this->renderField($sample, 'category', ['label' => 'Category', 'type' => 'dropdown', 'readOnly' => true]);
+        $this->assertMatchesRegularExpression('/<div class="form-control"\s+readonly>\s*Lamps\s*<\/div>/', $grouped);
+
+        $nested = $this->renderField($sample, 'level', ['label' => 'Level', 'type' => 'dropdown', 'readOnly' => true]);
+        $this->assertMatchesRegularExpression('/<div class="form-control"\s+readonly>(?:(?!<\/div>).)*Professional, billed yearly\s*<\/div>/s', $nested);
+    }
+
+    public function test_a_read_only_radio_list_cancels_clicks_on_every_option(): void
+    {
+        $sample = $this->makeSample(['size' => 'm']);
+
+        $html = $this->renderField($sample, 'size', [
+            'label' => 'Size',
+            'type' => 'radio',
+            'readOnly' => true,
+            'options' => ['s' => 'Small', 'm' => 'Medium', 'l' => 'Large'],
+        ]);
+
+        $this->assertSame(3, substr_count($html, 'type="radio"'));
+        $this->assertSame(3, substr_count($html, 'onclick="return false;"'));
+        $this->assertMatchesRegularExpression('/value="m"\s+type="radio"\s+checked/', $html);
     }
 
     public function test_partial_fields_render_app_partials_with_the_form_model(): void

@@ -132,7 +132,7 @@
             Read-only fields
         </h2>
         <p class="fg-3">
-            <code>readOnly</code> stops a field from being changed while still posting its value, so it saves. Checkboxes and switches ignore clicks, and a dropdown shows its value as text.
+            <code>readOnly</code> stops a field from being changed while still posting its value, so it saves. Checkboxes, switches and radio lists ignore clicks, Select All and Select None leave a checkbox list alone, and a dropdown shows its value as text.
         </p>
         @include('reference._form_example', ['name' => 'read-only'])
     </section>
