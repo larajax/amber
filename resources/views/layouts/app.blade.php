@@ -38,6 +38,7 @@
         <script src="{{ asset('vendor/larajax/framework-bundle.js') }}"></script>
         <script type="module" src="{{ asset('vendor/larajax/ui/ui.js') }}"></script>
         <script src="{{ asset('js/amber.js') }}" defer></script>
+        <script type="module" src="{{ asset('js/code-blocks.js') }}"></script>
 
         {{-- Assets added by custom widgets; the page content renders before this layout, so its widgets are included --}}
         {{ Ui::renderAssets() }}

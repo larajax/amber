@@ -18,7 +18,10 @@
     <h1 class="mb-0">
         {{ $referencePage['label'] }}
     </h1>
-    {{ Ui::button(label: 'Docs', href: $referenceDocsUrl, icon: 'ph ph-book-open', target: '_blank', rel: 'noopener', class: 'reference-docs-button') }}
+    <div class="reference-title-actions">
+        {{ Ui::button(label: 'Show code', icon: 'ph ph-code', class: 'reference-code-toggle', dataCodeToggle: true, ariaPressed: 'false') }}
+        {{ Ui::button(label: 'Docs', href: $referenceDocsUrl, icon: 'ph ph-book-open', target: '_blank', rel: 'noopener', class: 'reference-docs-button') }}
+    </div>
 </div>
 
 @isset($intro)

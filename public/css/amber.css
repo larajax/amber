@@ -282,23 +282,72 @@
         }
     }
 
+    /* Source blocks are details elements whose summary is the file path, collapsed until opened */
     .ui-example-source {
         border-top: 1px solid var(--amber-border);
         background: var(--amber-canvas);
 
         pre {
             margin: 0;
-            padding: 1rem 1.5rem;
+            padding: 0 1.5rem 1rem;
             overflow-x: auto;
             font-size: 13px;
             line-height: 1.6;
+            background: transparent;
+        }
+
+        &[open] .ui-example-chevron {
+            transform: rotate(90deg);
         }
     }
 
     .ui-example-caption {
-        padding: 0.75rem 1.5rem 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.25rem 0.5rem;
+        padding: 0.75rem 1.5rem;
         font-size: 13px;
         color: var(--amber-muted);
+        cursor: pointer;
+        list-style: none;
+        user-select: none;
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        &:hover {
+            color: var(--amber-text);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--amber-brand);
+            outline-offset: -2px;
+        }
+    }
+
+    .ui-example-chevron {
+        transition: transform 0.15s ease;
+    }
+
+    /* Highlighted code carries both theme palettes as variables, and the page theme picks one */
+    .ui-example-source .shiki span {
+        color: var(--shiki-light);
+    }
+
+    [data-bs-theme="dark"] & .ui-example-source .shiki span {
+        color: var(--shiki-dark);
+    }
+
+    .reference-title-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .reference-code-toggle[aria-pressed="true"] {
+        border-color: var(--amber-brand);
+        color: var(--amber-brand);
     }
 
     .ui-field-grid {

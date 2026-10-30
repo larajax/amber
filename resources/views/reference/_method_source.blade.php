@@ -7,11 +7,4 @@
     $sourceCode = preg_replace('/^    /m', '', rtrim(implode('', $sourceLines)));
     $sourcePath = str_replace(DIRECTORY_SEPARATOR, '/', substr($sourceMethod->getFileName(), strlen(base_path()) + 1));
 @endphp
-<div class="ui-example-source">
-    <div class="ui-example-caption">
-        <code>
-            {{ $sourcePath }}
-        </code>
-    </div>
-    <pre><code>{{ $sourceCode }}</code></pre>
-</div>
+@include('reference._code', ['path' => $sourcePath, 'code' => $sourceCode, 'fragment' => true])
