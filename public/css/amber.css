@@ -70,7 +70,9 @@
         min-height: 100vh;
     }
 
+    /* Tabs read --tab-surface to blend the active tab into whatever they sit on */
     .app-main {
+        --tab-surface: var(--amber-canvas);
         grid-column: 2;
         grid-row: 2;
         min-width: 0;
@@ -259,6 +261,7 @@
     }
 
     .ui-example {
+        --tab-surface: var(--amber-surface);
         overflow: hidden;
         border: 1px solid var(--amber-border);
         border-radius: 8px;
