@@ -1,0 +1,3 @@
+# Run the package scripts on Bun's own runtime, so `bun run dev` works without Node 18 or newer
+[run]
+bun = true

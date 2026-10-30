@@ -23,6 +23,7 @@ class UserGroup extends Model
         'users' => [User::class, 'table' => 'user_user_group'],
     ];
 
+    // #region docs-without-guest
     /**
      * Exclude the built-in "guest" group. Used by the relation fields so a user
      * cannot be assigned to the guest pseudo-group.
@@ -31,4 +32,5 @@ class UserGroup extends Model
     {
         return $query->where('code', '<>', 'guest');
     }
+    // #endregion docs-without-guest
 }

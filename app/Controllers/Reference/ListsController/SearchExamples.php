@@ -41,6 +41,7 @@ trait SearchExamples
         ];
     }
 
+    // #region docs-tag-search
     /**
      * makeTagSearch is a search box on its own, which updates the tag results through its search.submit event.
      */
@@ -69,7 +70,9 @@ trait SearchExamples
             'term' => $term,
         ])->render();
     }
+    // #endregion docs-tag-search
 
+    // #region docs-bound
     /**
      * makeSearchedList builds a list of posts for a toolbar search to search.
      */
@@ -99,7 +102,9 @@ trait SearchExamples
 
         return $toolbar;
     }
+    // #endregion docs-bound
 
+    // #region docs-scope
     /**
      * makeScopeToolbar searches the given list through the post model's applySearch scope.
      */
@@ -117,7 +122,9 @@ trait SearchExamples
 
         return $toolbar;
     }
+    // #endregion docs-scope
 
+    // #region docs-mode
     /**
      * makeModeToolbar finds the posts matching any of the words.
      */
@@ -135,7 +142,9 @@ trait SearchExamples
 
         return $toolbar;
     }
+    // #endregion docs-mode
 
+    // #region docs-search-on-enter
     /**
      * makeEnterToolbar searches when Enter is pressed, in a box that keeps its width.
      */
@@ -154,7 +163,9 @@ trait SearchExamples
 
         return $toolbar;
     }
+    // #endregion docs-search-on-enter
 
+    // #region docs-search-cities
     /**
      * onSearchCities filters the city list by the search input and updates the results.
      */
@@ -187,4 +198,5 @@ trait SearchExamples
             'Melbourne', 'Montreal', 'Osaka', 'Paris', 'Perth', 'Seoul', 'Sydney', 'Toronto', 'Vancouver',
         ];
     }
+    // #endregion docs-search-cities
 }

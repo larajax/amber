@@ -33,6 +33,7 @@ class User extends Authenticatable implements SortableInterface
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    // #region docs-casts
     /**
      * The attributes that should be cast.
      *
@@ -48,7 +49,9 @@ class User extends Authenticatable implements SortableInterface
             'is_two_factor_enabled' => 'boolean',
         ];
     }
+    // #endregion docs-casts
 
+    // #region docs-eloquent-relations
     /**
      * The primary group this user belongs to (belongs-to relation, rendered by
      * the "Primary Group" relation field on the form).
@@ -66,7 +69,9 @@ class User extends Authenticatable implements SortableInterface
     {
         return $this->belongsToMany(UserGroup::class, 'user_user_group');
     }
+    // #endregion docs-eloquent-relations
 
+    // #region docs-apply-domain
     /**
      * Filter users by email domain, used by the "Email Domain" scope on the Filter Options reference page.
      */
@@ -74,7 +79,9 @@ class User extends Authenticatable implements SortableInterface
     {
         return $query->where('email', 'like', '%@'.$scope->value);
     }
+    // #endregion docs-apply-domain
 
+    // #region docs-search-scope
     /**
      * Search users by the start of their name or email, used as a record finder's searchScope on the Record Finder reference page.
      *
@@ -86,7 +93,9 @@ class User extends Authenticatable implements SortableInterface
             $query->where('name', 'like', $term.'%')->orWhere('email', 'like', $term.'%');
         });
     }
+    // #endregion docs-search-scope
 
+    // #region docs-name-group-options
     /**
      * Options for the "Name" group filter scope.
      *
@@ -96,6 +105,7 @@ class User extends Authenticatable implements SortableInterface
     {
         return static::query()->orderBy('name')->pluck('name', 'name')->all();
     }
+    // #endregion docs-name-group-options
 
     /**
      * The posts this user wrote, a has-many relation to a Rain model counted by the authors list.
@@ -113,6 +123,7 @@ class User extends Authenticatable implements SortableInterface
         return $query->has('posts');
     }
 
+    // #region docs-sortable-order
     /**
      * Persist a new record ordering. Called by the ListStructure widget when
      * rows are dragged into a new order.
@@ -132,4 +143,5 @@ class User extends Authenticatable implements SortableInterface
             });
         }
     }
+    // #endregion docs-sortable-order
 }

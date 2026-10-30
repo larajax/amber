@@ -19,6 +19,7 @@ trait PostList
      */
     public ?Lists $listWidget = null;
 
+    // #region docs-prepare-list
     /**
      * prepareListVars builds the list, filter and toolbar, bound together, for the index view.
      *
@@ -46,7 +47,9 @@ trait PostList
             'toolbar' => $toolbar,
         ];
     }
+    // #endregion docs-prepare-list
 
+    // #region docs-make-list
     /**
      * makeListWidget builds the paginated list of posts, newest first, with a setup popup for columns and page size.
      */
@@ -64,7 +67,9 @@ trait PostList
             noRecordsMessage: 'No posts match the search and filters.',
         );
     }
+    // #endregion docs-make-list
 
+    // #region docs-filter-toolbar
     /**
      * makeFilterWidget builds the filter scopes for the posts list.
      */
@@ -90,7 +95,9 @@ trait PostList
             setupHandler: $list->getEventHandler('onLoadSetup'),
         );
     }
+    // #endregion docs-filter-toolbar
 
+    // #region docs-bulk-actions
     /**
      * onBulkPublish publishes the checked posts, stamping a publish date on those without one.
      */
@@ -141,4 +148,5 @@ trait PostList
     {
         return array_map('intval', array_filter((array) input('checked'), 'is_numeric'));
     }
+    // #endregion docs-bulk-actions
 }

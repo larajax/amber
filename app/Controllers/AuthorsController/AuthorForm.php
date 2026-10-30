@@ -69,6 +69,7 @@ trait AuthorForm
         );
     }
 
+    // #region docs-save-form
     /**
      * saveForm validates the form data here, since the Eloquent model has no rules of its own, and saves it onto the given author.
      */
@@ -91,6 +92,7 @@ trait AuthorForm
             unset($data['password']);
         }
 
+        // #region docs-eloquent-relation-save
         // The belongs-to field posts under its relation name, so it maps onto the foreign key
         if (array_key_exists('primary_group', $data)) {
             $data['primary_group_id'] = $data['primary_group'] ?: null;
@@ -106,5 +108,7 @@ trait AuthorForm
         if ($hasOtherGroups) {
             $user->groups()->sync($otherGroups);
         }
+        // #endregion docs-eloquent-relation-save
     }
+    // #endregion docs-save-form
 }

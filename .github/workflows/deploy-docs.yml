@@ -4,6 +4,12 @@ on:
         branches: [ main ]
         paths:
             - 'docs/**'
+            # The docs import their code samples from the demo app
+            - 'app/**'
+            - 'resources/**'
+            - 'routes/**'
+            - 'database/**'
+            - 'public/**'
     workflow_dispatch:
 
 jobs:
@@ -26,7 +32,7 @@ jobs:
             - run: npm run build
 
             - name: Add CNAME
-              run: echo "amber.larajax.org" > .vitepress/dist/CNAME
+              run: echo "ui.larajax.org" > .vitepress/dist/CNAME
 
             - name: Deploy to GitHub Pages
               uses: peaceiris/actions-gh-pages@v4

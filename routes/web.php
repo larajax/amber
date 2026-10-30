@@ -26,9 +26,11 @@ Route::get('/', fn () => redirect('reference'));
 | the same URL serves the page (GET) and the widget AJAX handlers (POST).
 |
 */
+// #region docs-post-routes
 Route::match(['get', 'post'], '/posts', [PostsController::class, 'index'])->name('posts.index');
 Route::match(['get', 'post'], '/posts/create', [PostsController::class, 'create'])->name('posts.create');
 Route::match(['get', 'post'], '/posts/{post}/edit', [PostsController::class, 'edit'])->name('posts.edit');
+// #endregion docs-post-routes
 
 /*
 |--------------------------------------------------------------------------

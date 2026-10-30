@@ -37,6 +37,7 @@ trait SeamWidgets
         $timezoneFilter->bindToListWidget($timezoneList);
 
         return [
+            // #region docs-path-widgets
             'pathToolbar' => Toolbar::make(alias: 'pathToolbar', buttons: "{$folder}/path-buttons.yaml"),
             'pathList' => Lists::make(
                 alias: 'pathList',
@@ -45,6 +46,7 @@ trait SeamWidgets
                 recordUrl: 'samples/:id/edit',
                 recordsPerPage: 5,
             ),
+            // #endregion docs-path-widgets
             'linkToolbar' => Toolbar::make(alias: 'linkToolbar', buttons: "{$folder}/link-buttons.yaml"),
             'linkList' => Lists::make(
                 alias: 'linkList',

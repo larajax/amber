@@ -20,6 +20,12 @@
 
 return [
 
+    /*
+     * The documentation site, where docs/{group}/{page}.md explains each reference page and its
+     * sections carry the same anchors as the page's examples.
+     */
+    'docs_url' => 'https://ui.larajax.org',
+
     'groups' => [
 
         'lists' => [

@@ -5,7 +5,7 @@ fields:
         searching: true
         csvExport: true
         csvImport: true
-        comment: Search filters the rows, Export downloads them as CSV, and Import adds the rows of a CSV file.
+        comment: Search highlights the matching cells, Export downloads the rows as CSV, and Import adds the rows of a CSV file.
         columns:
             name:
                 title: Name

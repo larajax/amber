@@ -34,6 +34,7 @@ class FormsController extends ReferenceControllerBase
         return view('reference.forms.fields', $this->exampleVars());
     }
 
+    // #region docs-layout-action
     /**
      * layout displays the Layout page, where the horizontal and survey examples set their form options on the widget.
      */
@@ -55,7 +56,9 @@ class FormsController extends ReferenceControllerBase
             ]),
         ]);
     }
+    // #endregion docs-layout-action
 
+    // #region docs-behaviour-action
     /**
      * behaviour displays the Behaviour page, where the context, default and preset examples also edit a new record.
      */
@@ -74,4 +77,5 @@ class FormsController extends ReferenceControllerBase
             ]),
         ]);
     }
+    // #endregion docs-behaviour-action
 }

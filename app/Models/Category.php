@@ -9,6 +9,7 @@ use October\Rain\Database\Model;
 use October\Rain\Database\Traits\NestedTree;
 use October\Rain\Database\Traits\Validation;
 
+// #region docs-nested-tree
 /**
  * Category is a post category stored as a nested set tree, so the list structure can display, nest and reorder it.
  */
@@ -19,6 +20,7 @@ class Category extends Model
     use HasFactory;
     use NestedTree;
     use Validation;
+    // #endregion docs-nested-tree
 
     /**
      * @var array<string, mixed> rules for validation, where the unique rule ignores the record being updated.
@@ -35,6 +37,7 @@ class Category extends Model
         'posts' => Post::class,
     ];
 
+    // #region docs-has-posts
     /**
      * scopeHasPosts limits the query to categories holding at least one post, used by the posts category filter.
      */
@@ -42,6 +45,7 @@ class Category extends Model
     {
         return $query->has('posts');
     }
+    // #endregion docs-has-posts
 
     /**
      * hasPostsInTree checks whether this category or any category below it holds a post.

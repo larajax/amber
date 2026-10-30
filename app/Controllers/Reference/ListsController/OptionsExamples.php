@@ -41,6 +41,7 @@ trait OptionsExamples
         ];
     }
 
+    // #region docs-sorting
     /**
      * makeSortingList starts with the most viewed posts until a header is clicked.
      */
@@ -55,7 +56,9 @@ trait OptionsExamples
             customPageName: false,
         );
     }
+    // #endregion docs-sorting
 
+    // #region docs-pagination
     /**
      * makePagedList shows five posts a page, with the page number in the address.
      */
@@ -69,7 +72,9 @@ trait OptionsExamples
             customPageName: 'postsPage',
         );
     }
+    // #endregion docs-pagination
 
+    // #region docs-simple-pagination
     /**
      * makeSimplePagedList pages without counting the records.
      */
@@ -84,7 +89,9 @@ trait OptionsExamples
             customPageName: false,
         );
     }
+    // #endregion docs-simple-pagination
 
+    // #region docs-setup
     /**
      * makeSetupList lets the visitor pick the columns and the page size.
      */
@@ -111,7 +118,9 @@ trait OptionsExamples
             setupHandler: $list->getEventHandler('onLoadSetup'),
         );
     }
+    // #endregion docs-setup
 
+    // #region docs-checkboxes
     /**
      * makeCheckboxList adds a checkbox to each row.
      */
@@ -149,7 +158,9 @@ trait OptionsExamples
 
         return $toolbar;
     }
+    // #endregion docs-checkboxes
 
+    // #region docs-searchable
     /**
      * makeSearchableList searches the columns marked searchable.
      */
@@ -179,7 +190,9 @@ trait OptionsExamples
 
         return $toolbar;
     }
+    // #endregion docs-searchable
 
+    // #region docs-record-url
     /**
      * makeRecordUrlList links each row to the post's edit page.
      */
@@ -194,7 +207,9 @@ trait OptionsExamples
             customPageName: false,
         );
     }
+    // #endregion docs-record-url
 
+    // #region docs-popup
     /**
      * makePopupList opens each category in a popup, showing every category on one page.
      */
@@ -207,7 +222,9 @@ trait OptionsExamples
             recordOnClick: 'popup',
         );
     }
+    // #endregion docs-popup
 
+    // #region docs-row-events
     /**
      * makeRowEventsList fades the archived posts and leaves them out of the row link.
      */
@@ -232,7 +249,9 @@ trait OptionsExamples
 
         return $list;
     }
+    // #endregion docs-row-events
 
+    // #region docs-checked-posts
     /**
      * onShowCheckedPosts names the posts checked in the list, as sent by the toolbar button.
      */
@@ -242,7 +261,9 @@ trait OptionsExamples
 
         return ajax()->flash('info', $titles->count().' '.Str::plural('post', $titles->count()).' checked: '.$titles->implode(', ').'.');
     }
+    // #endregion docs-checked-posts
 
+    // #region docs-popup-form
     /**
      * onLoadPopupForm shows the category of the clicked row, as the handler the popup record click opens.
      */
@@ -252,7 +273,9 @@ trait OptionsExamples
             'category' => Category::with('posts')->findOrFail(input('form_record_id')),
         ])->render();
     }
+    // #endregion docs-popup-form
 
+    // #region docs-rowlink-handlers
     /**
      * onLoadRowDialog shows the dialog opened by the popup row of the row link table.
      */
@@ -268,4 +291,5 @@ trait OptionsExamples
     {
         return ajax()->flash('info', 'The row ran an AJAX handler.');
     }
+    // #endregion docs-rowlink-handlers
 }

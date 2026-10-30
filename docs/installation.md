@@ -1,45 +1,47 @@
 ---
-subtitle: Get Amber installed in a Laravel application.
+subtitle: Add Larajax UI to a Laravel application.
 ---
 # Installation
 
-Amber is a standalone library that renders forms, lists and filters from YAML configuration. It is the
-same widget engine that powers the October CMS admin panel, packaged so it can run in any Laravel
-application. This page gets it installed and wired into a layout.
+Larajax UI renders forms, lists and filters from YAML configuration in any Laravel application. This
+page installs it and wires it into a layout and a controller, using the demo app's own files as the
+example.
 
-## Requirements
+## Requirements {#requirements}
 
 - PHP 8.2 or higher
 - Laravel 12 or higher
-- [october/rain](https://github.com/octobercms/library) - provides the underlying database, validation
-  and HTML helpers Amber builds on
-- [larajax/larajax](https://larajax.org) - provides the view component interface that Amber widgets
-  implement, and the `window.jax` browser API their controls register against
-- [Bootstrap 6](https://getbootstrap.com) - Amber's styles layer over Bootstrap's, and its menus use
-  Bootstrap's data API. Load the Bootstrap CSS and its JavaScript module in your layout before
-  Amber's assets (see [Bootstrap 6](#bootstrap-6) below).
+- [october/rain](https://github.com/octobercms/library), which provides the database, validation and
+  HTML helpers the library builds on. Composer installs it with the library.
+- [larajax/larajax](https://larajax.org), which provides the view component interface the widgets
+  implement, and the `window.jax` browser API their controls register with. Composer installs it with
+  the library.
+- [Bootstrap 6](https://getbootstrap.com). The library's styles layer over Bootstrap's, and its menus
+  use Bootstrap's data API. Load Bootstrap's stylesheet and JavaScript module in your layout before the
+  library's assets (see [Bootstrap 6](#bootstrap-6) below).
 
-You do not need October CMS itself. Amber runs against a plain Laravel install.
+Larajax UI runs against a plain Laravel install, with no CMS. File uploads also need a file model and
+two database tables, described in [file attachments](/guides/models#file-attachments).
 
-### Bootstrap 6
+### Bootstrap 6 {#bootstrap-6}
 
-Amber targets Bootstrap `6.0.0-alpha.1`. Bootstrap 6 is still an alpha release, so its class names
-and tokens may change before the stable version, and a few things follow from it:
+The library targets Bootstrap `6.0.0-alpha.1`. Bootstrap 6 is still an alpha release, so its class
+names and tokens may change before the stable version, and a few things follow from it:
 
-- **Modern browsers only.** Bootstrap 6 needs Chrome or Edge 130, Firefox 132 or Safari 18 and
-  newer, with no fallbacks below that.
-- **ES modules only.** Bootstrap's JavaScript loads with `<script type="module">` or an `import` in
-  your bundle. There is no `window.bootstrap` global, and Amber does not need one.
-- **Amber owns its popups.** A popup is Amber's own native `<dialog>`, styled with Bootstrap's
-  `dialog-*` classes, so it needs no Bootstrap JavaScript. Menus open through Bootstrap's
+- **Modern browsers only.** Bootstrap 6 needs Chrome or Edge 130, Firefox 132 or Safari 18 and newer,
+  with no fallbacks below that.
+- **ES modules only.** Bootstrap's JavaScript loads with `<script type="module">` or an `import` in your
+  bundle. There is no `window.bootstrap` global, and the library does not need one.
+- **The library owns its popups.** A popup is the library's own native `<dialog>`, styled with
+  Bootstrap's `dialog-*` classes, so it needs no Bootstrap JavaScript. Menus open through Bootstrap's
   `data-bs-toggle="menu"` data API, which the Bootstrap module provides.
-- **Set the colour mode on `<html>`.** Bootstrap follows the operating system's light or dark
-  preference when no `data-bs-theme` attribute is set, but Amber's palette follows the attribute. Set
+- **Set the colour mode on `<html>`.** Bootstrap follows the operating system's light or dark preference
+  when no `data-bs-theme` attribute is set, but the library's palette follows the attribute. Set
   `data-bs-theme="light"` or `data-bs-theme="dark"` on `<html>` before the page paints, from a saved
-  choice or the system preference, as in Bootstrap's
-  [color modes guide](https://getbootstrap.com/docs/6.0/customize/color-modes/).
+  choice or the system preference, as the demo app's layout does [below](#include-the-assets) and as in
+  Bootstrap's [color modes guide](https://getbootstrap.com/docs/6.0/customize/color-modes/).
 
-## Install the package
+## Install the package {#install-the-package}
 
 Require the package with Composer:
 
@@ -47,54 +49,54 @@ Require the package with Composer:
 composer require larajax/ui
 ```
 
-The package registers its `UiServiceProvider` automatically through Laravel's package discovery, so
-there is no provider to add by hand.
+The package registers its `UiServiceProvider` through Laravel's package discovery, so there is no
+provider to add by hand.
 
-## Publish the assets
+## Publish the assets {#publish-the-assets}
 
-Amber widgets load a small CSS + JS bundle in the browser. It is **plain CSS and ES modules - there is
-no build step**. The package's `resources/assets` directory is the browser-consumable root; publishing
-copies it verbatim, so the published paths always match the source paths. Publish once after
-installing, and again after upgrading:
+The widgets load a small CSS and JS bundle in the browser. It is **plain CSS and ES modules, with no
+build step**. The package's `resources/assets` directory is the browser-ready root, and publishing
+copies it as it is, so the published paths always match the source paths. Publish the library's assets
+and Larajax's once after installing, and again after upgrading:
 
 ```bash
+php artisan vendor:publish --tag=larajax-assets
 php artisan vendor:publish --tag=larajax-ui-assets
 ```
 
-The files are copied into `public/vendor/larajax/ui/`.
+The files are copied into `public/vendor/larajax/` and `public/vendor/larajax/ui/`. The demo app runs
+both commands with `--force` from the `post-autoload-dump` scripts in its `composer.json`, so every
+`composer install` and `composer update` republishes them.
 
-## Include the assets in your layout
+## Include the assets in your layout {#include-the-assets}
 
-Add the stylesheets and scripts to your Blade layout. Bootstrap's stylesheet comes before Amber's, so
-Amber's rules layer over it. Larajax must load **before** Amber's script, because Amber widgets
-register their controls against the `window.jax` API it exposes. Use the larajax **bundle** build - the
-plain `framework.js` build does not include the control API (`jax.registerControl`) that Amber
-requires.
+Add the stylesheets and scripts to your Blade layout. This is the demo app's layout:
 
-```blade
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="{{ asset('vendor/larajax/ui/ui.css') }}">
-<script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('vendor/larajax/framework-bundle.js') }}"></script>
-<script type="module" src="{{ asset('vendor/larajax/ui/ui.js') }}"></script>
-```
+<<< @/../resources/views/layouts/app.blade.php{blade}
 
-That is everything the browser needs. Beyond Bootstrap and Larajax, Amber ships no framework
-dependency - the CSS and JS are self-contained.
+The order matters:
 
-If you write your own widgets that load extra files with `addJs()` or `addCss()` in `loadAssets()`,
-print them at the end of `<head>`. AJAX responses carry the same files when a widget is created
-during a request, and the browser skips files the page head already has.
+- Bootstrap's stylesheet comes before `ui.css`, so the library's rules layer over it.
+- Larajax's `framework-bundle.js` loads **before** `ui.js`, because the widgets register their controls
+  with the `window.jax` API it creates. Use the **bundle** build: the plain `framework.js` build does
+  not include the control API (`jax.registerControl`) the library needs.
+- Bootstrap's JavaScript module opens the menus.
+- `Ui::renderAssets()` prints, at the end of `<head>`, any files that widgets add during the request,
+  such as a [custom widget](/extending/custom-widgets) that loads its own script with `addJs()`. It works
+  in the layout because the page content renders before the layout does. AJAX responses carry the same
+  files when a widget is created during a request, and the browser skips files it already has. See
+  [printing the assets](/extending/custom-widgets#render-assets).
 
-```blade
-{{ \Larajax\Ui\Facades\Ui::renderAssets() }}
-```
+The rest belongs to the demo: the script at the top sets the colour mode before the page paints, the
+Phosphor icon font draws the icons (the library's built-in icons use Phosphor unless you choose
+[another pack](/extending/icons)), and `amber.css` and `amber.js` style and drive the demo's own
+sidebar and top bar. Beyond Bootstrap and Larajax, the library has no framework dependency.
 
-### Using with Vite
+### Using with Vite {#using-with-vite}
 
 If your application already runs a [Vite](https://laravel.com/docs/vite) pipeline, you can skip
-publishing entirely and import the entries straight from the vendor directory - the source tree
-resolves the same way the published tree does:
+publishing the library's assets and import the entries straight from the vendor directory. The source
+tree resolves the same way the published tree does:
 
 ```js
 // resources/js/app.js
@@ -106,147 +108,81 @@ import '../../vendor/larajax/ui/resources/assets/ui.js';
 @import '../../vendor/larajax/ui/resources/assets/ui.css';
 ```
 
-Vite bundles Amber into your application build. Larajax must still load before your bundle runs, and
-Bootstrap's stylesheet before `ui.css`.
+Vite then bundles the library into your application build. Larajax must still load before your bundle
+runs, and Bootstrap's stylesheet before `ui.css`.
 
-## Prepare your controller
+## Prepare your controller {#prepare-your-controller}
 
-Amber widgets are [Larajax view components](https://larajax.org/guide/defining-components.html), so their
-AJAX handlers (uploads, validation, partial reloads) are wired up automatically when the controller
-extends the Larajax controller. Extend `Larajax\LarajaxController` - directly, or through a base class of
-your own - and include Amber's `ViewMaker` trait, which lets widgets resolve partials through the
-controller (toolbar buttons, hint fields, partial columns):
+The widgets are [Larajax view components](https://larajax.org/guide/defining-components.html), so their
+AJAX handlers (uploads, validation, partial reloads) reach your code when the controller extends the
+Larajax controller. Extend `Larajax\LarajaxController`, directly or through a base class of your own, and
+include the library's `ViewMaker` trait, which lets widgets render partials through the controller, such
+as toolbar buttons, partial columns and hint fields. The demo app's controllers extend this base class:
 
-```php
-namespace App\Controllers;
+<<< @/../app/Classes/ControllerBase.php
 
-use Larajax\LarajaxController;
+## Routes {#routes}
 
-abstract class ControllerBase extends LarajaxController
-{
-    use \Larajax\Ui\Traits\ViewMaker;
-}
+A page and its widgets' AJAX requests share one address: the page loads with GET, and each AJAX request
+is a POST to the same URL, which runs the same action. Each page route accepts both:
+
+<<< @/../routes/web.php#docs-post-routes{php}
+
+The [AJAX guide](/guides/ajax) explains the request lifecycle.
+
+## Render your first form {#render-your-first-form}
+
+Describe the form in a YAML file. The demo app keeps its definitions in `resources/ui`, one folder per
+model, and the group form has four fields:
+
+<<< @/../resources/ui/user_group/fields.yaml
+
+The controller's `create` and `edit` actions build the form for their record and pass it to the view:
+
+<<< @/../app/Controllers/GroupsController.php
+
+`makeFormWidget()` builds the form with `Form::make()`, binding it to the model. A path starting with
+`~/` resolves from the application root:
+
+<<< @/../app/Controllers/GroupsController/GroupForm.php#docs-make-form{php}
+
+The view wraps the widget in a `<form>` element whose `data-request` names the handler that saves it,
+and adds the buttons:
+
+<<< @/../resources/views/groups/edit.blade.php{blade}
+
+That is a complete, working form: the fields render from YAML, show the group's values, and post back
+to the `onUpdate` handler through Larajax. [Building a Form Page](/guides/forms) covers saving,
+validation and the rest.
+
+## Organising a controller {#organising-a-controller}
+
+As a controller grows, keep the class to its page actions, as `GroupsController` does above, and move
+each widget's setup into a trait, together with the AJAX handlers that belong to it, in a folder named
+after the controller. The posts pages have three:
+
+```text
+app/Controllers/PostsController.php
+app/Controllers/PostsController/PostList.php        the list, filter and toolbar, and the bulk actions
+app/Controllers/PostsController/PostForm.php        the form, and the store, update and destroy handlers
+app/Controllers/PostsController/QuickPostForm.php   the quick post popup and its handler
 ```
 
-## Render your first form
+Each trait is plain code you own. It declares the widget properties it uses, builds its widgets with
+`Form::make()`, `Lists::make()` and the others, and holds their handlers. The traits share one class, so
+give each method a name that says which concern it belongs to, such as `makeListWidget()` and
+`makeQuickPostFormWidget()`. The [form guide](/guides/forms) walks through `PostForm`, and the
+[list guide](/guides/lists) through `PostList` and `QuickPostForm`.
 
-Describe the form in a YAML file. Paths beginning with `~/` resolve from the application root:
+## Timezones {#timezones}
 
-```yaml
-# resources/amber/user/fields.yaml
-fields:
-    name:
-        label: Name
-        type: text
-    email:
-        label: Email Address
-        type: email
-```
-
-Build the widget inline in a controller action with `Form::make(...)`, bind it to a model, and pass it to
-the view:
-
-```php
-namespace App\Controllers;
-
-use App\Models\User;
-use Larajax\Ui\Widgets\Form;
-
-class UserController extends ControllerBase
-{
-    public function edit($id)
-    {
-        $widget = Form::make(
-            alias: 'form',
-            model: User::findOrFail($id),
-            fields: '~/resources/amber/user/fields.yaml',
-        );
-
-        return view('users.edit', ['widget' => $widget]);
-    }
-}
-```
-
-Render it in the view. Wrap it in a `<form>` element and add your own submit control:
-
-```blade
-<form>
-    {{ $widget }}
-
-    <button type="submit">Save</button>
-</form>
-```
-
-That is a complete, working Amber form: the fields render from YAML, bind to the model's attributes, and
-post back through Larajax.
-
-## Organising a controller
-
-As a controller grows, keep the class to its page actions and move each widget's setup, together with
-the AJAX handlers that belong to it, into a trait in a folder named after the controller:
-
-```
-app/Controllers/UsersController.php
-app/Controllers/UsersController/UserList.php    list, filter and toolbar, plus the bulk delete handler
-app/Controllers/UsersController/UserForm.php    the form, saving, and the store, update and destroy handlers
-```
-
-The controller then reads as a list of its pages:
-
-```php
-namespace App\Controllers;
-
-use App\Controllers\UsersController\UserForm;
-use App\Controllers\UsersController\UserList;
-use App\Models\User;
-
-class UsersController extends ControllerBase
-{
-    use UserList;
-    use UserForm;
-
-    public function index()
-    {
-        return view('users.index', $this->prepareListVars());
-    }
-
-    public function edit(User $user)
-    {
-        $this->formWidget = $this->makeFormWidget($user, 'update');
-
-        return view('users.edit', ['user' => $user, 'formWidget' => $this->formWidget]);
-    }
-}
-```
-
-Each trait is plain code you own: it declares the widget properties it uses, builds its widgets with
-`Form::make()`, `Lists::make()` and friends, and holds its handlers. The traits share one class, so give
-methods a name that says which concern they belong to (`makeListWidget()`, `makeRelationListWidget()`),
-and add a relation trait the same way once a controller manages related records.
-
-## Timezones
-
-Dates are stored in the application timezone (`app.timezone`). To show them in each person's own
-timezone, tell Amber how to find it, usually in a service provider's `boot` method:
-
-```php
-use Larajax\Ui\Facades\Ui;
-
-Ui::resolveTimezoneUsing(fn () => auth()->user()?->timezone);
-```
-
-Datetime list columns, the datepicker form widget and the date filter then convert between the two:
-values are shown in the user's timezone and saved back in the application timezone. A resolver that
-returns `null` or an unknown timezone keeps the application timezone. `Ui::timezone()` returns the
-resolved timezone for your own views.
-
-Set `useTimezone: false` on a field, column or scope to show the stored value as it is. Date-only and
-time-only pickers are never converted, and `date` and `time` list columns only convert when they set
-`useTimezone: true`.
+Dates are stored in the application timezone. To show them in each person's own timezone, register a
+resolver with `Ui::resolveTimezoneUsing()`, see [timezones](/extending/seams#timezone). The columns,
+fields and scopes that convert, and the `useTimezone` option that turns it off, are listed in
+[timezones in lists, filters and forms](/extending/seams#timezone-lists).
 
 ## Next steps
 
-- [Forms](forms.md) - every field, UI element and widget type available in a form
-- [Lists](lists.md) - render sortable, paginated record lists
-- [Filters](filters.md) - add scope-based filtering to a list
-- [Using Eloquent models](eloquent.md) - drive Amber from plain `Illuminate` models
+- [Building a Form Page](/guides/forms): render, save and validate a form
+- [Building a List Page](/guides/lists): a list with a toolbar and a filter
+- [Models](/guides/models): drive the widgets from Rain or plain Eloquent models

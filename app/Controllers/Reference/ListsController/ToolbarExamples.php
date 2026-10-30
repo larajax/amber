@@ -35,6 +35,7 @@ trait ToolbarExamples
         ];
     }
 
+    // #region docs-toolbar-list
     /**
      * makeToolbarList builds a list of posts with checkboxes for a toolbar to work on.
      */
@@ -50,7 +51,9 @@ trait ToolbarExamples
             customPageName: false,
         );
     }
+    // #endregion docs-toolbar-list
 
+    // #region docs-buttons-toolbar
     /**
      * makeButtonsToolbar declares its buttons in a YAML file and links them to the given list.
      */
@@ -65,7 +68,9 @@ trait ToolbarExamples
 
         return $toolbar;
     }
+    // #endregion docs-buttons-toolbar
 
+    // #region docs-partial-toolbar
     /**
      * makePartialToolbar renders its buttons from a partial and links them to the given list.
      */
@@ -80,7 +85,9 @@ trait ToolbarExamples
 
         return $toolbar;
     }
+    // #endregion docs-partial-toolbar
 
+    // #region docs-search-toolbar
     /**
      * makeSearchToolbar adds a search box and the list setup icon for the given list.
      */
@@ -104,7 +111,9 @@ trait ToolbarExamples
 
         return $toolbar;
     }
+    // #endregion docs-search-toolbar
 
+    // #region docs-overflow-toolbar
     /**
      * makeOverflowToolbar has more buttons than fit its width, each sending its name as request data.
      */
@@ -115,7 +124,9 @@ trait ToolbarExamples
             buttons: '~/resources/ui/reference/lists/toolbar/overflow.yaml',
         );
     }
+    // #endregion docs-overflow-toolbar
 
+    // #region docs-button-handlers
     /**
      * onLoadToolbarDialog returns the dialog opened by the popup buttons.
      */
@@ -153,7 +164,9 @@ trait ToolbarExamples
 
         return ajax()->flash('warning', $count.' '.Str::plural('post', $count).' would be deleted. The reference pages leave the posts in place.');
     }
+    // #endregion docs-button-handlers
 
+    // #region docs-toolbar-button
     /**
      * onToolbarButton names the button that sent the request, from its request data.
      */
@@ -161,4 +174,5 @@ trait ToolbarExamples
     {
         return ajax()->flash('info', 'The '.Str::headline((string) input('button')).' button was clicked.');
     }
+    // #endregion docs-toolbar-button
 }

@@ -29,6 +29,7 @@ trait ListStructureExamples
         ];
     }
 
+    // #region docs-tree
     /**
      * makeTreeList shows the categories as a tree that drags three levels deep at most.
      */
@@ -56,7 +57,9 @@ trait ListStructureExamples
 
         return $toolbar;
     }
+    // #endregion docs-tree
 
+    // #region docs-browse
     /**
      * makeBrowseTree starts with the branches closed and offers no reordering.
      */
@@ -70,7 +73,9 @@ trait ListStructureExamples
             showReorder: false,
         );
     }
+    // #endregion docs-browse
 
+    // #region docs-reorder
     /**
      * makeReorderList shows the users as a flat list, dragged by the handle into a new order.
      */
@@ -84,4 +89,5 @@ trait ListStructureExamples
             dragRow: false,
         );
     }
+    // #endregion docs-reorder
 }

@@ -17,6 +17,7 @@ trait GroupForm
      */
     public ?Form $formWidget = null;
 
+    // #region docs-popup-form
     /**
      * onLoadPopupForm renders a group's form in a popup, as the AJAX handler for the list's popup record click.
      */
@@ -47,6 +48,7 @@ trait GroupForm
             ->flash('success', 'Group updated.')
             ->update($this->listWidget->onRefresh());
     }
+    // #endregion docs-popup-form
 
     /**
      * onStore persists a new group, as the AJAX handler for the create form.
@@ -86,6 +88,7 @@ trait GroupForm
             ->redirect(route('groups.index'));
     }
 
+    // #region docs-make-form
     /**
      * makeFormWidget builds the group form for a given context.
      */
@@ -97,6 +100,7 @@ trait GroupForm
             fields: '~/resources/ui/user_group/fields.yaml',
         );
     }
+    // #endregion docs-make-form
 
     /**
      * saveForm validates the form data and persists it onto the given group.

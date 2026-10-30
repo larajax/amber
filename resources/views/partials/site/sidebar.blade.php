@@ -156,7 +156,7 @@
     <div class="sidebar-support">
         <a
             class="sidebar-nav-link"
-            href="https://amber.larajax.org"
+            href="https://ui.larajax.org"
             target="_blank"
             rel="noopener">
             <i class="ph ph-book-open sidebar-nav-icon" aria-hidden="true"></i>

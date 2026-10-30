@@ -35,6 +35,7 @@ class Post extends Model
     use HasFactory;
     use Validation;
 
+    // #region docs-rules
     /**
      * @var array<string, mixed> rules for validation, where the category rule reads the relation value.
      */
@@ -45,6 +46,7 @@ class Post extends Model
         'status' => 'in:draft,review,approved,archived',
         'views' => 'nullable|integer|min:0',
     ];
+    // #endregion docs-rules
 
     /**
      * @var array<string, mixed> attributes holds the defaults of a new post.
@@ -55,11 +57,14 @@ class Post extends Model
         'views' => 0,
     ];
 
+    // #region docs-jsonable
     /**
      * @var array<int, string> jsonable attributes stored as JSON, filled by the keywords tag list in array mode.
      */
     protected $jsonable = ['keywords'];
+    // #endregion docs-jsonable
 
+    // #region docs-rain-relations
     /**
      * @var array<string, mixed> belongsTo relations, where the author is a plain Eloquent model.
      */
@@ -88,6 +93,7 @@ class Post extends Model
     public $attachOne = [
         'featured_image' => File::class,
     ];
+    // #endregion docs-rain-relations
 
     /**
      * casts returns the attributes that should be cast.
@@ -104,6 +110,7 @@ class Post extends Model
         ];
     }
 
+    // #region docs-list-status-options
     /**
      * listStatusOptions returns the workflow statuses as a label and icon pair, shared by the form, list and filter.
      *
@@ -118,6 +125,7 @@ class Post extends Model
             'archived' => ['Archived', 'ph ph-archive'],
         ];
     }
+    // #endregion docs-list-status-options
 
     /**
      * getStatusOptions supplies the status dropdown and the selectable status column by naming convention.
@@ -155,6 +163,7 @@ class Post extends Model
         return '/'.implode('/', array_filter(['blog', ...$categorySlugs, $this->slug]));
     }
 
+    // #region docs-filter-fields
     /**
      * filterFields fills the read-only permalink field, which the form refreshes when the category or slug changes.
      */
@@ -164,7 +173,9 @@ class Post extends Model
             $fields->_permalink->value = $this->getPermalink();
         }
     }
+    // #endregion docs-filter-fields
 
+    // #region docs-apply-search
     /**
      * scopeApplySearch is the list search scope, matching any word in the searchable columns, the category name or a tag name, or the term in the author name.
      *
@@ -182,9 +193,9 @@ class Post extends Model
                     $query->searchWhere($term, ['name'], 'any');
                 })
                 ->orWhereHas('author', function ($query) use ($term) {
-                    // The author is a plain Eloquent model, which has no searchWhere
-                    $query->where('name', 'like', '%'.$term.'%');
+                    $query->searchWhere($term, ['name'], 'any');
                 });
         });
     }
+    // #endregion docs-apply-search
 }

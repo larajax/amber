@@ -24,6 +24,7 @@ class Sample extends Model
      */
     protected $guarded = ['id'];
 
+    // #region docs-validation-rules
     /**
      * @var array<string, mixed> rules for validation, which also mark the matching form fields as required.
      */
@@ -35,7 +36,9 @@ class Sample extends Model
         'quantity' => 'nullable|integer|between:0,999',
         'discount_percent' => 'nullable|integer|between:1,90',
     ];
+    // #endregion docs-validation-rules
 
+    // #region docs-jsonable
     /**
      * @var array<int, string> jsonable attributes stored as JSON for the structured fields.
      */
@@ -76,7 +79,9 @@ class Sample extends Model
         'seo',
         'packaging',
     ];
+    // #endregion docs-jsonable
 
+    // #region docs-belongs-to
     /**
      * @var array<string, mixed> belongsTo relations, the owner, reviewer, group and category picked by the relation widgets.
      */
@@ -86,7 +91,9 @@ class Sample extends Model
         'primary_group' => UserGroup::class,
         'primary_category' => Category::class,
     ];
+    // #endregion docs-belongs-to
 
+    // #region docs-belongs-to-many
     /**
      * @var array<string, mixed> belongsToMany relations, the groups, categories and labels picked by checkbox and tag lists.
      */
@@ -95,14 +102,18 @@ class Sample extends Model
         'categories' => [Category::class, 'table' => 'category_sample'],
         'labels' => [Tag::class, 'table' => 'sample_tag'],
     ];
+    // #endregion docs-belongs-to-many
 
+    // #region docs-has-many
     /**
      * @var array<string, mixed> hasMany relations, the links the repeater edits as records.
      */
     public $hasMany = [
         'links' => [SampleLink::class, 'delete' => true],
     ];
+    // #endregion docs-has-many
 
+    // #region docs-attachments
     /**
      * @var array<string, mixed> attachOne relations, where the contract is stored privately.
      */
@@ -120,6 +131,7 @@ class Sample extends Model
         'attachments' => File::class,
         'documents' => File::class,
     ];
+    // #endregion docs-attachments
 
     /**
      * casts returns the attribute casts for the switch and checkbox columns.
@@ -134,6 +146,7 @@ class Sample extends Model
         ];
     }
 
+    // #region docs-filter-fields
     /**
      * filterFields adapts the postcode field to the picked country whenever the form renders or refreshes.
      */
@@ -145,7 +158,9 @@ class Sample extends Model
             $fields->postcode->placeholder = $this->country === 'us' ? '10001' : '2000';
         }
     }
+    // #endregion docs-filter-fields
 
+    // #region docs-category-options
     /**
      * getCategoryOptions returns the category choices grouped under option group headings.
      *
@@ -171,7 +186,9 @@ class Sample extends Model
             ],
         ];
     }
+    // #endregion docs-category-options
 
+    // #region docs-level-options
     /**
      * getLevelOptions returns options with icons, colors, comments, a disabled entry and child options.
      *
@@ -202,7 +219,10 @@ class Sample extends Model
             ],
         ];
     }
+    // #endregion docs-level-options
 
+    // #region docs-dependent-options
+    // #region docs-country-options
     /**
      * getCountryOptions returns the countries that start the dependent dropdown chain.
      *
@@ -216,6 +236,7 @@ class Sample extends Model
             'us' => 'United States',
         ];
     }
+    // #endregion docs-country-options
 
     /**
      * getStateOptions returns the states of the picked country, refreshed through dependsOn.
@@ -239,7 +260,9 @@ class Sample extends Model
     {
         return static::listRegions()[$this->country][$this->state]['cities'] ?? [];
     }
+    // #endregion docs-dependent-options
 
+    // #region docs-list-currencies
     /**
      * listCurrencies returns the currency choices, as a static options method named by optionsMethod.
      *
@@ -253,6 +276,7 @@ class Sample extends Model
             'usd' => 'US Dollar',
         ];
     }
+    // #endregion docs-list-currencies
 
     /**
      * listRegions returns the states and cities for each country of the dependent dropdowns.
@@ -277,6 +301,7 @@ class Sample extends Model
         ];
     }
 
+    // #region docs-holiday-dates
     /**
      * getHolidayDates returns the public holidays the end date picker disables, as a static disableDays method.
      *
@@ -292,7 +317,9 @@ class Sample extends Model
             ($year + 1).'-01-01',
         ];
     }
+    // #endregion docs-holiday-dates
 
+    // #region docs-brand-colors
     /**
      * getBrandColors returns the swatches of the brand color picker, named by its availableColors option.
      *
@@ -302,7 +329,9 @@ class Sample extends Model
     {
         return ['#0f766e', '#14b8a6', '#f59e0b', '#be123c'];
     }
+    // #endregion docs-brand-colors
 
+    // #region docs-stockists-options
     /**
      * getStockistsDataTableOptions returns the options of the stockists table's AJAX columns, where the cities follow the row's country.
      *
@@ -321,7 +350,9 @@ class Sample extends Model
 
         return [];
     }
+    // #endregion docs-stockists-options
 
+    // #region docs-owner-scope
     /**
      * applyOwnerScope narrows the owner record finder to verified users, as a static scope method.
      */
@@ -329,4 +360,5 @@ class Sample extends Model
     {
         $query->whereNotNull('email_verified_at');
     }
+    // #endregion docs-owner-scope
 }

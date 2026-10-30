@@ -1,6 +1,6 @@
 {
-    "name": "@larajax/amber-docs",
-    "description": "Official documentation for Amber",
+    "name": "@larajax/ui-docs",
+    "description": "Official documentation for Larajax UI",
     "license": "MIT",
     "author": "Responsiv Pty. Ltd. (trading as October CMS)",
     "private": true,

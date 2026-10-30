@@ -3,57 +3,32 @@
 @section('content')
 
 @include('reference._header', [
-    'intro' => 'The <code>sensitive</code> field keeps a stored secret off the page. It renders a placeholder, fetches the real value over AJAX only when revealed, and saves the stored value again when the placeholder comes back unchanged.',
+    'intro' => 'The <code>sensitive</code> field keeps a stored secret off the page until it is revealed.',
 ])
 
 <form data-request="onSaveExamples" data-request-flash>
     <section class="ui-section" id="default">
-        <h2>
-            Masked value
-        </h2>
-        <p class="fg-3">
-            The input holds <code>__hidden__</code> rather than the secret. The eye button calls the field's <code>onShowValue</code> handler and shows the answer, and typing clears the placeholder for a new value. Change it with <code>hiddenPlaceholder</code>.
-        </p>
+        @include('reference._heading', ['id' => 'default', 'title' => 'Masked value', 'caption' => 'A placeholder in place of the secret, revealed over AJAX.'])
         @include('reference._form_example', ['name' => 'default'])
     </section>
 
     <section class="ui-section" id="allow-copy">
-        <h2>
-            Copy button
-        </h2>
-        <p class="fg-3">
-            <code>allowCopy</code> adds a button that copies the value to the clipboard, revealing it first when needed and hiding it again after.
-        </p>
+        @include('reference._heading', ['id' => 'allow-copy', 'title' => 'Copy button', 'caption' => '<code>allowCopy</code> adds a copy to clipboard button.'])
         @include('reference._form_example', ['name' => 'allow-copy'])
     </section>
 
     <section class="ui-section" id="textarea">
-        <h2>
-            Textarea mode
-        </h2>
-        <p class="fg-3">
-            <code>mode: textarea</code> shows a row of dots in place of a multi-line value, with Reveal Contents and Copy to Clipboard below it.
-        </p>
+        @include('reference._heading', ['id' => 'textarea', 'title' => 'Textarea mode', 'caption' => '<code>mode: textarea</code> for multi-line secrets.'])
         @include('reference._form_example', ['name' => 'textarea'])
     </section>
 
     <section class="ui-section" id="read-only">
-        <h2>
-            Read-only
-        </h2>
-        <p class="fg-3">
-            <code>readOnly</code> disables the input but keeps the reveal and copy buttons, and the value is not posted. A <code>disabled</code> field behaves the same way.
-        </p>
+        @include('reference._heading', ['id' => 'read-only', 'title' => 'Read-only', 'caption' => '<code>readOnly</code> can reveal and copy, but not change.'])
         @include('reference._form_example', ['name' => 'read-only'])
     </section>
 
     <section class="ui-section" id="tab-change">
-        <h2>
-            Hiding on tab change
-        </h2>
-        <p class="fg-3">
-            A revealed value hides again when the browser tab is hidden, so it is not left on screen. <code>hideOnTabChange: false</code> leaves it revealed.
-        </p>
+        @include('reference._heading', ['id' => 'tab-change', 'title' => 'Hiding on tab change', 'caption' => '<code>hideOnTabChange: false</code> keeps a revealed value shown.'])
         @include('reference._form_example', ['name' => 'tab-change'])
     </section>
 

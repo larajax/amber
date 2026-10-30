@@ -3,126 +3,66 @@
 @section('content')
 
 @include('reference._header', [
-    'intro' => 'The <code>Ui</code> facade renders buttons from your views with named arguments. Any argument it does not know becomes an HTML attribute, so <code>dataRequestConfirm</code> renders <code>data-request-confirm</code>.',
+    'intro' => 'The <code>Ui</code> facade renders buttons from named arguments, and any other argument becomes an attribute.',
 ])
 
 <section class="ui-section" id="variants">
-    <h2>
-        Variants
-    </h2>
-    <p class="fg-3">
-        A styling flag picks the solid theme. Without one, the button renders Bootstrap's plain <code>btn</code> class.
-    </p>
+    @include('reference._heading', ['id' => 'variants', 'title' => 'Variants', 'caption' => '<code>primary</code>, <code>secondary</code>, <code>danger</code> and no flag.'])
     @include('reference._example', ['view' => 'reference.ui.examples.button-variants'])
 </section>
 
 <section class="ui-section" id="outline">
-    <h2>
-        Outline, subtle and link
-    </h2>
-    <p class="fg-3">
-        The <code>class</code> argument merges extra classes into the button, so any Bootstrap variant and theme works.
-    </p>
+    @include('reference._heading', ['id' => 'outline', 'title' => 'Outline, subtle and link', 'caption' => 'Bootstrap variants and themes through <code>class</code>.'])
     @include('reference._example', ['view' => 'reference.ui.examples.button-outline'])
 </section>
 
 <section class="ui-section" id="sizes">
-    <h2>
-        Sizes
-    </h2>
-    <p class="fg-3">
-        Size classes go through <code>class</code> too: <code>btn-xs</code>, <code>btn-sm</code> and <code>btn-lg</code>.
-    </p>
+    @include('reference._heading', ['id' => 'sizes', 'title' => 'Sizes', 'caption' => '<code>btn-xs</code>, <code>btn-sm</code> and <code>btn-lg</code> through <code>class</code>.'])
     @include('reference._example', ['view' => 'reference.ui.examples.button-sizes'])
 </section>
 
 <section class="ui-section" id="icons">
-    <h2>
-        With an icon
-    </h2>
-    <p class="fg-3">
-        The <code>icon</code> argument takes icon classes, or a key from the icon pack such as <code>action.delete</code>.
-    </p>
+    @include('reference._heading', ['id' => 'icons', 'title' => 'With an icon', 'caption' => '<code>icon</code> with icon classes or an icon pack key.'])
     @include('reference._example', ['view' => 'reference.ui.examples.button-icons'])
 </section>
 
 <section class="ui-section" id="links">
-    <h2>
-        Links
-    </h2>
-    <p class="fg-3">
-        An <code>href</code> renders an anchor styled as a button.
-    </p>
+    @include('reference._heading', ['id' => 'links', 'title' => 'Links', 'caption' => '<code>href</code> renders an anchor styled as a button.'])
     @include('reference._example', ['view' => 'reference.ui.examples.button-links'])
 </section>
 
 <section class="ui-section" id="attributes">
-    <h2>
-        Attributes
-    </h2>
-    <p class="fg-3">
-        Arguments in camel case render in kebab case. A data attribute set to <code>true</code> renders as <code>"true"</code>, which the framework reads as on, and <code>false</code> leaves it out. Other attributes set to <code>true</code>, such as <code>disabled</code>, repeat their name.
-    </p>
+    @include('reference._heading', ['id' => 'attributes', 'title' => 'Attributes', 'caption' => 'Unknown arguments as attributes: <code>dataRequestFlash</code>, <code>title</code>, <code>disabled</code>.'])
     @include('reference._example', ['view' => 'reference.ui.examples.button-attributes'])
 </section>
 
 <section class="ui-section" id="groups">
-    <h2>
-        Groups and text
-    </h2>
-    <p class="fg-3">
-        A <code>btn-group</code> joins buttons into one bar. A <code>button-text</code> span sets muted text beside a button, such as a cancel link.
-    </p>
+    @include('reference._heading', ['id' => 'groups', 'title' => 'Groups and text', 'caption' => 'A <code>btn-group</code> bar and <code>button-text</code> beside a button.'])
     @include('reference._example', ['view' => 'reference.ui.examples.button-groups'])
 </section>
 
 <section class="ui-section" id="ajax-button">
-    <h2>
-        AJAX button
-    </h2>
-    <p class="fg-3">
-        <code>Ui::ajaxButton()</code> runs a handler on the controller. <code>requestData</code> sends extra values, and <code>dataRequestConfirm</code> asks first.
-    </p>
+    @include('reference._heading', ['id' => 'ajax-button', 'title' => 'AJAX button', 'caption' => '<code>Ui::ajaxButton()</code> with <code>requestData</code> and <code>dataRequestConfirm</code>.'])
     @include('reference._example', ['view' => 'reference.ui.examples.ajax-buttons'])
 </section>
 
 <section class="ui-section" id="loading">
-    <h2>
-        Loading state
-    </h2>
-    <p class="fg-3">
-        <code>dataAttachLoading</code> disables the button and adds a spinner while its request runs.
-    </p>
+    @include('reference._heading', ['id' => 'loading', 'title' => 'Loading state', 'caption' => '<code>dataAttachLoading</code> on a slow request.'])
     @include('reference._example', ['view' => 'reference.ui.examples.button-loading'])
 </section>
 
 <section class="ui-section" id="icon-button">
-    <h2>
-        Icon button
-    </h2>
-    <p class="fg-3">
-        <code>Ui::iconButton()</code> renders the icon alone, with the label as its title. <code>danger</code> turns it red on hover.
-    </p>
+    @include('reference._heading', ['id' => 'icon-button', 'title' => 'Icon button', 'caption' => '<code>Ui::iconButton()</code>, plain and with <code>danger</code>.'])
     @include('reference._example', ['view' => 'reference.ui.examples.icon-buttons'])
 </section>
 
 <section class="ui-section" id="hotkeys">
-    <h2>
-        Hotkeys
-    </h2>
-    <p class="fg-3">
-        A <code>hotkey</code> clicks the button from the keyboard, and hovering shows the shortcut in a tooltip. Try <kbd>Ctrl</kbd> + <kbd>S</kbd>.
-    </p>
+    @include('reference._heading', ['id' => 'hotkeys', 'title' => 'Hotkeys', 'caption' => '<code>hotkey</code> on three button kinds. Try <kbd>Ctrl</kbd> + <kbd>S</kbd>.'])
     @include('reference._example', ['view' => 'reference.ui.examples.hotkey-buttons'])
 </section>
 
 <section class="ui-section" id="fluent">
-    <h2>
-        Fluent props
-    </h2>
-    <p class="fg-3">
-        Methods chained on the result set the same props as the named arguments, such as <code>primary()</code>, <code>icon()</code>, <code>handler()</code> and <code>requestData()</code>. Attributes still go in the named arguments, and a first argument without a name is the label.
-    </p>
+    @include('reference._heading', ['id' => 'fluent', 'title' => 'Fluent props', 'caption' => 'Chained <code>primary()</code>, <code>icon()</code>, <code>handler()</code> and <code>requestData()</code>.'])
     @include('reference._example', ['view' => 'reference.ui.examples.button-fluent'])
 </section>
 

@@ -14,6 +14,7 @@ use Larajax\Ui\Widgets\Toolbar;
  */
 trait AuthorList
 {
+    // #region docs-list-page
     /**
      * prepareListVars builds the list, filter and toolbar, bound together, for the index view.
      *
@@ -51,6 +52,7 @@ trait AuthorList
             noRecordsMessage: 'No authors match the search and filters.',
         );
     }
+    // #endregion docs-list-page
 
     /**
      * makeFilterWidget builds the filter scopes for the authors list.

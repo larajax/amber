@@ -1,8 +1,9 @@
-{{-- Renders the page title and intro from the reference registry, then the navigation between the pages of its group --}}
+{{-- Renders the page title, a link to its docs page and the intro from the reference registry, then the navigation between the pages of its group --}}
 @php
     [, $referenceGroupCode, $referencePageCode] = explode('.', request()->route()->getName(), 3);
     $referenceGroup = config("reference.groups.{$referenceGroupCode}");
     $referencePage = $referenceGroup['pages'][$referencePageCode];
+    $referenceDocsUrl = config('reference.docs_url')."/{$referenceGroupCode}/{$referencePageCode}";
 @endphp
 
 <p class="reference-eyebrow">
@@ -13,9 +14,12 @@
     {{ $referenceGroup['label'] }}
 </p>
 
-<h1 class="mb-3">
-    {{ $referencePage['label'] }}
-</h1>
+<div class="reference-title mb-3">
+    <h1 class="mb-0">
+        {{ $referencePage['label'] }}
+    </h1>
+    {{ Ui::button(label: 'Docs', href: $referenceDocsUrl, icon: 'ph ph-book-open', target: '_blank', rel: 'noopener', class: 'reference-docs-button') }}
+</div>
 
 @isset($intro)
     <p class="fg-3 mb-5 reference-intro">

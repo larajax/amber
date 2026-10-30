@@ -34,6 +34,7 @@ trait OptionsExamples
         ];
     }
 
+    // #region docs-option-filters
     /**
      * makeOptionFilters builds a filter for each example whose options are all in its YAML file, bound to a list of posts.
      *
@@ -74,7 +75,9 @@ trait OptionsExamples
             customPageName: false,
         );
     }
+    // #endregion docs-option-filters
 
+    // #region docs-empty-option
     /**
      * makeEmptyOptionFilter filters by tag, offering an option for the untagged posts.
      */
@@ -105,7 +108,9 @@ trait OptionsExamples
 
         return $toolbar;
     }
+    // #endregion docs-empty-option
 
+    // #region docs-depends
     /**
      * makeFilteredUsers builds a list of users for the dependent scopes to filter.
      */
@@ -136,4 +141,5 @@ trait OptionsExamples
 
         return $filter;
     }
+    // #endregion docs-depends
 }
