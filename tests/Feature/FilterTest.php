@@ -39,6 +39,30 @@ class FilterTest extends TestCase
         $this->assertSame(3, substr_count($this->renderDateScopeForm(['firstDay' => 0]), 'data-first-day="0"'));
     }
 
+    public function test_date_filter_inputs_sit_in_small_adorned_fields_with_a_calendar_icon(): void
+    {
+        $html = $this->renderDateScopeForm([]);
+
+        $this->assertSame(3, preg_match_all('/<label class="form-control form-control-sm form-adorn form-adorn-end w-120">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-calendar-blank" aria-hidden="true"><\/i>\s*<\/span>\s*<input\s+type="text"\s+name="Filter\[(?:valueRaw|afterRaw|beforeRaw)\]"[^>]*class="form-ghost popup-allow-focus"[^>]*data-datepicker \/>\s*<\/label>/', $html));
+    }
+
+    public function test_the_group_filter_search_is_an_adorned_field_with_a_search_icon(): void
+    {
+        $filter = Filter::createIn(new UsersController, [
+            'model' => new User,
+            'scopes' => [
+                'name' => ['label' => 'Name', 'type' => 'group', 'options' => ['ada' => 'Ada']],
+            ],
+        ]);
+
+        $filter->bindToController();
+
+        $html = (string) $filter->renderScopeFormElement('name');
+
+        $this->assertMatchesRegularExpression('/<div class="filter-search loading-indicator-container size-input-text">\s*<label class="form-control form-control-sm form-adorn">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-magnifying-glass" aria-hidden="true"><\/i>\s*<\/span>\s*<input[^>]*aria-label="Search..."[^>]*class="filter-search-input form-ghost popup-allow-focus"[^>]*data-track-input \/>\s*<\/label>/', $html);
+        $this->assertStringNotContainsString('search-input-container', $html);
+    }
+
     public function test_the_date_filter_form_posts_the_raw_date_inputs(): void
     {
         $resp = $this->withHeaders([

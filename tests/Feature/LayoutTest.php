@@ -63,4 +63,12 @@ class LayoutTest extends TestCase
             ->assertDontSee('Bob Ordinary')
             ->assertSee('value="Zelda"', false);
     }
+
+    public function test_the_top_bar_search_is_an_adorned_field_named_by_its_hidden_label(): void
+    {
+        $html = $this->get('users')->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/<label class="visually-hidden" for="amber-search-input">\s*Search users\s*<\/label>\s*<label class="form-control form-adorn search-input">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-magnifying-glass"><\/i>\s*<\/span>\s*<input\s+id="amber-search-input"\s+class="form-ghost"\s+type="search"\s+name="q"/', $html);
+        $this->assertStringNotContainsString('search-button', $html);
+    }
 }

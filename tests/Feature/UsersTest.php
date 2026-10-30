@@ -25,6 +25,15 @@ class UsersTest extends TestCase
             ->assertSee('Users');
     }
 
+    public function test_the_toolbar_search_is_an_adorned_field_with_its_icon_input_and_clear_button(): void
+    {
+        $html = $this->get('users')->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/<div\s+id="Search-toolbarSearch"\s+data-control="search-input"\s*>\s*<label class="form-control form-adorn is-searchable is-growable">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-magnifying-glass" aria-hidden="true"><\/i>\s*<\/span>\s*<input[^>]*name="toolbarSearch\[term\]"[^>]*aria-label="Search users..."[^>]*class="form-ghost"[^>]*data-search-input \/>\s*<button\s+class="clear-input-text"[^>]*style="display:none"\s+aria-label="Clear"\s+data-search-clear\s*>\s*<i class="ph ph-x" aria-hidden="true"><\/i>\s*<\/button>\s*<\/label>/', $html);
+        $this->assertStringNotContainsString('search-input-container', $html);
+        $this->assertStringNotContainsString('search-icon', $html);
+    }
+
     public function test_the_structure_page_renders_the_flat_reorder_variant(): void
     {
         User::factory()->count(2)->create();

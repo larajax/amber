@@ -131,6 +131,10 @@ class KitchenSinkTest extends TestCase
 
         // The postcode shows once a country is saved
         $this->assertMatchesRegularExpression('/<input[^>]*name="postcode"/', $html);
+
+        // The date and time pickers show their icon inside an adorned field, after the input
+        $this->assertSame(3, preg_match_all('/<label class="form-control form-adorn form-adorn-end">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-calendar-blank" aria-hidden="true"><\/i>\s*<\/span>\s*<input[^>]*class="form-ghost"[^>]*data-datepicker \/>\s*<\/label>/', $html));
+        $this->assertSame(2, preg_match_all('/<label class="form-control form-adorn form-adorn-end">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-clock" aria-hidden="true"><\/i>\s*<\/span>\s*<input[^>]*class="form-ghost"[^>]*data-timepicker \/>\s*<\/label>/', $html));
     }
 
     public function test_the_edit_page_loads_the_custom_widget_assets_in_the_head(): void

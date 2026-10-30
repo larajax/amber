@@ -89,6 +89,7 @@ class DataTableTest extends TestCase
         $this->assertStringContainsString('<span class="button-label">Import</span>', $html);
         $this->assertStringContainsString('data-table-import-file', $html);
         $this->assertStringContainsString('placeholder="Search..." data-table-search', $html);
+        $this->assertMatchesRegularExpression('/<div class="toolbar-search">\s*<label class="form-control form-adorn">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-magnifying-glass" aria-hidden="true"><\/i>\s*<\/span>\s*<input type="text" class="form-ghost" aria-label="Search..." placeholder="Search..." data-table-search>\s*<\/label>/', $html);
         $this->assertStringNotContainsString('handsontable', $html);
 
         $this->assertSame(['city'], $this->attributeJson($html, 'data-ajax-columns'));

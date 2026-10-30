@@ -123,6 +123,22 @@ class DatePickerTest extends TestCase
         $this->assertStringContainsString('data-twelve-hour="1"', $html);
     }
 
+    public function test_the_facade_sits_in_an_adorned_field_with_the_icon_at_the_end(): void
+    {
+        $date = $this->renderField(['mode' => 'datetime']);
+        $this->assertMatchesRegularExpression('/<label class="form-control form-adorn form-adorn-end">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-calendar-blank" aria-hidden="true"><\/i>\s*<\/span>\s*<input\s+type="text"\s+id="[^"]+-date-email_verified_at"\s+class="form-ghost"\s+autocomplete="off"\s+data-datepicker \/>\s*<\/label>/', $date);
+        $this->assertStringNotContainsString('input-with-icon', $date);
+
+        $time = $this->renderField(['mode' => 'time']);
+        $this->assertMatchesRegularExpression('/<label class="form-control form-adorn form-adorn-end">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-clock" aria-hidden="true"><\/i>\s*<\/span>\s*<input\s+type="text"\s+id="[^"]+-time-email_verified_at"\s+class="form-ghost"\s+autocomplete="off"\s+data-timepicker \/>\s*<\/label>/', $time);
+    }
+
+    public function test_a_readonly_or_disabled_facade_keeps_its_state_on_the_input_inside_the_adorned_field(): void
+    {
+        $this->assertMatchesRegularExpression('/<label class="form-control form-adorn form-adorn-end">\s*<span class="form-adorn-icon"[^>]*>.*?<\/span>\s*<input[^>]*class="form-ghost"[^>]*readonly="readonly"[^>]*data-datepicker \/>\s*<\/label>/s', $this->renderField(['readOnly' => true]));
+        $this->assertMatchesRegularExpression('/<label class="form-control form-adorn form-adorn-end">\s*<span class="form-adorn-icon"[^>]*>.*?<\/span>\s*<input[^>]*class="form-ghost"[^>]*disabled="disabled"[^>]*data-datepicker \/>\s*<\/label>/s', $this->renderField(['disabled' => true]));
+    }
+
     public function test_preview_mode_formats_the_value_on_the_server(): void
     {
         $html = $this->renderField([], ['previewMode' => true]);

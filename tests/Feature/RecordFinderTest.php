@@ -91,6 +91,7 @@ class RecordFinderTest extends TestCase
         $this->assertStringContainsString('class="recordfinder-popup"', $html);
         $this->assertStringContainsString('data-request-parent-form="#'.$widget->getId().'"', $html);
         $this->assertStringContainsString('formPrimaryGroupSearch', $html);
+        $this->assertMatchesRegularExpression('/<label class="form-control form-adorn is-searchable recordfinder-search">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-magnifying-glass" aria-hidden="true"><\/i>\s*<\/span>\s*<input[^>]*name="formPrimaryGroupSearch\[term\]"[^>]*class="form-ghost"/', $html);
         $this->assertStringContainsString("jax.fetchControl(document.getElementById(&#039;".$widget->getId()."&#039;), &#039;recordfinder&#039;).updateRecord(this, &#039;".$editors->id."&#039;)", $html);
         $this->assertStringContainsString('Editors', $html);
         $this->assertStringNotContainsString('>Guest<', $html);

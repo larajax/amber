@@ -21,19 +21,18 @@
         <label class="visually-hidden" for="amber-search-input">
             Search users
         </label>
-        <input
-            id="amber-search-input"
-            class="form-control search-input"
-            type="search"
-            name="q"
-            value="{{ request('q') }}"
-            placeholder="Search users..." />
-        <button
-            class="icon-button search-button"
-            type="submit"
-            aria-label="Search">
-            <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
-        </button>
+        <label class="form-control form-adorn search-input">
+            <span class="form-adorn-icon" aria-hidden="true">
+                <i class="ph ph-magnifying-glass"></i>
+            </span>
+            <input
+                id="amber-search-input"
+                class="form-ghost"
+                type="search"
+                name="q"
+                value="{{ request('q') }}"
+                placeholder="Search users..." />
+        </label>
     </form>
 
     <div class="topbar-actions">

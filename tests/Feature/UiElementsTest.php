@@ -92,6 +92,9 @@ class UiElementsTest extends TestCase
         $this->assertStringContainsString('data-request="onCalloutAction"', $html);
         $this->assertStringContainsString('data-control="search-input"', $html);
         $this->assertStringContainsString('data-request="onSearchCities"', $html);
+        $this->assertSame(2, preg_match_all('/<div data-control="search-input"[^>]*>\s*<label class="form-control form-adorn">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-magnifying-glass" aria-hidden="true"><\/i>\s*<\/span>\s*<input[^>]*class="form-ghost"[^>]*>\s*<button\s+class="clear-input-text"[^>]*aria-label="Clear"\s+data-search-clear\s*>\s*<i class="ph ph-x" aria-hidden="true"><\/i>\s*<\/button>\s*<\/label>/', $html));
+        $this->assertMatchesRegularExpression('/<input[^>]*name="city_search"[^>]*placeholder="Search cities..."[^>]*aria-label="Search cities..."/', $html);
+        $this->assertStringNotContainsString('storm-icon-pseudo', $html);
         $this->assertStringContainsString('<div id="uiCityResults">', $html);
         $this->assertStringContainsString('class="scoreboard"', $html);
         $this->assertStringContainsString('class="control-tabs primary-tabs" data-control="tab" data-linkable', $html);
