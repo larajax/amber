@@ -162,33 +162,38 @@ types (debounced automatically):
 
 ## Callouts
 
-`Ui::callout()` renders a highlighted message block. It uses a fluent (chained) API rather than named
-arguments:
+`Ui::callout()` renders a highlighted message block, with a `label` and a `comment` in its header:
 
 ```blade
-{{ Ui::callout()->label('Heads up')->comment('This action cannot be undone')->warning() }}
+{{ Ui::callout(label: 'Heads up', comment: 'This action cannot be undone', warning: true) }}
 ```
 
-The type methods set the callout style:
+Info is the default type, and a flag picks another:
 
-Method | Style
+Argument | Style
 ------------- | -------------
-`->tip()` | informational (default)
-`->success()` | success
-`->warning()` | warning
-`->danger()` | danger
+*(none)* | informational (default)
+`success: true` | success
+`warning: true` | warning
+`danger: true` | danger
 
-The first argument is the body, as a string, a closure or another element, and a closure can return a
-view. Each type shows its icon from the icon pack (the `callout.info`, `callout.success`,
-`callout.warning` and `callout.danger` keys); `->icon()` takes another icon, or `false` to leave it out,
-and `->action()` places a button on the right:
+Each type shows its icon from the icon pack (the `callout.info`, `callout.success`, `callout.warning`
+and `callout.danger` keys); `icon` takes another icon class, or `false` to leave it out. The label and
+comment are escaped, and `commentHtml: true` prints the comment as HTML. Any other argument becomes an
+attribute on the callout, with `class` merged into its classes.
+
+Callouts are slot-based like dropdowns: `->slot()` captures the markup that follows as the body, up to
+`Ui::end()`, and `Ui::slot('action')` switches the capture to the action area on the right:
 
 ```blade
-{{ Ui::callout(fn () => view('billing._card_help'))
-    ->danger()
-    ->label('Card expired')
-    ->action(Ui::ajaxButton(label: 'Update', handler: 'onUpdateCard', danger: true)) }}
+<?php Ui::callout(label: 'Card expired', danger: true)->slot() ?>
+    <p>Update your payment method to keep your plan.</p>
+<?php Ui::slot('action') ?>
+    {{ Ui::ajaxButton(label: 'Update', handler: 'onUpdateCard', danger: true) }}
+<?php Ui::end() ?>
 ```
+
+Start with `->slot('action')` when the callout has an action and no body.
 
 ## A note on syntax
 

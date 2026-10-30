@@ -121,29 +121,9 @@
         Fluent props
     </h2>
     <p class="fg-3">
-        Methods chained on the result set the same props as the named arguments, such as <code>primary()</code>, <code>icon()</code>, <code>handler()</code> and <code>requestData()</code>. Attributes still go in the named arguments.
+        Methods chained on the result set the same props as the named arguments, such as <code>primary()</code>, <code>icon()</code>, <code>handler()</code> and <code>requestData()</code>. Attributes still go in the named arguments, and a first argument without a name is the label.
     </p>
     @include('reference._example', ['view' => 'reference.ui.examples.button-fluent'])
-</section>
-
-<section class="ui-section" id="fluent-elements">
-    <h2>
-        Fluent elements
-    </h2>
-    <p class="fg-3">
-        A label passed as the first argument returns a fluent element instead. It adds the <code>success()</code>, <code>warning()</code> and <code>info()</code> types, <code>outline()</code>, <code>textLink()</code>, <code>circleIcon()</code>, and <code>linkTo()</code>, which resolves a path through <code>Ui::url()</code>.
-    </p>
-    @include('reference._example', ['view' => 'reference.ui.examples.button-fluent-elements'])
-</section>
-
-<section class="ui-section" id="fluent-ajax">
-    <h2>
-        Fluent AJAX and popup buttons
-    </h2>
-    <p class="fg-3">
-        With a label and a handler, <code>Ui::ajaxButton()</code> and <code>Ui::popupButton()</code> return fluent elements with <code>ajaxData()</code>, <code>confirmMessage()</code>, <code>attachLoading()</code> and, for popups, <code>size()</code>. <code>formDeleteButton()</code> turns the button into the trash icon that forms show beside Save.
-    </p>
-    @include('reference._example', ['view' => 'reference.ui.examples.button-fluent-ajax'])
 </section>
 
 @endsection

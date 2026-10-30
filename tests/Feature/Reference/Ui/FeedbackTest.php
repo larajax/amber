@@ -52,7 +52,7 @@ class FeedbackTest extends TestCase
         $html = $this->get(route('reference.ui.feedback'))->assertOk()->getContent();
 
         $examples = [
-            'callout-types', 'callout-body', 'callout-block', 'callout-icons', 'scoreboard',
+            'callout-types', 'callout-body', 'callout-action', 'callout-icons', 'scoreboard',
             'loader-container', 'load-indicator-markup', 'load-indicator-api', 'change-monitor',
         ];
 
@@ -61,7 +61,7 @@ class FeedbackTest extends TestCase
             $this->assertStringContainsString('<pre><code>'.$source.'</code></pre>', $html, "{$example} is not shown.");
         }
 
-        foreach (['callouts', 'callout-body', 'callout-block', 'callout-icons', 'scoreboard', 'loader-container', 'load-indicator', 'load-indicator-api', 'change-monitor'] as $section) {
+        foreach (['callouts', 'callout-body', 'callout-action', 'callout-icons', 'scoreboard', 'loader-container', 'load-indicator', 'load-indicator-api', 'change-monitor'] as $section) {
             $this->assertStringContainsString('id="'.$section.'"', $html);
         }
 
@@ -79,7 +79,6 @@ class FeedbackTest extends TestCase
         $this->assertStringContainsString('<i class="ph ph-warning-octagon" aria-hidden="true"></i>', $html);
         $this->assertStringContainsString('<i class="ph ph-rocket-launch" aria-hidden="true"></i>', $html);
         $this->assertStringContainsString('Two teammates accepted their invites.', $html);
-        $this->assertMatchesRegularExpression('/<div class="content">\s*<a\s+href="https:\/\/larajax.org"[^>]*class="btn-link p-0\s*"\s*>Read the upgrade guide<\/a>/', $html);
         $this->assertMatchesRegularExpression('/<div class="action">\s*<button class="btn-solid theme-primary" type="button" data-request="onCalloutAction"[^>]*>\s*Add a card\s*<\/button>\s*<\/div>/', $html);
         $this->assertMatchesRegularExpression('/<div class="content">\s*<p>\s*Add a payment method to keep your projects\./', $html);
         $this->assertStringContainsString('data-request="onCalloutAction"', $html);
@@ -93,52 +92,71 @@ class FeedbackTest extends TestCase
         $this->assertStringContainsString('data-change-monitor-commit', $html);
     }
 
-    public function test_a_string_body_renders_in_the_content(): void
+    /**
+     * capture runs a callback and returns what it printed, for callouts written as blocks.
+     */
+    protected function capture(callable $callback): string
     {
-        $html = Ui::callout('<p>Plain callout body</p>')->toHtml();
+        ob_start();
+        $callback();
 
-        $this->assertMatchesRegularExpression('/<div class="content">\s*<p>Plain callout body<\/p>\s*<\/div>/', $html);
+        return ob_get_clean();
     }
 
-    public function test_a_closure_body_that_echoes_renders_in_the_content(): void
+    public function test_a_callout_renders_its_label_and_comment_in_the_header(): void
     {
-        $html = Ui::callout(function () {
-            echo '<p>Echoed body</p>';
-        })->toHtml();
+        $html = Ui::callout(label: 'Heads up', comment: 'Info is the default type.')->toHtml();
 
-        $this->assertMatchesRegularExpression('/<div class="content">\s*<p>Echoed body<\/p>\s*<\/div>/', $html);
-    }
-
-    public function test_a_closure_body_can_return_a_view(): void
-    {
-        $html = Ui::callout(fn () => view('reference.ui._callout_checklist'))->label('Setup complete')->toHtml();
-
-        $this->assertStringContainsString('Two teammates accepted their invites.', $html);
-    }
-
-    public function test_an_element_body_renders_in_the_content(): void
-    {
-        $html = Ui::callout(Ui::button('Read more')->linkUrl('https://example.com'))->toHtml();
-
-        $this->assertMatchesRegularExpression('/<div class="content">\s*<a\s+href="https:\/\/example.com"/', $html);
-    }
-
-    public function test_a_callout_without_a_body_renders_no_content(): void
-    {
-        $html = Ui::callout()->label('Heads up')->toHtml();
-
+        $this->assertStringContainsString('<div class="callout fade show callout-info">', $html);
+        $this->assertMatchesRegularExpression('/<div class="header">.*<h3>\s*Heads up\s*<\/h3>\s*<p>\s*Info is the default type.\s*<\/p>\s*<\/div>/s', $html);
         $this->assertStringNotContainsString('class="content"', $html);
     }
 
-    public function test_a_block_captures_the_body_and_a_named_slot_until_the_end(): void
+    public function test_the_label_and_comment_are_escaped_unless_the_comment_is_html(): void
     {
-        ob_start();
-        Ui::callout()->danger()->label('Card expired')->slot();
-        echo '<p>Update your card.</p>';
-        Ui::slot('action');
-        echo Ui::ajaxButton(label: 'Update', handler: 'onUpdate', danger: true);
-        Ui::end();
-        $html = ob_get_clean();
+        $html = Ui::callout(label: '<b>Label</b>', comment: '<i>Comment</i>')->toHtml();
+
+        $this->assertStringContainsString('&lt;b&gt;Label&lt;/b&gt;', $html);
+        $this->assertStringContainsString('&lt;i&gt;Comment&lt;/i&gt;', $html);
+
+        $html = Ui::callout(label: 'Release', comment: '<p>Read the <strong>notes</strong>.</p>', commentHtml: true)->toHtml();
+
+        $this->assertMatchesRegularExpression('/<\/h3>\s*<p>Read the <strong>notes<\/strong>.<\/p>\s*<\/div>/', $html);
+    }
+
+    public function test_a_slot_captures_the_body_until_the_end(): void
+    {
+        $html = $this->capture(function () {
+            Ui::callout(label: 'Release notes')->slot();
+            echo '<p>Plain callout body</p>';
+            Ui::end();
+        });
+
+        $this->assertMatchesRegularExpression('/<div class="content">\s*<p>Plain callout body<\/p>\s*<\/div>/', $html);
+        $this->assertSame(1, substr_count($html, 'Plain callout body'));
+    }
+
+    public function test_a_body_can_include_a_view(): void
+    {
+        $html = $this->capture(function () {
+            Ui::callout(label: 'Setup complete', success: true)->slot();
+            echo view('reference.ui._callout_checklist')->render();
+            Ui::end();
+        });
+
+        $this->assertStringContainsString('callout-success', $html);
+        $this->assertStringContainsString('Two teammates accepted their invites.', $html);
+    }
+
+    public function test_a_block_captures_the_body_and_the_action_slot(): void
+    {
+        $html = $this->capture(function () {
+            Ui::callout(label: 'Card expired', danger: true)->slot();
+            echo '<p>Update your card.</p>';
+            Ui::slot('action');
+            echo Ui::ajaxButton(label: 'Update', handler: 'onUpdate', danger: true);
+            Ui::end();
+        });
 
         $this->assertStringContainsString('callout-danger', $html);
         $this->assertMatchesRegularExpression('/<div class="content">\s*<p>Update your card.<\/p>\s*<\/div>/', $html);
@@ -146,25 +164,37 @@ class FeedbackTest extends TestCase
         $this->assertSame(1, substr_count($html, 'Update your card.'));
     }
 
+    public function test_a_callout_can_start_with_the_action_slot(): void
+    {
+        $html = $this->capture(function () {
+            Ui::callout(label: 'Card expired', danger: true)->slot('action');
+            echo Ui::ajaxButton(label: 'Update', handler: 'onUpdate', danger: true);
+            Ui::end();
+        });
+
+        $this->assertMatchesRegularExpression('/<div class="action">\s*<button class="btn-solid theme-danger" type="button" data-request="onUpdate">/', $html);
+        $this->assertStringNotContainsString('class="content"', $html);
+    }
+
     public function test_an_empty_block_renders_no_content(): void
     {
-        ob_start();
-        Ui::callout()->label('Heads up')->slot();
-        echo "\n    \n";
-        Ui::end();
-        $html = ob_get_clean();
+        $html = $this->capture(function () {
+            Ui::callout(label: 'Heads up')->slot();
+            echo "\n    \n";
+            Ui::end();
+        });
 
-        $this->assertStringContainsString('<h3>Heads up</h3>', $html);
+        $this->assertMatchesRegularExpression('/<h3>\s*Heads up\s*<\/h3>/', $html);
         $this->assertStringNotContainsString('class="content"', $html);
     }
 
     public function test_each_type_shows_its_icon_from_the_pack(): void
     {
         $callouts = [
-            'info' => Ui::callout()->label('Info'),
-            'success' => Ui::callout()->success()->label('Success'),
-            'warning' => Ui::callout()->warning()->label('Warning'),
-            'danger' => Ui::callout()->danger()->label('Danger'),
+            'info' => Ui::callout(label: 'Info'),
+            'success' => Ui::callout(label: 'Success', success: true),
+            'warning' => Ui::callout(label: 'Warning', warning: true),
+            'danger' => Ui::callout(label: 'Danger', danger: true),
         ];
 
         foreach ($callouts as $type => $callout) {
@@ -177,14 +207,9 @@ class FeedbackTest extends TestCase
         }
     }
 
-    public function test_tip_is_the_info_type(): void
-    {
-        $this->assertStringContainsString('callout-info', Ui::callout()->tip()->label('Tip')->toHtml());
-    }
-
     public function test_a_custom_icon_replaces_the_type_icon(): void
     {
-        $html = Ui::callout()->warning()->icon('ph ph-rocket-launch')->label('Launch')->toHtml();
+        $html = Ui::callout(label: 'Launch', warning: true, icon: 'ph ph-rocket-launch')->toHtml();
 
         $this->assertStringContainsString('<i class="ph ph-rocket-launch" aria-hidden="true"></i>', $html);
         $this->assertStringContainsString('has-custom-icon', $html);
@@ -193,7 +218,7 @@ class FeedbackTest extends TestCase
 
     public function test_the_icon_can_be_turned_off(): void
     {
-        $html = Ui::callout()->icon(false)->label('Quiet')->toHtml();
+        $html = Ui::callout(label: 'Quiet', icon: false)->toHtml();
 
         $this->assertStringNotContainsString('custom-icon', $html);
         $this->assertStringContainsString('no-icon', $html);
@@ -201,22 +226,23 @@ class FeedbackTest extends TestCase
 
     public function test_a_callout_with_only_a_body_has_no_header_or_icon(): void
     {
-        $html = Ui::callout('<p>Body only</p>')->toHtml();
+        $html = $this->capture(function () {
+            Ui::callout(warning: true)->slot();
+            echo '<p>Body only</p>';
+            Ui::end();
+        });
 
         $this->assertStringNotContainsString('class="header"', $html);
         $this->assertStringContainsString('no-icon', $html);
         $this->assertStringContainsString('no-title', $html);
+        $this->assertStringContainsString('no-subheader', $html);
     }
 
-    public function test_an_action_renders_beside_the_header(): void
+    public function test_other_arguments_render_as_attributes_with_the_class_merged(): void
     {
-        $html = Ui::callout()
-            ->danger()
-            ->label('Card expired')
-            ->action(Ui::ajaxButton(label: 'Update', handler: 'onUpdate', danger: true))
-            ->toHtml();
+        $html = Ui::callout(label: 'Flush', class: 'is-flush', id: 'billing-callout')->toHtml();
 
-        $this->assertMatchesRegularExpression('/<div class="action">\s*<button class="btn-solid theme-danger" type="button" data-request="onUpdate">/', $html);
+        $this->assertMatchesRegularExpression('/<div class="callout fade show callout-info no-subheader is-flush" id="billing-callout">/', $html);
     }
 
     public function test_on_callout_action_flashes_a_message(): void

@@ -145,9 +145,8 @@ class SeamsTest extends TestCase
 
     public function test_the_page_shows_the_path_a_click_produced_escaped(): void
     {
-        $this->get(route('reference.extending.seams', ['path' => 'samples/3/edit']))
-            ->assertOk()
-            ->assertSee('<h3>The resolver received samples/3/edit</h3>', false);
+        $html = $this->get(route('reference.extending.seams', ['path' => 'samples/3/edit']))->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('/<h3>\s*The resolver received samples\/3\/edit\s*<\/h3>/', $html);
 
         $this->get(route('reference.extending.seams', ['path' => '<b>x</b>']))
             ->assertOk()

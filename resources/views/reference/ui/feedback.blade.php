@@ -11,41 +11,41 @@
         Callout types
     </h2>
     <p class="fg-3">
-        <code>Ui::callout()</code> is a fluent element: chain a type, a <code>label</code> and a <code>comment</code>. Each type shows its icon from the icon pack, and <code>tip()</code> is the info type.
+        <code>Ui::callout()</code> takes a <code>label</code> and a <code>comment</code> for its header. Info is the default type, and <code>success</code>, <code>warning</code> and <code>danger</code> pick the others, each with its icon from the icon pack.
     </p>
     @include('reference._example', ['view' => 'reference.ui.examples.callout-types', 'stacked' => true])
 </section>
 
 <section class="ui-section" id="callout-body">
     <h2>
-        Callout content
+        Callout body
     </h2>
     <p class="fg-3">
-        The first argument is the body, as a string, a closure or another element. A closure can return a view or echo its markup.
+        <code>slot()</code> captures the markup that follows as the body, up to <code>Ui::end()</code>, which renders the callout. The body is plain Blade, so it can hold any markup or include a view.
     </p>
     @include('reference._example', [
         'view' => 'reference.ui.examples.callout-body',
         'stacked' => true,
-        'related' => ['reference.ui._callout_checklist' => 'The closure renders'],
+        'related' => ['reference.ui._callout_checklist' => 'The included view'],
     ])
 </section>
 
-<section class="ui-section" id="callout-block">
+<section class="ui-section" id="callout-action">
     <h2>
-        Callout blocks
+        Callout actions
     </h2>
     <p class="fg-3">
-        <code>slot()</code> captures the markup that follows as the body, up to <code>Ui::end()</code>, which renders the callout. <code>Ui::slot('action')</code> switches the capture to the action area on the right, so a long body and its button stay in plain Blade.
+        <code>Ui::slot('action')</code> switches the capture to the action area on the right. Start with <code>slot('action')</code> when the callout has an action and no body.
     </p>
-    @include('reference._example', ['view' => 'reference.ui.examples.callout-block', 'stacked' => true])
+    @include('reference._example', ['view' => 'reference.ui.examples.callout-action', 'stacked' => true])
 </section>
 
 <section class="ui-section" id="callout-icons">
     <h2>
-        Callout icons and actions
+        Callout icons
     </h2>
     <p class="fg-3">
-        <code>icon()</code> swaps the type's icon for any icon class, or turns it off with <code>false</code>. <code>action()</code> places a button on the right.
+        <code>icon</code> swaps the type icon for any icon class, or leaves it out with <code>false</code>.
     </p>
     @include('reference._example', ['view' => 'reference.ui.examples.callout-icons', 'stacked' => true])
 </section>

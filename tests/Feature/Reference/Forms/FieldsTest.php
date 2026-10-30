@@ -327,7 +327,7 @@ class FieldsTest extends TestCase
         $this->assertMatchesRegularExpression('/<div class="field-section">\s*<label>The fields below work out the delivery cost.<\/label>/', $html);
 
         foreach (['info', 'success', 'warning', 'danger'] as $mode) {
-            $this->assertMatchesRegularExpression('/id="Form-exampleHint-field-_'.$mode.'_hint-group"><div class="callout fade show callout-'.$mode.' /', $html);
+            $this->assertMatchesRegularExpression('/id="Form-exampleHint-field-_'.$mode.'_hint-group"><div class="callout fade show callout-'.$mode.'(?: no-subheader)?">/', $html);
         }
 
         $this->assertStringContainsString('<p>With commentHtml, the comment can hold <strong>HTML markup</strong>.</p>', $html);
@@ -341,7 +341,7 @@ class FieldsTest extends TestCase
     {
         $html = $this->pageHtml(['name' => 'Aurora Desk Lamp', 'slug' => 'aurora-desk-lamp']);
 
-        $this->assertMatchesRegularExpression('/id="Form-exampleHintPartial-field-_record_hint-group"><div class="callout fade show callout-warning [^"]*">\s*<div class="header">.*?<h3>Before you publish<\/h3>\s*<\/div>\s*<div class="content">\s*<ul class="mb-0">\s*<li>\s*Aurora Desk Lamp needs a price/s', $html);
+        $this->assertMatchesRegularExpression('/id="Form-exampleHintPartial-field-_record_hint-group"><div class="callout fade show callout-warning no-subheader">\s*<div class="header">.*?<h3>\s*Before you publish\s*<\/h3>\s*<\/div>\s*<div class="content">\s*<ul class="mb-0">\s*<li>\s*Aurora Desk Lamp needs a price/s', $html);
         $this->assertStringContainsString('The slug <code>aurora-desk-lamp</code>', $html);
     }
 

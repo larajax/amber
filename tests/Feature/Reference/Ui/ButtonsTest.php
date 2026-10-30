@@ -17,7 +17,6 @@ class ButtonsTest extends TestCase
     protected array $examples = [
         'button-variants', 'button-outline', 'button-sizes', 'button-icons', 'button-links', 'button-attributes',
         'button-groups', 'ajax-buttons', 'button-loading', 'icon-buttons', 'hotkey-buttons', 'button-fluent',
-        'button-fluent-elements', 'button-fluent-ajax',
     ];
 
     /**
@@ -56,7 +55,7 @@ class ButtonsTest extends TestCase
             $this->assertStringContainsString('<pre><code>'.$source.'</code></pre>', $html, "{$example} is not shown.");
         }
 
-        foreach (['variants', 'outline', 'sizes', 'icons', 'links', 'attributes', 'groups', 'ajax-button', 'loading', 'icon-button', 'hotkeys', 'fluent', 'fluent-elements', 'fluent-ajax'] as $section) {
+        foreach (['variants', 'outline', 'sizes', 'icons', 'links', 'attributes', 'groups', 'ajax-button', 'loading', 'icon-button', 'hotkeys', 'fluent'] as $section) {
             $this->assertStringContainsString('id="'.$section.'"', $html);
         }
 
@@ -86,20 +85,19 @@ class ButtonsTest extends TestCase
         $this->assertStringContainsString('data-tooltip-text="Save draft" data-tooltip-hotkey="⌃S, ⌘S" data-tooltip-position="top"', $html);
     }
 
-    public function test_the_fluent_examples_render_props_and_elements(): void
+    public function test_the_fluent_example_sets_props_by_chaining(): void
     {
         $html = $this->get(route('reference.ui.buttons'))->assertOk()->getContent();
 
         $this->assertMatchesRegularExpression('/<button class="btn-solid theme-primary" type="button">\s*<i class="ph ph-paper-plane-tilt" aria-hidden="true"><\/i>\s*Publish/', $html);
         $this->assertMatchesRegularExpression('/class="btn-solid theme-secondary" type="button" data-request="onArchiveItem" data-request-data="\{&quot;item&quot;:7\}"/', $html);
-        $this->assertMatchesRegularExpression('/class="btn-solid theme-success\s*"/', $html);
-        $this->assertMatchesRegularExpression('/class="btn-outline theme-warning\s*"/', $html);
-        $this->assertMatchesRegularExpression('/href="'.preg_quote(url('reference'), '/').'"\s+type="button" class="btn-solid theme-secondary\s*"\s*>Back to the reference</', $html);
-        $this->assertMatchesRegularExpression('/href="https:\/\/larajax.org"\s+type="button" class="btn-link p-0\s*"/', $html);
-        $this->assertMatchesRegularExpression('/title="Add an item" class="btn-solid theme-secondary btn-circle\s*"/', $html);
-        $this->assertStringContainsString('data-request="onArchiveItem" data-request-data="&quot;item&quot;:3" data-request-confirm="Archive item 3?" data-attach-loading', $html);
-        $this->assertStringContainsString('data-control="popup" data-handler="onLoadDialog" data-size="small"', $html);
-        $this->assertStringContainsString('btn-icon-link danger pull-right', $html);
+    }
+
+    public function test_a_first_argument_without_a_name_is_the_label(): void
+    {
+        $this->assertMatchesRegularExpression('/<button class="btn" type="button">\s*Save\s*<\/button>/', (string) Ui::button('Save'));
+        $this->assertMatchesRegularExpression('/data-request="onSave">\s*Save\s*<\/button>/', (string) Ui::ajaxButton('Save', handler: 'onSave'));
+        $this->assertMatchesRegularExpression('/data-handler="onOpen"[^>]*>\s*Open\s*<\/button>/', (string) Ui::popupButton('Open', handler: 'onOpen'));
     }
 
     public function test_button_flags_render_a_solid_variant_with_a_theme(): void
@@ -128,40 +126,6 @@ class ButtonsTest extends TestCase
 
         $this->assertMatchesRegularExpression('/class="btn-icon-link [^"]*danger"/', $html);
         $this->assertDoesNotMatchRegularExpression('/class="[^"]*\bbtn-icon\b(?!-)/', $html);
-    }
-
-    public function test_fluent_button_types_render_a_variant_with_a_theme(): void
-    {
-        $this->assertMatchesRegularExpression('/class="btn-solid theme-primary\s*"/', Ui::button('Save')->primary()->toHtml());
-        $this->assertMatchesRegularExpression('/class="btn-outline theme-danger\s*"/', Ui::button('Delete')->danger()->outline(true)->toHtml());
-        $this->assertMatchesRegularExpression('/class="btn-link p-0\s*"/', Ui::button('Back')->textLink()->toHtml());
-    }
-
-    public function test_the_fluent_default_type_renders_the_secondary_theme(): void
-    {
-        $this->assertMatchesRegularExpression('/class="btn-solid theme-secondary\s*"/', Ui::button('Cancel')->toHtml());
-        $this->assertMatchesRegularExpression('/class="btn-outline theme-secondary\s*"/', Ui::button('Cancel')->outline(true)->toHtml());
-    }
-
-    public function test_a_fluent_link_resolves_its_path_through_the_url_resolver(): void
-    {
-        $this->assertStringContainsString('href="'.url('users').'"', Ui::button('Back', 'users')->toHtml());
-        $this->assertStringContainsString('href="'.url('posts').'"', Ui::button('Posts')->linkTo('posts')->toHtml());
-        $this->assertStringContainsString('href="/raw"', Ui::button('Raw')->linkTo('/raw', true)->toHtml());
-
-        Ui::resolveUrlUsing(fn (string $path) => url('admin/'.$path));
-
-        try {
-            $this->assertStringContainsString('href="'.url('admin/posts').'"', Ui::button('Posts')->linkTo('posts')->toHtml());
-        }
-        finally {
-            Ui::resolveUrlUsing(null);
-        }
-    }
-
-    public function test_the_form_delete_button_renders_the_icon_link_class(): void
-    {
-        $this->assertStringContainsString('btn-icon-link danger pull-right', Ui::ajaxButton('Delete', 'onDelete')->formDeleteButton()->toHtml());
     }
 
     public function test_a_true_data_attribute_renders_as_true(): void

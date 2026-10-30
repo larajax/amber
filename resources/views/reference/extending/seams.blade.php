@@ -36,7 +36,7 @@
         <code>Ui::resolveUrlUsing()</code> receives each widget path, such as a list's <code>recordUrl</code>, a linkage column's <code>linkUrl</code> or a toolbar button's <code>url</code>. A real resolver might add an admin prefix. This one sends every path back to this page, so click a row, a preview link or the button to see the path it produced. Full addresses in <code>linkUrl</code> are left alone.
     </p>
     @if (request()->filled('path'))
-        {{ Ui::callout()->success()->label('The resolver received '.e(request()->query('path')))->comment('That is the widget path, before the resolver turned it into this address.') }}
+        {{ Ui::callout(label: 'The resolver received '.request()->query('path'), comment: 'That is the widget path, before the resolver turned it into this address.', success: true) }}
     @endif
     <div class="ui-example is-stacked">
         <div class="ui-example-preview">
