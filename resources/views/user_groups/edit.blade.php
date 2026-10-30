@@ -17,8 +17,9 @@
     {{ $formWidget }}
 
     <div class="mt-7 d-flex gap-3">
-        {{ Ui::ajaxButton(handler: 'onUpdate', label: 'Save', primary: true) }}
+        {{ Ui::ajaxButton(dataRequestFlash: true, handler: 'onUpdate', label: 'Save', primary: true) }}
         {{ Ui::ajaxButton(
+            dataRequestFlash: true,
             handler: 'onDestroy',
             label: 'Delete',
             danger: true,

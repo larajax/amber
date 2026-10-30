@@ -52,7 +52,7 @@ trait PostForm
 
         return ajax()
             ->flash('success', 'Post deleted.')
-            ->redirect('posts');
+            ->redirect(route('posts.index'));
     }
 
     /**

@@ -27,12 +27,6 @@
             'active' => request()->is('user-groups', 'user-groups/*'),
         ],
         [
-            'label' => 'Kitchen Sink',
-            'icon' => 'ph-flask',
-            'href' => url('kitchen-sink'),
-            'active' => request()->is('kitchen-sink', 'kitchen-sink/*'),
-        ],
-        [
             'label' => 'Posts',
             'icon' => 'ph-article',
             'href' => url('posts'),
@@ -51,6 +45,12 @@
                     'active' => request()->is('posts/create'),
                 ],
             ],
+        ],
+        [
+            'label' => 'Kitchen Sink',
+            'icon' => 'ph-flask',
+            'href' => url('kitchen-sink'),
+            'active' => request()->is('kitchen-sink', 'kitchen-sink/*'),
         ],
         [
             'label' => 'UI Elements',

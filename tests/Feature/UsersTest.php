@@ -85,6 +85,17 @@ class UsersTest extends TestCase
         $this->assertNull(User::find($user->id));
     }
 
+    public function test_the_edit_page_buttons_show_server_errors_as_flash_messages(): void
+    {
+        $user = User::factory()->create();
+
+        $html = $this->get("/users/{$user->id}/edit")->assertOk()->getContent();
+
+        foreach (['onUpdate', 'onDestroy'] as $handler) {
+            $this->assertMatchesRegularExpression('/<button(?=[^>]*data-request="'.$handler.'")(?=[^>]*data-request-flash="true")[^>]*>/', $html);
+        }
+    }
+
     public function test_the_group_edit_page_posts_the_form_session_key(): void
     {
         $group = UserGroup::factory()->create(['code' => 'editors']);

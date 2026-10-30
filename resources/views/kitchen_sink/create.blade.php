@@ -18,7 +18,7 @@
     {{ $formWidget }}
 
     <div class="mt-7">
-        {{ Ui::ajaxButton(handler: 'onStore', label: 'Create Sample', primary: true) }}
+        {{ Ui::ajaxButton(dataRequestFlash: true, handler: 'onStore', label: 'Create Sample', primary: true) }}
     </div>
 </form>
 

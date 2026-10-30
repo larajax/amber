@@ -27,7 +27,7 @@ trait CategoryForm
 
         return ajax()
             ->flash('success', 'Category created.')
-            ->redirect('categories');
+            ->redirect(route('categories.index'));
     }
 
     /**
@@ -55,7 +55,7 @@ trait CategoryForm
 
         return ajax()
             ->flash('success', 'Category deleted.')
-            ->redirect('categories');
+            ->redirect(route('categories.index'));
     }
 
     /**

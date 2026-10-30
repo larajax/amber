@@ -16,12 +16,14 @@
 
     <div class="mt-7 d-flex gap-3">
         {{ Ui::ajaxButton(
+            dataRequestFlash: true,
             handler: 'onUpdate',
             label: 'Save',
             primary: true,
             hotkey: ['ctrl+s', 'cmd+s']
         ) }}
         {{ Ui::ajaxButton(
+            dataRequestFlash: true,
             handler: 'onDestroy',
             label: 'Delete',
             danger: true,
