@@ -1,0 +1,13 @@
+columns:
+    title:
+        label: Title
+
+    excerpt:
+        label: Excerpt
+        type: summary
+
+    content:
+        label: Content
+        type: summary
+        limitWords: 8
+        endChars: ' (more)'

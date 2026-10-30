@@ -1,0 +1,9 @@
+fields:
+    primary_group:
+        label: Primary Group
+        type: relation
+        scope: withoutGuest
+        quickCreate:
+            fields: ~/resources/ui/reference/form-widgets/relation/quick-create-form.yaml
+            popupSize: small
+        comment: Pick Create New to add a group in a popup, which is then selected here.

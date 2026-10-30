@@ -1,0 +1,10 @@
+fields:
+    visibility:
+        label: Visibility
+        type: balloon-selector
+        allowEmpty: true
+        options:
+            public: Public
+            members: Members
+            private: Private
+        comment: Clicking the active option clears the value.

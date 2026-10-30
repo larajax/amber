@@ -1,0 +1,12 @@
+fields:
+    features:
+        label: Features
+        type: checkboxlist
+        inlineOptions: true
+        quickselect: true
+        options:
+            wifi: Wi-Fi
+            parking: Parking
+            pool: Pool
+            gym: Gym
+        comment: Saved as a JSON array of the ticked keys.

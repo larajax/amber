@@ -1,0 +1,7 @@
+fields:
+    groups:
+        label: Groups
+        type: relation
+        scope: withoutGuest
+        emptyOption: There are no groups to pick from.
+        comment: A belongsToMany relation renders as a checkbox list, leaving out the guest group.

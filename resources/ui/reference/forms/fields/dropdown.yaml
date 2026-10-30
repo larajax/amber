@@ -1,0 +1,23 @@
+fields:
+    priority:
+        label: Priority
+        type: dropdown
+        span: left
+        emptyOption: Not set
+        options:
+            low: Low
+            normal: Normal
+            high: High
+        comment: Not set can be picked again to clear the value.
+
+    delivery:
+        label: Delivery
+        type: dropdown
+        span: right
+        placeholder: Choose a method
+        showSearch: false
+        options:
+            pickup: Pick up in store
+            courier: Courier
+            post: Post
+        comment: The placeholder shows while it is empty, and the search box is off.

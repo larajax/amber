@@ -1,0 +1,35 @@
+fields:
+    code:
+        label: Code
+        comment: Outside the tabs, so it stays above them on every tab.
+
+tabs:
+    defaultTab: Content
+
+    icons:
+        Content: ph ph-text-aa
+        Pricing: ph ph-currency-dollar
+
+    fields:
+        headline:
+            label: Headline
+            comment: No tab is given, so it lands in the default tab.
+
+        excerpt:
+            label: Excerpt
+            type: textarea
+            size: tiny
+
+        price:
+            label: Price
+            type: number
+            tab: Pricing
+            span: left
+            step: 0.01
+
+        quantity:
+            label: Quantity
+            type: number
+            tab: Pricing
+            span: right
+            step: 1

@@ -1,0 +1,13 @@
+fields:
+    topics_preview:
+        label: Topics
+        type: taglist
+        valueFrom: topics
+        disabled: true
+        options:
+            design: Design
+            engineering: Engineering
+            marketing: Marketing
+            research: Research
+            support: Support
+        comment: Lists the picked topics as a preview, which is never saved.

@@ -1,0 +1,7 @@
+fields:
+    icon:
+        label: Icon
+        type: dropdown
+        emptyOption: No icon
+        optionsPreset: icons@phosphor
+        comment: The icons@phosphor preset lists every Phosphor icon, each with its preview.

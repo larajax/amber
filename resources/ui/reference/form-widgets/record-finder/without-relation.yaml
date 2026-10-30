@@ -1,0 +1,19 @@
+fields:
+    group_code:
+        label: Group Code
+        type: recordfinder
+        title: Pick a group
+        useRelation: false
+        modelClass: App\Models\UserGroup
+        keyFrom: code
+        conditions: code <> 'guest'
+        list:
+            columns:
+                name:
+                    label: Name
+                    searchable: true
+                code:
+                    label: Code
+        nameFrom: name
+        descriptionFrom: code
+        comment: Saves the picked group's code in a plain column, with no relation behind it.

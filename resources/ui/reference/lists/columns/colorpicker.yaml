@@ -1,0 +1,7 @@
+columns:
+    title:
+        label: Title
+
+    featured_color:
+        label: Color
+        type: colorpicker

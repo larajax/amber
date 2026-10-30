@@ -1,0 +1,12 @@
+columns:
+    name:
+        label: Category
+
+    slug:
+        label: Slug
+
+    posts_count:
+        label: Posts
+        type: number
+        relation: posts
+        relationCount: true

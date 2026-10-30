@@ -1,0 +1,17 @@
+fields:
+    reviewer:
+        label: Reviewer
+        type: recordfinder
+        title: Pick a reviewer
+        list:
+            columns:
+                name:
+                    label: Name
+                    searchable: true
+                email:
+                    label: Email
+                    searchable: true
+        nameFrom: name
+        descriptionFrom: email
+        recordsPerPage: 5
+        comment: Select opens a searchable list of users, five to a page.

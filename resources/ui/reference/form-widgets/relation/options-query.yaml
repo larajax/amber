@@ -1,0 +1,9 @@
+fields:
+    reviewer:
+        label: Reviewer
+        type: relation
+        select: concat(name, ' (', email, ')')
+        conditions: email_verified_at is not null
+        excludeFrom: user_id
+        emptyOption: No reviewer
+        comment: Verified users other than the saved owner, labelled with their email.

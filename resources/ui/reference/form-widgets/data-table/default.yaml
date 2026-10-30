@@ -1,0 +1,20 @@
+fields:
+    line_items:
+        label: Line Items
+        type: datatable
+        comment: Rows save as a JSON list, one object per row keyed by column name.
+        columns:
+            item:
+                title: Item
+            quantity:
+                title: Qty
+                type: numeric
+                width: 90px
+            price:
+                title: Unit Price
+                type: numeric
+                width: 120px
+            taxable:
+                title: Taxable
+                type: checkbox
+                width: 90px

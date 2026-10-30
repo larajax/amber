@@ -1,0 +1,17 @@
+fields:
+    stock_levels:
+        label: Stock Levels
+        type: datatable
+        height: 220
+        comment: The rows scroll inside 220 pixels.
+        columns:
+            warehouse:
+                title: Warehouse
+            on_hand:
+                title: On Hand
+                type: numeric
+                width: 110px
+            reorder_at:
+                title: Reorder At
+                type: numeric
+                width: 110px

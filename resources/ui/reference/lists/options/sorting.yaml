@@ -1,0 +1,16 @@
+columns:
+    title:
+        label: Title
+
+    views:
+        label: Views
+        type: number
+
+    published_at:
+        label: Published
+        type: timetense
+
+    excerpt:
+        label: Excerpt
+        type: summary
+        sortable: false

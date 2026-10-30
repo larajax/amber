@@ -1,0 +1,41 @@
+columns:
+    name:
+        label: Name
+
+    status:
+        label: Status
+        type: selectable
+        options:
+            draft: [Draft, '#94a3b8']
+            active: [Active, '#22c55e']
+            archived: [Archived, '#ef4444']
+
+    priority:
+        label: Priority
+        type: selectable
+        options:
+            low: [Low, ph ph-arrow-down]
+            normal: [Normal, ph ph-minus]
+            high: [High, ph ph-arrow-up]
+
+    country:
+        label: Country
+        type: selectable
+
+    state:
+        label: State
+        type: selectable
+
+    timezone:
+        label: Timezone
+        type: selectable
+        optionsPreset: timezones
+
+    features:
+        label: Features
+        type: selectable
+        options:
+            wifi: Wi-Fi
+            parking: Parking
+            pool: Pool
+            gym: Gym

@@ -1,0 +1,12 @@
+columns:
+    title:
+        label: Title
+
+    featured_image:
+        label: Image
+        type: image
+        width: 96
+        height: 54
+        options:
+            mode: crop
+        sortable: false

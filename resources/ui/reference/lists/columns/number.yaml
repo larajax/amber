@@ -1,0 +1,14 @@
+columns:
+    title:
+        label: Title
+
+    views:
+        label: Views
+        type: number
+        format: '%d views'
+
+    comments_count:
+        label: Comments
+        type: number
+        relation: comments
+        relationCount: true

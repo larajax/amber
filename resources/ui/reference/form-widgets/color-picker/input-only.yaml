@@ -1,0 +1,6 @@
+fields:
+    text_color:
+        label: Text Color
+        type: colorpicker
+        showInput: true
+        comment: The picker alone, for any color, with no swatches.

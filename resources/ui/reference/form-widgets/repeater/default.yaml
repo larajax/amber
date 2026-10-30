@@ -1,0 +1,14 @@
+fields:
+    faqs:
+        label: Questions
+        type: repeater
+        prompt: Add question
+        titleFrom: question
+        form:
+            fields:
+                question:
+                    label: Question
+                answer:
+                    label: Answer
+                    type: textarea
+                    size: tiny

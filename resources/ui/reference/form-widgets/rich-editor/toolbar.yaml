@@ -1,0 +1,6 @@
+fields:
+    key_points:
+        label: Key Points
+        type: richeditor
+        toolbarButtons: [bold, italic, underline, '|', formatUL, formatOL, '|', insertLink, '|', undo, redo]
+        comment: Only these buttons, in this order, with a separator for each pipe.

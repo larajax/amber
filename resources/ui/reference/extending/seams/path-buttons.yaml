@@ -1,0 +1,6 @@
+buttons:
+    create:
+        label: New Sample
+        icon: ph ph-plus
+        type: primary
+        url: samples/create

@@ -1,0 +1,19 @@
+columns:
+    title:
+        label: Title
+
+    category:
+        label: Category
+        type: linkage
+        relation: category
+        select: name
+        linkUrl: categories/:category_id/edit
+
+    views:
+        label: Views
+        type: number
+
+    published:
+        label: Live
+        type: switch
+        clickable: false

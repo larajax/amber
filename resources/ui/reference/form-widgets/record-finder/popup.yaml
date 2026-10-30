@@ -1,0 +1,28 @@
+fields:
+    primary_group:
+        label: Primary Group
+        type: recordfinder
+        title: Pick a group
+        list:
+            columns:
+                name:
+                    label: Name
+                    searchable: true
+                code:
+                    label: Code
+                description:
+                    label: Description
+        filter:
+            scopes:
+                hide_guest:
+                    label: Hide the guest group
+                    type: checkbox
+                    conditions: code <> 'guest'
+        nameFrom: name
+        descriptionFrom: code
+        defaultSort:
+            column: name
+            direction: asc
+        showSetup: true
+        popupSize: large
+        comment: The popup sorts by name, adds a filter and a list setup button, and opens at the large size.

@@ -1,0 +1,9 @@
+fields:
+    brochure:
+        label: Brochure
+        type: fileupload
+        mode: file
+        fileTypes: pdf
+        mimeTypes: pdf
+        maxFilesize: 2
+        comment: One PDF file, checked by extension and MIME type, up to 2 MB.

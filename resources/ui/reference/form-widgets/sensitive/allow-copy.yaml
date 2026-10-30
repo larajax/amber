@@ -1,0 +1,6 @@
+fields:
+    webhook_secret:
+        label: Webhook Secret
+        type: sensitive
+        allowCopy: true
+        comment: The copy button reveals the secret first when it has not been loaded yet.

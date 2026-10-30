@@ -1,0 +1,11 @@
+columns:
+    title:
+        label: Title
+
+    slug:
+        label: Address
+        format: /blog/%s
+
+    keywords:
+        label: Keywords
+        default: None

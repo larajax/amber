@@ -1,13 +1,8 @@
 # ===================================
-#  User Group List Column Definitions
+#  Group List Column Definitions
 # ===================================
 
 columns:
-    id:
-        label: ID
-        searchable: true
-        sortable: true
-
     name:
         label: Name
         searchable: true
@@ -18,7 +13,16 @@ columns:
         searchable: true
         sortable: true
 
+    users_count:
+        label: Members
+        type: number
+        relation: users
+        relationCount: true
+        sortable: true
+        width: 120px
+
     created_at:
         label: Created
-        type: datetime
+        type: date
         sortable: true
+        width: 160px

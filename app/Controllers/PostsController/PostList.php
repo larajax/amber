@@ -4,6 +4,7 @@ namespace App\Controllers\PostsController;
 
 use App\Models\Post;
 use Illuminate\Support\Str;
+use Larajax\Classes\AjaxResponse;
 use Larajax\Ui\Widgets\Filter;
 use Larajax\Ui\Widgets\Lists;
 use Larajax\Ui\Widgets\Toolbar;
@@ -20,6 +21,8 @@ trait PostList
 
     /**
      * prepareListVars builds the list, filter and toolbar, bound together, for the index view.
+     *
+     * @return array{list: Lists, filter: Filter, toolbar: Toolbar}
      */
     protected function prepareListVars(): array
     {
@@ -29,6 +32,12 @@ trait PostList
         $filter->bindToListWidget($list);
 
         $toolbar = $this->makeToolbarWidget($list);
+
+        // The top bar search submits here as ?q=
+        if (request()->filled('q')) {
+            $toolbar->getSearchWidget()->setActiveTerm(request('q'));
+        }
+
         $toolbar->bindToListWidget($list);
 
         return [
@@ -85,7 +94,7 @@ trait PostList
     /**
      * onBulkPublish publishes the checked posts, stamping a publish date on those without one.
      */
-    public function onBulkPublish()
+    public function onBulkPublish(): AjaxResponse
     {
         $posts = Post::whereIn('id', $this->getCheckedPostIds());
 
@@ -100,7 +109,7 @@ trait PostList
     /**
      * onBulkUnpublish takes the checked posts offline and keeps their publish dates.
      */
-    public function onBulkUnpublish()
+    public function onBulkUnpublish(): AjaxResponse
     {
         $count = Post::whereIn('id', $this->getCheckedPostIds())->update(['published' => false]);
 
@@ -112,7 +121,7 @@ trait PostList
     /**
      * onBulkDelete deletes the checked posts one by one, so their comments, tags and images go with them.
      */
-    public function onBulkDelete()
+    public function onBulkDelete(): AjaxResponse
     {
         $posts = Post::whereIn('id', $this->getCheckedPostIds())->get();
 

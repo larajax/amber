@@ -1,0 +1,11 @@
+fields:
+    awards:
+        label: Awards
+        type: datatable
+        columns:
+            award:
+                title: Award
+            year:
+                title: Year
+                type: numeric
+                width: 90px

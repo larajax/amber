@@ -1,0 +1,25 @@
+columns:
+    id:
+        label: ID
+        hidden: true
+
+    title:
+        label: Title
+
+    status:
+        label: Status
+        type: selectable
+
+    views:
+        label: Views
+        type: number
+
+    excerpt:
+        label: Excerpt
+        type: summary
+        invisible: true
+
+    review_on:
+        label: Review Date
+        type: date
+        invisible: true

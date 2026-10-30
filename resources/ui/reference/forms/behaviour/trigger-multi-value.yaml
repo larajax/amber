@@ -1,0 +1,20 @@
+fields:
+    features:
+        label: Features
+        type: checkboxlist
+        inlineOptions: true
+        options:
+            wifi: Wi-Fi
+            parking: Parking
+            pool: Pool
+            gym: Gym
+
+    summary:
+        label: Parking Details
+        type: textarea
+        size: tiny
+        trigger:
+            action: show
+            field: features[]
+            condition: value[parking]
+        comment: Shown while Parking is one of the ticked features.

@@ -1,0 +1,13 @@
+fields:
+    owner_preview:
+        label: Owner
+        type: recordfinder
+        valueFrom: user
+        disabled: true
+        list:
+            columns:
+                name:
+                    label: Name
+        nameFrom: name
+        descriptionFrom: email
+        comment: Shows the owner as a preview, which is never saved.

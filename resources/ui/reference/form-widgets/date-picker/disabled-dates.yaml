@@ -1,0 +1,7 @@
+fields:
+    ends_on:
+        label: Ends On
+        type: datepicker
+        mode: date
+        disableDays: App\Models\Sample::getHolidayDates
+        comment: The end of year holidays come from a static model method.

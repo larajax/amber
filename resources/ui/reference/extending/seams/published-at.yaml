@@ -1,0 +1,6 @@
+fields:
+    published_at:
+        label: Published At
+        type: datepicker
+        mode: datetime
+        comment: Shown and entered in the viewer timezone, and stored in the app timezone.

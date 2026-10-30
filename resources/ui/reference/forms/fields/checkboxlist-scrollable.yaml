@@ -1,0 +1,19 @@
+fields:
+    interests:
+        label: Interests
+        type: checkboxlist
+        options:
+            astronomy: Astronomy
+            baking: Baking
+            calligraphy: Calligraphy
+            climbing: Climbing
+            cycling: Cycling
+            gardening: Gardening
+            hiking: Hiking
+            knitting: Knitting
+            painting: Painting
+            photography: Photography
+            pottery: Pottery
+            sailing: Sailing
+            surfing: Surfing
+            woodworking: Woodworking

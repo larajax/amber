@@ -1,0 +1,5 @@
+fields:
+    embed_code:
+        label: Embed Code
+        type: codeeditor
+        language: html

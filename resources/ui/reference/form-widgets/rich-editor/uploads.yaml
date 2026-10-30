@@ -1,0 +1,9 @@
+fields:
+    story:
+        label: Story
+        type: richeditor
+        uploadDisk: public
+        uploadPath: uploads/richeditor
+        uploadMaxSize: 2
+        toolbarButtons: [paragraphFormat, bold, italic, '|', insertImage, insertFile, '|', html]
+        comment: Images can also be pasted or dropped in, and each upload is stored on the public disk.

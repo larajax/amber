@@ -1,0 +1,19 @@
+fields:
+    itinerary:
+        label: Itinerary
+        type: repeater
+        prompt: Add day
+        titleFrom: day
+        form:
+            fields:
+                day:
+                    label: Day
+                stops:
+                    label: Stops
+                    type: repeater
+                    prompt: Add stop
+                    titleFrom: place
+                    form:
+                        fields:
+                            place:
+                                label: Place

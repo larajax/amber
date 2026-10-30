@@ -1,0 +1,5 @@
+fields:
+    published_at:
+        label: Published
+        type: datepicker
+        comment: The calendar carries the time controls, and the value saves as date and time.

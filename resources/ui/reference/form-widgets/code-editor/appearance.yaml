@@ -1,0 +1,11 @@
+fields:
+    script_code:
+        label: Script
+        type: codeeditor
+        language: javascript
+        fontSize: 14
+        margin: 16
+        showGutter: false
+        highlightActiveLine: false
+        displayIndentGuides: false
+        comment: Larger text with more padding, and no line numbers, line highlight or indent guides.

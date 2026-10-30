@@ -1,0 +1,7 @@
+fields:
+    discontinued_on:
+        label: Discontinued On
+        type: datepicker
+        mode: date
+        disabled: true
+        comment: Shown, but the pickers do not open and the value is not saved.

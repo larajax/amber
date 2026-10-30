@@ -13,6 +13,8 @@ trait CategoryList
 {
     /**
      * prepareListVars builds the tree and its toolbar, bound together, for the index view.
+     *
+     * @return array{list: ListStructure, toolbar: Toolbar}
      */
     protected function prepareListVars(): array
     {

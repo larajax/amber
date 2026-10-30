@@ -7,6 +7,7 @@ use App\Controllers\PostsController\PostForm;
 use App\Controllers\PostsController\PostList;
 use App\Controllers\PostsController\QuickPostForm;
 use App\Models\Post;
+use Illuminate\Contracts\View\View;
 
 /**
  * PostsController holds the post pages, with the list, filter, toolbar and form widgets and their AJAX handlers in the PostList, PostForm and QuickPostForm traits.
@@ -20,7 +21,7 @@ class PostsController extends ControllerBase
     /**
      * index displays a filtered, searchable, configurable list of posts with bulk actions and a quick post popup.
      */
-    public function index()
+    public function index(): View
     {
         return view('posts.index', $this->prepareListVars());
     }
@@ -28,7 +29,7 @@ class PostsController extends ControllerBase
     /**
      * create shows the form for a new post.
      */
-    public function create()
+    public function create(): View
     {
         $this->formWidget = $this->makeFormWidget(new Post, 'create');
 
@@ -40,7 +41,7 @@ class PostsController extends ControllerBase
     /**
      * edit shows the form for an existing post.
      */
-    public function edit(Post $post)
+    public function edit(Post $post): View
     {
         $this->formWidget = $this->makeFormWidget($post, 'update');
 

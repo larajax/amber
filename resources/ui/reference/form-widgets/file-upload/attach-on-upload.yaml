@@ -1,0 +1,7 @@
+fields:
+    documents:
+        label: Documents
+        type: fileupload
+        mode: file
+        deferredBinding: false
+        comment: Attached to the sample as soon as the upload finishes, without waiting for Save.

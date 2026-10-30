@@ -1,0 +1,6 @@
+fields:
+    terms:
+        label: Terms
+        type: markdown
+        readOnly: true
+        comment: Shown rendered, and the value is still saved.

@@ -5,12 +5,13 @@ namespace App\Models;
 use Database\Factories\SampleFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Larajax\Ui\Classes\FormField;
 use October\Rain\Database\Model;
 use October\Rain\Database\Traits\Validation;
 use October\Rain\Element\ElementHolder;
 
 /**
- * Sample is the kitchen sink record, holding a value for every field type, form widget and form option the showcase form demonstrates.
+ * Sample is the record the reference pages edit, holding a value for every field type, form widget and form option they demonstrate.
  */
 class Sample extends Model
 {
@@ -49,26 +50,64 @@ class Sample extends Model
         'address',
         'line_items',
         'meta',
+        'shipping',
+        'contact',
+        'faqs',
+        'highlights',
+        'milestones',
+        'dimensions',
+        'sections',
+        'specs',
+        'itinerary',
+        'languages',
+        'deliveries',
+        'variants',
+        'stockists',
+        'parts',
+        'price_breaks',
+        'bundle_items',
+        'suppliers',
+        'components',
+        'stock_levels',
+        'reviews',
+        'spec_sheet',
+        'certifications',
+        'awards',
+        'seo',
+        'packaging',
     ];
 
     /**
-     * @var array<string, mixed> belongsTo relations, the owner picked by the record finder.
+     * @var array<string, mixed> belongsTo relations, the owner, reviewer, group and category picked by the relation widgets.
      */
     public $belongsTo = [
         'user' => User::class,
+        'reviewer' => User::class,
+        'primary_group' => UserGroup::class,
+        'primary_category' => Category::class,
     ];
 
     /**
-     * @var array<string, mixed> belongsToMany relations, the groups picked by the tag list.
+     * @var array<string, mixed> belongsToMany relations, the groups, categories and labels picked by checkbox and tag lists.
      */
     public $belongsToMany = [
         'groups' => [UserGroup::class, 'table' => 'sample_user_group'],
+        'categories' => [Category::class, 'table' => 'category_sample'],
+        'labels' => [Tag::class, 'table' => 'sample_tag'],
+    ];
+
+    /**
+     * @var array<string, mixed> hasMany relations, the links the repeater edits as records.
+     */
+    public $hasMany = [
+        'links' => [SampleLink::class, 'delete' => true],
     ];
 
     /**
      * @var array<string, mixed> attachOne relations, where the contract is stored privately.
      */
     public $attachOne = [
+        'cover' => File::class,
         'brochure' => File::class,
         'contract' => [File::class, 'public' => false],
     ];
@@ -79,6 +118,7 @@ class Sample extends Model
     public $attachMany = [
         'gallery' => File::class,
         'attachments' => File::class,
+        'documents' => File::class,
     ];
 
     /**
@@ -201,6 +241,20 @@ class Sample extends Model
     }
 
     /**
+     * listCurrencies returns the currency choices, as a static options method named by optionsMethod.
+     *
+     * @return array<string, string>
+     */
+    public static function listCurrencies(self $sample, FormField $field): array
+    {
+        return [
+            'aud' => 'Australian Dollar',
+            'nzd' => 'New Zealand Dollar',
+            'usd' => 'US Dollar',
+        ];
+    }
+
+    /**
      * listRegions returns the states and cities for each country of the dependent dropdowns.
      *
      * @return array<string, array<string, array{name: string, cities: array<string, string>}>>
@@ -237,6 +291,35 @@ class Sample extends Model
             "{$year}-12-26",
             ($year + 1).'-01-01',
         ];
+    }
+
+    /**
+     * getBrandColors returns the swatches of the brand color picker, named by its availableColors option.
+     *
+     * @return array<int, string>
+     */
+    public function getBrandColors(): array
+    {
+        return ['#0f766e', '#14b8a6', '#f59e0b', '#be123c'];
+    }
+
+    /**
+     * getStockistsDataTableOptions returns the options of the stockists table's AJAX columns, where the cities follow the row's country.
+     *
+     * @param  array<string, mixed>  $rowData
+     * @return array<string, string>
+     */
+    public function getStockistsDataTableOptions(?string $column, array $rowData = []): array
+    {
+        if ($column === 'channel') {
+            return ['retail' => 'Retail', 'online' => 'Online', 'wholesale' => 'Wholesale'];
+        }
+
+        if ($column === 'city') {
+            return array_merge([], ...array_column(static::listRegions()[$rowData['country'] ?? ''] ?? [], 'cities'));
+        }
+
+        return [];
     }
 
     /**

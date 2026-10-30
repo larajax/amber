@@ -1,0 +1,20 @@
+columns:
+    title:
+        label: Title
+        searchable: true
+
+    category:
+        label: Category
+        relation: category
+        select: name
+        searchable: true
+
+    excerpt:
+        label: Excerpt
+        type: summary
+        searchable: true
+        invisible: true
+
+    status:
+        label: Status
+        type: selectable

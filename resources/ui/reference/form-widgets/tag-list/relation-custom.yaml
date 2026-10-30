@@ -1,0 +1,8 @@
+fields:
+    labels:
+        label: Labels
+        type: taglist
+        nameFrom: name
+        customTags: true
+        placeholder: Pick a tag or type a new one
+        comment: A typed tag that does not exist yet is created as a new tag record.

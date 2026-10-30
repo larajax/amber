@@ -1,0 +1,7 @@
+fields:
+    groups:
+        label: Groups
+        type: taglist
+        nameFrom: name
+        placeholder: Add groups
+        comment: Picks from every group and saves the relation.

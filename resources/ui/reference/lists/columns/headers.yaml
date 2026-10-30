@@ -1,0 +1,21 @@
+columns:
+    title:
+        label: Title
+        width: 40%
+        tooltip: Shown as the heading of the post.
+
+    views:
+        label: Views this year
+        shortLabel: Views
+        type: number
+        align: center
+
+    status:
+        label: Status
+        cssClass: text-capitalize
+        headCssClass: fst-italic
+        tooltip:
+            title: Only <strong>approved</strong> posts can go live.
+            isHtml: true
+            icon: ph ph-question
+            placement: right

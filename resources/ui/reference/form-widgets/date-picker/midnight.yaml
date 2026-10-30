@@ -1,0 +1,6 @@
+fields:
+    expires_at:
+        label: Expires
+        type: datepicker
+        defaultTimeMidnight: true
+        comment: Picking a date fills the time with 00:00 rather than the current time.

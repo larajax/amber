@@ -1,0 +1,11 @@
+fields:
+    code:
+        label: Code
+        placeholder: auroraDeskLamp
+        comment: No type is given, so this is a text field.
+
+    headline:
+        label: Headline
+        type: text
+        placeholder: Write a headline
+        comment: The placeholder shows while the field is empty.

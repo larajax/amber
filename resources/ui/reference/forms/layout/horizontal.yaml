@@ -1,0 +1,23 @@
+fields:
+    plan:
+        label: Plan
+        type: radio
+        inlineOptions: true
+        options:
+            starter: Starter
+            team: Team
+            business: Business
+
+    status:
+        label: Status
+        type: balloon-selector
+        options:
+            draft: Draft
+            active: Active
+            archived: Archived
+
+    timezone:
+        label: Timezone
+        type: dropdown
+        optionsPreset: timezones
+        comment: Labels sit to the left, comments under the field.

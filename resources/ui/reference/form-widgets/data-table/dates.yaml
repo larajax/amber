@@ -1,0 +1,21 @@
+fields:
+    deliveries:
+        label: Deliveries
+        type: datatable
+        comment: The date and time cells open a picker, and the Until column uses a twelve hour clock.
+        columns:
+            date:
+                title: Date
+                type: date
+                width: 140px
+            from:
+                title: From
+                type: time
+                width: 110px
+            until:
+                title: Until
+                type: time
+                timeFormat: 'h:mm A'
+                width: 110px
+            carrier:
+                title: Carrier

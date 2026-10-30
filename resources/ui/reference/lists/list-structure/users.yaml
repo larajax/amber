@@ -1,0 +1,10 @@
+columns:
+    name:
+        label: Name
+
+    email:
+        label: Email
+
+    sort_order:
+        label: Order
+        type: number

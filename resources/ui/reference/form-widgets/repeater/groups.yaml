@@ -1,0 +1,36 @@
+fields:
+    sections:
+        label: Sections
+        type: repeater
+        prompt: Add section
+        groupKeyFrom: type
+        groups:
+            text:
+                name: Text
+                description: A title and a paragraph
+                icon: ph ph-text-align-left
+                titleFrom: title
+                fields:
+                    title:
+                        label: Title
+                    body:
+                        label: Body
+                        type: textarea
+                        size: tiny
+            image:
+                name: Image
+                description: A caption and how wide the image runs
+                icon: ph ph-image
+                titleFrom: caption
+                fields:
+                    caption:
+                        label: Caption
+                        span: left
+                    alignment:
+                        label: Width
+                        type: dropdown
+                        span: right
+                        options:
+                            inline: Inline
+                            wide: Wide
+                            full: Full width

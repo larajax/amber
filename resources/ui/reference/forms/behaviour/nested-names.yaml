@@ -1,0 +1,17 @@
+fields:
+    seo[title]:
+        label: SEO Title
+        span: left
+
+    seo[robots]:
+        label: Robots
+        type: dropdown
+        span: right
+        options:
+            index: Index and follow
+            noindex: Do not index
+
+    seo[description]:
+        label: SEO Description
+        type: textarea
+        size: tiny

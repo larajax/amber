@@ -1,0 +1,8 @@
+fields:
+    attachments:
+        label: Attachments
+        type: fileupload
+        mode: file
+        maxFiles: 5
+        size: small
+        comment: Up to five files of the default types, in a list that scrolls past 200 pixels.

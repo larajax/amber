@@ -1,0 +1,6 @@
+fields:
+    webinar_at:
+        label: Webinar
+        type: datepicker
+        useTimezone: false
+        comment: Shown and saved exactly as stored, whatever the viewer's timezone.

@@ -1,0 +1,6 @@
+fields:
+    disclaimer:
+        label: Disclaimer
+        type: richeditor
+        readOnly: true
+        comment: The content can be selected and copied, but not changed.

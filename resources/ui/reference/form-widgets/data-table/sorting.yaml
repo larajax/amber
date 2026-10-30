@@ -1,0 +1,18 @@
+fields:
+    components:
+        label: Components
+        type: datatable
+        sorting: true
+        reorderRows: true
+        reorderColumns: true
+        multiSelect: false
+        comment: Click a header to sort, drag a row number or a header to move it, and select one cell at a time.
+        columns:
+            name:
+                title: Component
+            material:
+                title: Material
+            weight:
+                title: Weight (g)
+                type: numeric
+                width: 120px

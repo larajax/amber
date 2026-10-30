@@ -1,0 +1,16 @@
+scopes:
+    domain:
+        label: Email Domain
+        type: dropdown
+        emptyOption: All domains
+        modelScope: applyDomain
+        options:
+            example.com: example.com
+            example.org: example.org
+            example.net: example.net
+
+    name:
+        label: Name
+        type: group
+        optionsMethod: App\Models\User::getNameGroupOptions
+        dependsOn: domain

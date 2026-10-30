@@ -1,0 +1,21 @@
+fields:
+    country:
+        label: Country
+        type: dropdown
+        span: left
+        comment: No options are given, so they come from the model's getCountryOptions method.
+
+    category:
+        label: Category
+        type: dropdown
+        span: right
+        emptyOption: Pick a category
+        optionsMethod: getCategoryOptions
+        comment: From the method named by optionsMethod, which returns option groups.
+
+    currency:
+        label: Currency
+        type: dropdown
+        span: left
+        optionsMethod: App\Models\Sample::listCurrencies
+        comment: From a static method, named as Class::method.

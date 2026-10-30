@@ -1,0 +1,15 @@
+fields:
+    dimensions:
+        label: Dimensions
+        type: repeater
+        prompt: Add dimension
+        showReorder: false
+        showDuplicate: false
+        form:
+            fields:
+                label:
+                    label: Label
+                    span: left
+                value:
+                    label: Value
+                    span: right

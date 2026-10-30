@@ -1,0 +1,44 @@
+columns:
+    title:
+        label: Title
+        searchable: true
+
+    category:
+        label: Category
+        relation: category
+        select: name
+
+    tags:
+        label: Tags
+        type: partial
+        path: ~/resources/views/reference/lists/columns/_column_tags.php
+        relationWith: tags
+        sortable: false
+
+    status:
+        label: Status
+        type: selectable
+
+    published:
+        label: Live
+        type: switch
+
+    views:
+        label: Views
+        type: number
+
+    comments_count:
+        label: Comments
+        type: number
+        relation: comments
+        relationCount: true
+
+    published_at:
+        label: Published
+        type: date
+        format: j M Y
+
+    review_on:
+        label: Review
+        type: date
+        format: j M Y

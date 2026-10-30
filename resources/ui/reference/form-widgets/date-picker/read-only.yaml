@@ -1,0 +1,6 @@
+fields:
+    inspected_at:
+        label: Inspected
+        type: datepicker
+        readOnly: true
+        comment: Shown, and saved as it is, but the pickers do not open.

@@ -1,0 +1,15 @@
+fields:
+    milestones:
+        label: Milestones
+        type: repeater
+        prompt: Add milestone
+        titleFrom: title
+        itemsExpanded: false
+        form:
+            fields:
+                title:
+                    label: Title
+                    span: left
+                due:
+                    label: Due
+                    span: right

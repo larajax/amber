@@ -1,0 +1,16 @@
+fields:
+    discount_code:
+        label: Discount Code
+        span: row
+        spanClass: md:col-6
+
+    discount_percent:
+        label: Discount %
+        type: number
+        span: row
+        spanClass: md:col-3
+
+    keywords:
+        label: Keywords
+        span: row
+        spanClass: md:col-3

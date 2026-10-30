@@ -1,0 +1,5 @@
+fields:
+    color:
+        label: Color
+        type: colorpicker
+        comment: The default swatches, plus a picker for any custom color.

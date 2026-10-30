@@ -21,6 +21,14 @@ columns:
         searchable: true
         sortable: true
 
+    author:
+        label: Author
+        type: linkage
+        relation: author
+        select: name
+        linkUrl: authors/:author_id/edit
+        sortable: true
+
     category:
         label: Category
         type: linkage
@@ -67,36 +75,17 @@ columns:
         sortable: true
         width: 110px
 
-    featured_color:
-        label: Color
-        type: colorpicker
-        sortable: false
-        width: 70px
-
     views:
         label: Views
         type: number
         sortable: true
         invisible: true
-        format: '%s views'
 
     excerpt:
         label: Excerpt
         type: summary
         limitWords: 10
         searchable: true
-        invisible: true
-
-    review_on:
-        label: Review Date
-        type: date
-        sortable: true
-        invisible: true
-
-    share_time:
-        label: Share Time
-        type: time
-        sortable: true
         invisible: true
 
     created_at:

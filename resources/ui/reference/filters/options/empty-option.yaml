@@ -1,0 +1,13 @@
+scopes:
+    published:
+        label: Published
+        type: switch
+        conditions:
+            - published = false
+            - published = true
+
+    tags:
+        label: Tags
+        type: group
+        nameFrom: name
+        emptyOption: Untagged

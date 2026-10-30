@@ -1,37 +1,16 @@
 # ===================================
-#  User Filter Scope Definitions
+#  Author Filter Scope Definitions
 # ===================================
 
 scopes:
-    verified:
-        label: Verified
+    has_posts:
+        label: Has posts
         type: checkbox
-        conditions: email_verified_at is not null
+        modelScope: hasPosts
 
-    domain:
-        label: Email Domain
-        type: dropdown
-        emptyOption: All Domains
-        modelScope: applyDomain
-        options:
-            example.com: Example.com
-            example.org: Example.org
-            example.net: Example.net
-
-    id:
-        label: ID
-        type: number
-
-    email:
-        label: Email
-        type: text
-
-    created_at:
-        label: Created
-        type: date
-
-    name:
-        label: Name
+    primary_group:
+        label: Group
         type: group
-        optionsMethod: 'App\Models\User::getNameGroupOptions'
-        dependsOn: domain
+        modelClass: App\Models\UserGroup
+        nameFrom: name
+        optionsScope: withoutGuest

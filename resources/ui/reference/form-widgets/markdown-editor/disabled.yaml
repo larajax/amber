@@ -1,0 +1,6 @@
+fields:
+    warranty:
+        label: Warranty
+        type: markdown
+        disabled: true
+        comment: Shown rendered, and the value is neither posted nor saved.

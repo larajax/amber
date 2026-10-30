@@ -1,0 +1,18 @@
+fields:
+    price:
+        label: Price
+        type: number
+        span: left
+        min: 0
+        step: 0.01
+        placeholder: '0.00'
+        comment: From zero, in steps of one cent.
+
+    quantity:
+        label: Quantity
+        type: number
+        span: right
+        min: 0
+        max: 999
+        step: 1
+        comment: Whole numbers from 0 to 999.

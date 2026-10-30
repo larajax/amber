@@ -1,0 +1,6 @@
+fields:
+    checked_at:
+        label: Server Time Check
+        type: timechecker
+        format: D j M Y, H:i:s T
+        comment: Checking stamps the server time into this field, and Save stores it.

@@ -1,0 +1,46 @@
+fields:
+    parts:
+        label: Parts
+        type: datatable
+        requireValid: true
+        comment: Save stops at the first invalid cell, which is selected and explained.
+        columns:
+            name:
+                title: Part
+                validation:
+                    required:
+                        message: Name the part.
+                    length:
+                        max:
+                            value: 40
+                            message: Keep the name under 40 characters.
+            sku:
+                title: SKU
+                width: 120px
+                validation:
+                    regex:
+                        pattern: '^[A-Z]{2}-\d{3}$'
+                        message: Use two capitals, a dash and three digits, such as LP-104.
+            quantity:
+                title: Qty
+                type: numeric
+                width: 80px
+                validation:
+                    integer:
+                        min:
+                            value: 1
+                        max:
+                            value: 99
+            weight:
+                title: Weight (kg)
+                type: numeric
+                width: 110px
+                validation:
+                    float:
+                        allowNegative: false
+            supplier:
+                title: Supplier
+                validation:
+                    required:
+                        requiredWith: weight
+                        message: A weighed part needs a supplier.

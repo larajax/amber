@@ -1,0 +1,7 @@
+fields:
+    restock_on:
+        label: Restock On
+        type: datepicker
+        mode: date
+        format: D, j M Y
+        comment: Shown as Mon, 2 Nov 2026, and saved as 2026-11-02.

@@ -3,6 +3,7 @@
 namespace App\Controllers\PostsController;
 
 use App\Models\Post;
+use Larajax\Classes\AjaxResponse;
 use Larajax\Ui\Widgets\Form;
 
 /**
@@ -18,7 +19,7 @@ trait PostForm
     /**
      * onStore persists a new post and opens it for editing, as the AJAX handler for the create form.
      */
-    public function onStore()
+    public function onStore(): AjaxResponse
     {
         $this->formWidget = $this->makeFormWidget(new Post, 'create');
 
@@ -28,13 +29,13 @@ trait PostForm
 
         return ajax()
             ->flash('success', 'Post created.')
-            ->redirect("posts/{$post->id}/edit");
+            ->redirect(route('posts.edit', $post));
     }
 
     /**
      * onUpdate persists changes to a post, as the AJAX handler for the edit form.
      */
-    public function onUpdate(Post $post)
+    public function onUpdate(Post $post): AjaxResponse
     {
         $this->formWidget = $this->makeFormWidget($post, 'update');
 
@@ -46,7 +47,7 @@ trait PostForm
     /**
      * onDestroy deletes a post with its comments, tags and image, as the AJAX handler for the edit form.
      */
-    public function onDestroy(Post $post)
+    public function onDestroy(Post $post): AjaxResponse
     {
         $post->delete();
 
@@ -68,13 +69,13 @@ trait PostForm
     }
 
     /**
-     * saveForm fills the post from the form data and saves it, where the model rules validate it and the session key commits the uploaded image.
+     * saveForm fills the post from the form data and saves it, where the model rules validate it and the session key attaches the uploaded image.
      */
     protected function saveForm(Post $post): void
     {
         $data = $this->formWidget->getSaveData();
 
-        // The relation names fill through the model, so the category associates and the tags sync on save
+        // The relation names fill through the model, so the category and author associate and the tags sync on save
         $post->fill($data)->save(null, $this->formWidget->getSessionKey());
     }
 }

@@ -1,0 +1,7 @@
+fields:
+    _owner_readonly:
+        label: Owner
+        type: relation
+        valueFrom: user
+        readOnly: true
+        comment: Shows the owner as text and still posts its key.

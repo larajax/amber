@@ -1,0 +1,72 @@
+fields:
+    content:
+        label: Content Blocks
+        type: repeater
+        displayMode: builder
+        prompt: Add content block
+        groups:
+            heading:
+                name: Heading
+                description: A title with an optional subtitle
+                icon: ph ph-text-h
+                titleFrom: title
+                fields:
+                    title:
+                        label: Title
+                        span: left
+                    subtitle:
+                        label: Subtitle
+                        span: right
+            paragraph:
+                name: Paragraph
+                description: Text with its options on a second tab
+                icon: ph ph-paragraph
+                titleFrom: text
+                useTabs: true
+                fields:
+                    text:
+                        label: Text
+                        type: textarea
+                        size: small
+                        tab: Content
+                    align:
+                        label: Alignment
+                        type: radio
+                        inlineOptions: true
+                        tab: Options
+                        default: left
+                        options:
+                            left: Left
+                            center: Center
+                            right: Right
+            quote:
+                name: Quote
+                description: A quote and who said it
+                icon: ph ph-quotes
+                titleFrom: author
+                fields:
+                    quote:
+                        label: Quote
+                        type: textarea
+                        size: tiny
+                    author:
+                        label: Author
+            checklist:
+                name: Checklist
+                description: A nested repeater of checklist items
+                icon: ph ph-list-checks
+                fields:
+                    items:
+                        label: Items
+                        type: repeater
+                        prompt: Add item
+                        titleFrom: label
+                        form:
+                            fields:
+                                label:
+                                    label: Item
+                                    span: left
+                                done:
+                                    label: Done
+                                    type: checkbox
+                                    span: right

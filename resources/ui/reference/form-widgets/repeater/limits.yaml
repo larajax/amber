@@ -1,0 +1,12 @@
+fields:
+    highlights:
+        label: Highlights
+        type: repeater
+        prompt: Add highlight
+        minItems: 2
+        maxItems: 4
+        form:
+            fields:
+                text:
+                    label: Highlight
+        comment: Between two and four highlights.

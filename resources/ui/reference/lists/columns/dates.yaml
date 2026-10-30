@@ -1,0 +1,17 @@
+columns:
+    title:
+        label: Title
+
+    published_at:
+        label: Published
+        type: datetime
+
+    review_on:
+        label: Review
+        type: date
+        format: D j M Y
+
+    share_time:
+        label: Share Time
+        type: time
+        format: H:i

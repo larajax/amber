@@ -1,0 +1,27 @@
+fields:
+    city:
+        label: City
+        span: left
+        comment: span left
+
+    postcode:
+        label: Postcode
+        span: right
+        comment: span right
+
+    delivery_address:
+        label: Address
+        span: full
+        comment: span full, the default
+
+    state:
+        label: State
+        type: dropdown
+        span: auto
+        comment: span auto, which lands on the left
+
+    country:
+        label: Country
+        type: dropdown
+        span: auto
+        comment: span auto, which lands on the right after a left field

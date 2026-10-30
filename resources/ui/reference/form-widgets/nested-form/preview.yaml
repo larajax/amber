@@ -1,0 +1,18 @@
+fields:
+    address_preview:
+        label: Address
+        type: nestedform
+        valueFrom: address
+        disabled: true
+        form:
+            fields:
+                recipient:
+                    label: Recipient
+                line1:
+                    label: Street
+                suburb:
+                    label: Suburb
+                    span: left
+                region_code:
+                    label: Postal Code
+                    span: right

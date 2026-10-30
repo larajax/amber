@@ -1,0 +1,6 @@
+fields:
+    faq:
+        label: FAQ
+        type: markdown
+        size: small
+        comment: A small editor that still grows with its content.

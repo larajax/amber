@@ -1,0 +1,7 @@
+fields:
+    css_code:
+        label: CSS
+        type: codeeditor
+        language: css
+        size: small
+        comment: A small editor that still grows with its content.

@@ -1,0 +1,18 @@
+columns:
+    title:
+        label: Title
+        searchable: true
+
+    status:
+        label: Status
+        type: selectable
+
+    views:
+        label: Views
+        type: number
+
+    excerpt:
+        label: Excerpt
+        type: summary
+        searchable: true
+        invisible: true

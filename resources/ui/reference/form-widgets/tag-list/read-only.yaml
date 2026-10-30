@@ -1,0 +1,8 @@
+fields:
+    _tags_readonly:
+        label: Tags
+        type: taglist
+        valueFrom: tags
+        readOnly: true
+        customTags: true
+        comment: Lists the tags without an input, and still posts them.

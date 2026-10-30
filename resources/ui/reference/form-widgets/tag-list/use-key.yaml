@@ -1,0 +1,12 @@
+fields:
+    languages:
+        label: Languages
+        type: taglist
+        useKey: false
+        placeholder: Pick languages
+        options:
+            en: English
+            fr: French
+            ja: Japanese
+            pt: Portuguese
+        comment: Fixed options saved by their labels instead of their keys.

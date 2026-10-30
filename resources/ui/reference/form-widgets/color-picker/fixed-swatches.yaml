@@ -1,0 +1,7 @@
+fields:
+    accent_color:
+        label: Accent Color
+        type: colorpicker
+        allowCustom: false
+        availableColors: ['#6a6cf7', '#1abc9c', '#f39c12', '#e74c3c', '#34495e']
+        comment: Only these swatches can be picked.

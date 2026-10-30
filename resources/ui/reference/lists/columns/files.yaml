@@ -1,0 +1,21 @@
+columns:
+    name:
+        label: Name
+
+    gallery:
+        label: Gallery
+        type: image
+        limit: 3
+        sortable: false
+
+    brochure:
+        label: Brochure
+        type: file
+        sortable: false
+
+    attachments:
+        label: Attachments
+        type: file
+        limit: 2
+        clickable: false
+        sortable: false

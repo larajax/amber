@@ -1,0 +1,16 @@
+fields:
+    reviews:
+        label: Reviews
+        type: datatable
+        placeholder: No reviews yet. Insert a row to add one.
+        comment: With no rows, the table shows this message instead of a blank row.
+        columns:
+            reviewer:
+                title: Reviewer
+            rating:
+                title: Rating
+                type: numeric
+                width: 90px
+            quote:
+                title: Quote
+                wrap: true

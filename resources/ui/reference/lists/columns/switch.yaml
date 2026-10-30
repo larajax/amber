@@ -1,0 +1,10 @@
+columns:
+    title:
+        label: Title
+
+    published:
+        label: Live
+        type: switch
+        options:
+            0: Not published
+            1: Published

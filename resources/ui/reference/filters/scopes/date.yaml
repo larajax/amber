@@ -1,0 +1,8 @@
+scopes:
+    published_at:
+        label: Published
+        type: date
+
+    review_on:
+        label: Review Date
+        type: daterange

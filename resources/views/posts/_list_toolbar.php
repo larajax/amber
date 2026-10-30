@@ -1,7 +1,7 @@
 <div data-control="toolbar">
     <?= Ui::button(
         label: 'New Post',
-        href: 'posts/create',
+        href: route('posts.create'),
         icon: 'ph ph-plus',
         primary: true
     ) ?>
@@ -45,7 +45,7 @@
 
     <?= Ui::button(
         label: 'Categories',
-        href: 'categories',
+        href: route('categories.index'),
         icon: 'ph ph-folders'
     ) ?>
 </div>

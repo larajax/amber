@@ -1,0 +1,19 @@
+fields:
+    spec_sheet:
+        label: Spec Sheet
+        type: datatable
+        adding: false
+        deleting: false
+        comment: Locked labels at 30 percent of the width, values that wrap, and notes cut short.
+        columns:
+            label:
+                title: Specification
+                readOnly: true
+                width: 30%
+            value:
+                title: Value
+                wrap: true
+            note:
+                title: Note
+                ellipsis: true
+                width: 160px

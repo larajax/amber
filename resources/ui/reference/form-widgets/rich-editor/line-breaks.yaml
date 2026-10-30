@@ -1,0 +1,8 @@
+fields:
+    signature:
+        label: Email Signature
+        type: richeditor
+        useLineBreaks: true
+        size: small
+        toolbarButtons: [bold, italic, '|', insertLink]
+        comment: Enter starts a new line inside the same paragraph.

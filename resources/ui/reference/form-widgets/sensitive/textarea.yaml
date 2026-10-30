@@ -1,0 +1,7 @@
+fields:
+    private_notes:
+        label: Private Notes
+        type: sensitive
+        mode: textarea
+        allowCopy: true
+        comment: Multi-line secrets stay behind a row of dots until revealed.

@@ -1,0 +1,13 @@
+fields:
+    gallery:
+        label: Gallery
+        type: fileupload
+        mode: image
+        imageWidth: 120
+        imageHeight: 120
+        maxFiles: 6
+        fileTypes: jpg,jpeg,png,gif,webp
+        thumbOptions:
+            mode: crop
+            extension: auto
+        comment: Up to six images, cropped into square thumbnails.

@@ -1,0 +1,23 @@
+fields:
+    variants:
+        label: Variants
+        type: datatable
+        comment: Finish must be one of its options, while Shade Color suggests options and accepts any text.
+        columns:
+            sku:
+                title: SKU
+                width: 120px
+            finish:
+                title: Finish
+                type: dropdown
+                options:
+                    brass: Brushed Brass
+                    chrome: Polished Chrome
+                    matte: Matte Black
+            color:
+                title: Shade Color
+                type: autocomplete
+                options:
+                    white: White
+                    sage: Sage
+                    terracotta: Terracotta

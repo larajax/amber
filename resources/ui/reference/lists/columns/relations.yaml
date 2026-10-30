@@ -1,0 +1,22 @@
+columns:
+    title:
+        label: Title
+
+    category_name:
+        label: Category
+        relation: category
+        select: name
+
+    tag_names:
+        label: Tags
+        relation: tags
+        select: name
+        sortable: false
+
+    category[slug]:
+        label: Category Slug
+
+    title_length:
+        label: Title Length
+        type: number
+        select: length(@title)

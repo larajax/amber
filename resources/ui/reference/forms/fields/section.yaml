@@ -1,0 +1,10 @@
+fields:
+    _shipping_section:
+        label: Shipping details
+        type: section
+        comment: Where and how the sample is sent.
+
+    _cost_section:
+        label: The fields below work out the delivery cost.
+        type: section
+        displayMode: simple

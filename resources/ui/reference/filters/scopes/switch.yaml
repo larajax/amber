@@ -1,0 +1,7 @@
+scopes:
+    published:
+        label: Published
+        type: switch
+        conditions:
+            - published = false
+            - published = true

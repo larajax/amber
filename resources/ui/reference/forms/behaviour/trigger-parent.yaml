@@ -1,0 +1,29 @@
+fields:
+    size:
+        label: Size
+        type: radio
+        inlineOptions: true
+        options:
+            s: Small
+            m: Medium
+            l: Large
+
+    packaging:
+        label: Packaging
+        type: nestedform
+        form:
+            fields:
+                boxes:
+                    label: Boxes
+                    type: number
+                    span: left
+                    min: 1
+
+                crate_notes:
+                    label: Crate Notes
+                    span: right
+                    trigger:
+                        action: show
+                        field: ^size
+                        condition: value[l]
+                    comment: Shown for the Large size, a field of the parent form.

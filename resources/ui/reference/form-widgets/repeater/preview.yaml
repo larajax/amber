@@ -1,0 +1,15 @@
+fields:
+    faqs_preview:
+        label: Questions
+        type: repeater
+        valueFrom: faqs
+        disabled: true
+        titleFrom: question
+        form:
+            fields:
+                question:
+                    label: Question
+                answer:
+                    label: Answer
+                    type: textarea
+                    size: tiny

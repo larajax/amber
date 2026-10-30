@@ -1,0 +1,5 @@
+fields:
+    api_key:
+        label: API Key
+        type: sensitive
+        comment: The eye button reveals the stored key, and typing replaces it.

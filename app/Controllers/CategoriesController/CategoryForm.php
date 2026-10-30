@@ -3,6 +3,7 @@
 namespace App\Controllers\CategoriesController;
 
 use App\Models\Category;
+use Larajax\Classes\AjaxResponse;
 use Larajax\Ui\Widgets\Form;
 use ValidationException;
 
@@ -19,7 +20,7 @@ trait CategoryForm
     /**
      * onStore persists a new category, as the AJAX handler for the create form.
      */
-    public function onStore()
+    public function onStore(): AjaxResponse
     {
         $this->formWidget = $this->makeFormWidget(new Category, 'create');
 
@@ -33,7 +34,7 @@ trait CategoryForm
     /**
      * onUpdate persists changes to a category, as the AJAX handler for the edit form.
      */
-    public function onUpdate(Category $category)
+    public function onUpdate(Category $category): AjaxResponse
     {
         $this->formWidget = $this->makeFormWidget($category, 'update');
 
@@ -45,7 +46,7 @@ trait CategoryForm
     /**
      * onDestroy deletes a category with the categories below it, refusing while any of them holds a post.
      */
-    public function onDestroy(Category $category)
+    public function onDestroy(Category $category): AjaxResponse
     {
         if ($category->hasPostsInTree()) {
             throw new ValidationException(['name' => 'Move or delete the posts in this category and the categories below it first.']);

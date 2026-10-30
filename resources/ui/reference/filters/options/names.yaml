@@ -1,0 +1,21 @@
+scopes:
+    live:
+        label: Published posts only
+        shortLabel: Live
+        type: checkbox
+        valueFrom: published
+
+    views:
+        label: Views
+        type: number
+        cssClass: fst-italic
+
+    status:
+        label: Status
+        type: group
+        before: views
+        options:
+            draft: Draft
+            review: In Review
+            approved: Approved
+            archived: Archived

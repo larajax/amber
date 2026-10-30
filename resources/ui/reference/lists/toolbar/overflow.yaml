@@ -1,0 +1,72 @@
+buttons:
+    publish:
+        label: Publish
+        icon: ph ph-eye
+        handler: onToolbarButton
+        requestData:
+            button: publish
+        attributes:
+            data-request-flash: true
+
+    unpublish:
+        label: Unpublish
+        icon: ph ph-eye-slash
+        handler: onToolbarButton
+        requestData:
+            button: unpublish
+        attributes:
+            data-request-flash: true
+
+    feature:
+        label: Feature
+        icon: ph ph-star
+        handler: onToolbarButton
+        requestData:
+            button: feature
+        attributes:
+            data-request-flash: true
+
+    duplicate:
+        label: Duplicate
+        icon: ph ph-copy
+        handler: onToolbarButton
+        requestData:
+            button: duplicate
+        attributes:
+            data-request-flash: true
+
+    export:
+        label: Export
+        icon: ph ph-export
+        handler: onToolbarButton
+        requestData:
+            button: export
+        attributes:
+            data-request-flash: true
+
+    print:
+        label: Print
+        icon: ph ph-printer
+        handler: onToolbarButton
+        requestData:
+            button: print
+        attributes:
+            data-request-flash: true
+
+    share:
+        label: Share
+        icon: ph ph-share-network
+        handler: onToolbarButton
+        requestData:
+            button: share
+        attributes:
+            data-request-flash: true
+
+    archive:
+        label: Archive
+        icon: ph ph-archive
+        handler: onToolbarButton
+        requestData:
+            button: archive
+        attributes:
+            data-request-flash: true

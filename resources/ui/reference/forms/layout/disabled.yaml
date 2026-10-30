@@ -1,0 +1,16 @@
+fields:
+    template:
+        label: Template
+        type: textarea
+        size: tiny
+        span: left
+        disabled: true
+
+    step_style:
+        label: Step Style
+        type: dropdown
+        span: right
+        disabled: true
+        options:
+            simple: Simple
+            detailed: Detailed

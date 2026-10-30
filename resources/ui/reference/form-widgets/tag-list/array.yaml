@@ -1,0 +1,8 @@
+fields:
+    tags:
+        label: Tags
+        type: taglist
+        mode: array
+        customTags: true
+        placeholder: Type a tag and press Enter
+        comment: Typed tags saved as a JSON array.

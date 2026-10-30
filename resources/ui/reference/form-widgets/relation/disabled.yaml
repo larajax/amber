@@ -1,0 +1,7 @@
+fields:
+    groups_disabled:
+        label: Groups
+        type: relation
+        valueFrom: groups
+        disabled: true
+        comment: Shows the groups as disabled checkboxes, which are never saved.

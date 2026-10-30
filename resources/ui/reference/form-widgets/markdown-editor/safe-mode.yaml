@@ -1,0 +1,6 @@
+fields:
+    announcement:
+        label: Announcement
+        type: markdown
+        safeMode: false
+        comment: The preview shows the iframe in this text, which safe mode would remove.

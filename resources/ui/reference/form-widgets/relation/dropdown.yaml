@@ -1,0 +1,10 @@
+fields:
+    user:
+        label: Owner
+        type: relation
+        nameFrom: name
+        emptyOption: No owner
+        defaultSort:
+            column: name
+            direction: asc
+        comment: A belongsTo relation renders as a dropdown of users, sorted by name.

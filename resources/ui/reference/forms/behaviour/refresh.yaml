@@ -1,0 +1,19 @@
+fields:
+    price:
+        label: Price
+        type: number
+        span: left
+        min: 0
+        step: 0.01
+
+    quantity:
+        label: Quantity
+        type: number
+        span: right
+        min: 0
+        step: 1
+
+    _stock_value:
+        label: Stock Value
+        type: partial
+        path: ~/resources/views/reference/forms/_field_stock_value.php

@@ -1,0 +1,26 @@
+fields:
+    stock_status:
+        label: Stock Status
+        type: dropdown
+        span: left
+        options:
+            in_stock: [In stock, '#27ae60']
+            low: [Low stock, '#f39c12']
+            out: [Out of stock, '#e74c3c']
+        comment: A second value that is a hex color shows a status dot.
+
+    transport:
+        label: Transport
+        type: dropdown
+        span: right
+        options:
+            road: [Road, ph ph-truck]
+            air: [Air, ph ph-airplane-tilt]
+            sea: [Sea, ph ph-boat]
+        comment: Any other second value is an icon.
+
+    level:
+        label: Level
+        type: dropdown
+        emptyOption: Pick a level
+        comment: Detailed options from getLevelOptions, with icons, a color, a disabled entry and indented children.

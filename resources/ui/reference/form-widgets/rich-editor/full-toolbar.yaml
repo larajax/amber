@@ -1,0 +1,12 @@
+fields:
+    specifications:
+        label: Specifications
+        type: richeditor
+        toolbarButtons: [
+            paragraphFormat, paragraphStyle, inlineStyle, fontFamily, fontSize, color, '|',
+            bold, italic, underline, strikeThrough, subscript, superscript, clearFormatting, '|',
+            align, formatOL, formatUL, outdent, indent, quote, '|',
+            insertLink, insertImage, insertVideo, insertAudio, insertTable, insertHR, '|',
+            undo, redo, selectAll, html, fullscreen
+        ]
+        comment: Every built-in button that works without a page hook.

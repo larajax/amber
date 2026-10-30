@@ -1,0 +1,17 @@
+fields:
+    name:
+        label: Name
+        span: left
+        autoFocus: true
+        comment: Required by the model's rules. Clear it and save to see the error.
+
+    email:
+        label: Email
+        type: email
+        span: right
+        comment: Checked by the model's email rule.
+
+    code:
+        label: Code
+        required: true
+        comment: The required property only shows the marker, so an empty code still saves.

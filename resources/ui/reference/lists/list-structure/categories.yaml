@@ -1,0 +1,14 @@
+columns:
+    name:
+        label: Category
+        searchable: true
+
+    slug:
+        label: Slug
+        searchable: true
+
+    posts_count:
+        label: Posts
+        type: number
+        relation: posts
+        relationCount: true

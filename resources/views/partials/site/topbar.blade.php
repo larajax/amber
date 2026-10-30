@@ -15,11 +15,11 @@
 
     <form
         class="search"
-        action="{{ url('users') }}"
+        action="{{ route('posts.index') }}"
         method="GET"
         role="search">
         <label class="visually-hidden" for="amber-search-input">
-            Search users
+            Search posts
         </label>
         <label class="form-control form-adorn search-input">
             <span class="form-adorn-icon" aria-hidden="true">
@@ -31,7 +31,7 @@
                 type="search"
                 name="q"
                 value="{{ request('q') }}"
-                placeholder="Search users..." />
+                placeholder="Search posts..." />
         </label>
     </form>
 

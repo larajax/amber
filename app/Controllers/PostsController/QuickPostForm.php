@@ -3,6 +3,7 @@
 namespace App\Controllers\PostsController;
 
 use App\Models\Post;
+use Larajax\Classes\AjaxResponse;
 use Larajax\Ui\Widgets\Form;
 
 /**
@@ -13,7 +14,7 @@ trait QuickPostForm
     /**
      * onLoadQuickPost renders the quick post form in a popup, as the AJAX handler for the toolbar popup button.
      */
-    public function onLoadQuickPost()
+    public function onLoadQuickPost(): string
     {
         $this->formWidget = $this->makeQuickPostFormWidget(new Post);
 
@@ -25,7 +26,7 @@ trait QuickPostForm
     /**
      * onCreateQuickPost creates a post from the popup form and refreshes the list.
      */
-    public function onCreateQuickPost()
+    public function onCreateQuickPost(): AjaxResponse
     {
         $post = new Post;
 

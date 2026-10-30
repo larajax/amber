@@ -1,0 +1,19 @@
+fields:
+    user:
+        label: Owner
+        type: recordfinder
+        title: Pick an owner
+        list:
+            columns:
+                name:
+                    label: Name
+                    searchable: true
+                email:
+                    label: Email
+                    searchable: true
+        nameFrom: name
+        descriptionFrom: email
+        recordsPerPage: 5
+        scope: App\Models\Sample::applyOwnerScope
+        searchScope: searchNameOrEmail
+        comment: Lists verified users only, and the search matches the start of a name or email.

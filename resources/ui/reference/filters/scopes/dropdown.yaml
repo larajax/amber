@@ -1,0 +1,6 @@
+scopes:
+    status:
+        label: Status
+        type: dropdown
+        emptyOption: Any status
+        optionsMethod: App\Models\Post::listStatusOptions

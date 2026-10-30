@@ -1,0 +1,6 @@
+fields:
+    border_color:
+        label: Border Color
+        type: colorpicker
+        readOnly: true
+        comment: Shown with its swatch, but the picker does not open.

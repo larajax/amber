@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // The kitchen sink's custom form widget, used in field definitions as type: timechecker
+        // The app's own form widget, used in field definitions as type: timechecker
         app('system.widgets')->registerFormWidgets(function ($manager) {
             $manager->registerFormWidget(\App\FormWidgets\TimeChecker::class, 'timechecker');
         });

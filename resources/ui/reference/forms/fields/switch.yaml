@@ -1,0 +1,5 @@
+fields:
+    is_featured:
+        label: Featured
+        type: switch
+        comment: Saved as a boolean, cast on the model.

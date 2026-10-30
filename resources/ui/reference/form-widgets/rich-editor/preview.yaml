@@ -1,0 +1,4 @@
+fields:
+    press_release:
+        label: Press Release
+        type: richeditor

@@ -1,0 +1,8 @@
+scopes:
+    views:
+        label: Views
+        type: number
+
+    id:
+        label: ID
+        type: numberrange

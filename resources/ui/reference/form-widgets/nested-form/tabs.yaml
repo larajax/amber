@@ -1,0 +1,31 @@
+fields:
+    shipping:
+        label: Shipping
+        type: nestedform
+        comment: The nested form brings its own tabs.
+        form:
+            fields:
+                recipient:
+                    label: Recipient
+            tabs:
+                fields:
+                    line1:
+                        label: Street
+                        tab: Street
+                    suburb:
+                        label: Suburb
+                        span: left
+                        tab: Street
+                    region_code:
+                        label: Postal Code
+                        span: right
+                        tab: Street
+                    instructions:
+                        label: Delivery Instructions
+                        type: textarea
+                        size: tiny
+                        tab: Delivery
+                    leave_at_door:
+                        label: Leave at the door
+                        type: switch
+                        tab: Delivery

@@ -1,0 +1,11 @@
+fields:
+    page_link:
+        label: Page Link
+        type: dropdown
+        emptyOption: No page
+        options:
+            'reference://ui/buttons': Buttons
+            'reference://ui/tabs': Tabs
+            'reference://extending/icons': Icons
+            'reference://extending/retired': A page that no longer exists
+        comment: Stores the reference:// link itself, which the list above resolves each time it renders.

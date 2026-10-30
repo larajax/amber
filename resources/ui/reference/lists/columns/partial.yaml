@@ -1,0 +1,10 @@
+columns:
+    title:
+        label: Title
+
+    tags:
+        label: Tags
+        type: partial
+        path: ~/resources/views/reference/lists/columns/_column_tags.php
+        relationWith: tags
+        sortable: false

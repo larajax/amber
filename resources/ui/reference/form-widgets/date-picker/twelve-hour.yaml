@@ -1,0 +1,7 @@
+fields:
+    closes_at:
+        label: Closes At
+        type: datepicker
+        mode: time
+        twelveHour: true
+        comment: Picked and shown with AM and PM, and still saved on a 24 hour clock.

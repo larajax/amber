@@ -7,7 +7,7 @@
         <h1 class="mb-0">
             Edit Category
         </h1>
-        <a href="{{ url('categories') }}" class="btn-link text-decoration-none">
+        <a href="{{ route('categories.index') }}" class="btn-link text-decoration-none">
             &larr; Back to categories
         </a>
     </div>

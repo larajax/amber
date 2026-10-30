@@ -6,6 +6,7 @@ use App\Classes\ControllerBase;
 use App\Controllers\CategoriesController\CategoryForm;
 use App\Controllers\CategoriesController\CategoryList;
 use App\Models\Category;
+use Illuminate\Contracts\View\View;
 
 /**
  * CategoriesController holds the category pages, with the tree list and form widgets and their AJAX handlers in the CategoryList and CategoryForm traits.
@@ -18,7 +19,7 @@ class CategoriesController extends ControllerBase
     /**
      * index displays the categories as a tree that can be expanded, nested and reordered by dragging.
      */
-    public function index()
+    public function index(): View
     {
         return view('categories.index', $this->prepareListVars());
     }
@@ -26,7 +27,7 @@ class CategoriesController extends ControllerBase
     /**
      * create shows the form for a new category.
      */
-    public function create()
+    public function create(): View
     {
         $this->formWidget = $this->makeFormWidget(new Category, 'create');
 
@@ -38,7 +39,7 @@ class CategoriesController extends ControllerBase
     /**
      * edit shows the form for an existing category.
      */
-    public function edit(Category $category)
+    public function edit(Category $category): View
     {
         $this->formWidget = $this->makeFormWidget($category, 'update');
 

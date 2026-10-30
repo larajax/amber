@@ -1,0 +1,26 @@
+fields:
+    excerpt:
+        label: Excerpt
+        type: textarea
+        size: tiny
+        span: left
+        comment: size tiny
+
+    summary:
+        label: Summary
+        type: textarea
+        size: small
+        span: right
+        comment: size small
+
+    body:
+        label: Body
+        type: textarea
+        size: huge
+        comment: size huge
+
+    notes:
+        label: Notes
+        type: textarea
+        size: giant
+        comment: size giant

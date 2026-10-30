@@ -1,0 +1,14 @@
+columns:
+    title:
+        label: Title
+        searchable: true
+
+    excerpt:
+        label: Excerpt
+        type: summary
+        searchable: true
+
+    category:
+        label: Category
+        relation: category
+        select: name

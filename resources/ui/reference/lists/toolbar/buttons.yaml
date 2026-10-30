@@ -1,0 +1,39 @@
+buttons:
+    create:
+        label: New Post
+        icon: ph ph-plus
+        type: primary
+        url: posts/create
+
+    preview:
+        label: Preview
+        icon: ph ph-app-window
+        handler: onLoadToolbarDialog
+        popup: true
+        hotkey: shift+p
+
+    refresh:
+        label: Refresh
+        icon: ph ph-arrows-clockwise
+        handler: onRefreshToolbarList
+        attributes:
+            data-request-flash: true
+
+    count:
+        label: Count
+        icon: ph ph-calculator
+        type: secondary
+        handler: onCountCheckedPosts
+        checked: true
+        attributes:
+            data-request-flash: true
+
+    delete:
+        label: Delete
+        icon: ph ph-trash
+        type: danger
+        handler: onDeleteCheckedPosts
+        confirm: Delete the checked posts?
+        checked: true
+        attributes:
+            data-request-flash: true

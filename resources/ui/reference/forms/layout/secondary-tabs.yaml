@@ -1,0 +1,26 @@
+tabs:
+    fields:
+        email:
+            label: Email
+            type: email
+            tab: Contact
+
+secondaryTabs:
+    activeTab: Body
+
+    icons:
+        Description: ph ph-article
+        Body: ph ph-text-align-left
+
+    fields:
+        description:
+            label: Description
+            type: textarea
+            size: small
+            tab: Description
+
+        body:
+            label: Body
+            type: textarea
+            tab: Body
+            comment: The secondary tabs open on Body, chosen by activeTab.

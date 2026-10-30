@@ -1,0 +1,18 @@
+fields:
+    article:
+        label: Article
+        type: richeditor
+        toolbarButtons: [paragraphFormat, paragraphStyle, '|', bold, italic, '|', insertLink, linkStyle, insertImage]
+        editorOptions:
+            paragraphFormat:
+                N: Body
+                H2: Heading
+                H3: Subheading
+            paragraphStyles:
+                oc-text-gray: Muted
+                oc-text-uppercase: Caps
+            linkStyles:
+                oc-link-strong: Bold link
+            imageDefaultAlign: left
+            imageResize: false
+        comment: Three paragraph formats, two paragraph styles, a link style, and images that insert on the left at their own size.

@@ -1,0 +1,17 @@
+fields:
+    address:
+        label: Address
+        type: nestedform
+        comment: Saved on the sample as one JSON object.
+        form:
+            fields:
+                recipient:
+                    label: Recipient
+                line1:
+                    label: Street
+                suburb:
+                    label: Suburb
+                    span: left
+                region_code:
+                    label: Postal Code
+                    span: right

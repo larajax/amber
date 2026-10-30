@@ -1,0 +1,8 @@
+fields:
+    cover:
+        label: Cover Image
+        type: fileupload
+        mode: image
+        imageWidth: 260
+        imageHeight: 160
+        comment: One image, with its thumbnail made at 260 by 160.

@@ -1,0 +1,37 @@
+fields:
+    status:
+        label: Status
+        type: balloon-selector
+        span: left
+        default: draft
+        options:
+            draft: Draft
+            active: Active
+            archived: Archived
+
+    priority:
+        label: Priority
+        type: dropdown
+        span: right
+        default: normal
+        options:
+            low: Low
+            normal: Normal
+            high: High
+
+    quantity:
+        label: Quantity
+        type: number
+        span: left
+        default: 1
+
+    is_featured:
+        label: Featured
+        type: switch
+        span: right
+        default: true
+
+    headline:
+        label: Headline
+        defaultFrom: name
+        comment: Starts as the record's name, through defaultFrom.

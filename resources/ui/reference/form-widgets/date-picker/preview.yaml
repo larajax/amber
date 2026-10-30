@@ -1,0 +1,4 @@
+fields:
+    sold_at:
+        label: Sold
+        type: datepicker

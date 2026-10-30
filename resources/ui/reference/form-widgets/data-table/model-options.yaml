@@ -1,0 +1,25 @@
+fields:
+    stockists:
+        label: Stockists
+        type: datatable
+        comment: The cities follow the country picked in the same row.
+        columns:
+            name:
+                title: Store
+            country:
+                title: Country
+                type: dropdown
+                width: 150px
+                options:
+                    au: Australia
+                    nz: New Zealand
+                    us: United States
+            city:
+                title: City
+                type: dropdown
+                dependsOn: country
+                width: 150px
+            channel:
+                title: Channel
+                type: autocomplete
+                width: 130px

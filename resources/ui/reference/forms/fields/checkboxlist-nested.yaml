@@ -1,0 +1,17 @@
+fields:
+    permissions:
+        label: Permissions
+        type: checkboxlist
+        cumulative: true
+        options:
+            content:
+                label: Manage content
+                comment: Ticks every content permission below it
+                children:
+                    content_create: Create entries
+                    content_publish: Publish entries
+            users:
+                label: Manage users
+                children:
+                    users_invite: Invite users
+                    users_remove: Remove users

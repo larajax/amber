@@ -1,0 +1,7 @@
+fields:
+    delivery_on:
+        label: Delivery On
+        type: datepicker
+        mode: date
+        disableDays: [0, 6]
+        comment: Saturdays and Sundays cannot be picked.

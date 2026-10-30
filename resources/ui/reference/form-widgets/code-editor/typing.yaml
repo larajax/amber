@@ -1,0 +1,8 @@
+fields:
+    scss_code:
+        label: SCSS
+        type: codeeditor
+        language: scss
+        autocompletion: live
+        autoClosing: false
+        comment: Suggestions appear while typing, and brackets and quotes are not closed for you.

@@ -1,0 +1,10 @@
+columns:
+    name:
+        label: Name
+    published_at:
+        label: Published
+        type: datetime
+        format: j M Y, H:i T
+    starts_on:
+        label: Starts On
+        type: date

@@ -1,0 +1,24 @@
+fields:
+    size:
+        label: Size
+        type: radio
+        span: left
+        inlineOptions: true
+        options:
+            s: Small
+            m: Medium
+            l: Large
+        comment: inlineOptions puts the options side by side.
+
+    plan:
+        label: Plan
+        type: radio
+        span: right
+        options:
+            starter: [Starter, For a single person]
+            team: [Team, For up to ten people]
+            business: [Business, For any number of people]
+            enterprise:
+                label: Enterprise
+                comment: Talk to our sales team
+                disabled: true

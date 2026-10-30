@@ -1,0 +1,15 @@
+fields:
+    private_notes:
+        label: Private Notes
+        type: textarea
+        size: tiny
+        span: left
+        cssClass: reference-forms-highlight
+        comment: Highlighted by a class on the field's container.
+
+    api_key:
+        label: API Key
+        span: right
+        containerAttributes:
+            data-secret: api-key
+        comment: Inspect the wrapping element to find data-secret.

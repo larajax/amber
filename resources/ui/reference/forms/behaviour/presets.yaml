@@ -1,0 +1,37 @@
+fields:
+    title:
+        label: Title
+        placeholder: Type a title, such as The Aurora Desk Lamp
+
+    slug:
+        label: Slug
+        span: left
+        preset: title
+        comment: A field name alone uses the slug type.
+
+    url:
+        label: URL
+        span: right
+        preset:
+            field: title
+            type: url
+
+    code:
+        label: Code
+        span: left
+        preset:
+            field: title
+            type: camel
+
+    file_name:
+        label: File Name
+        span: right
+        preset:
+            field: title
+            type: file
+
+    display_title:
+        label: Display Title
+        preset:
+            field: title
+            type: exact

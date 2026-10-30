@@ -17,6 +17,13 @@ scopes:
         nameFrom: name
         optionsScope: hasPosts
 
+    author:
+        label: Author
+        type: group
+        modelClass: App\Models\User
+        nameFrom: name
+        optionsScope: hasPosts
+
     tags:
         label: Tags
         type: group
@@ -37,25 +44,3 @@ scopes:
     published_at:
         label: Published
         type: daterange
-
-    views:
-        label: Views
-        type: numberrange
-
-    comment_count:
-        label: Comments
-        type: number
-        conditions:
-            greater: (select count(*) from comments where comments.post_id = posts.id) >= :value
-            lesser: (select count(*) from comments where comments.post_id = posts.id) <= :value
-
-    review_on:
-        label: Review Date
-        type: date
-        conditions:
-            before: review_on <= :valueDate
-            after: review_on >= :valueDate
-
-    title:
-        label: Title
-        type: text

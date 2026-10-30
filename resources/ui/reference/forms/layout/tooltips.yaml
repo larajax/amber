@@ -1,0 +1,21 @@
+fields:
+    category:
+        label: Category
+        type: dropdown
+        span: left
+        optionsMethod: getCategoryOptions
+        tooltip: The shelf the sample is listed on.
+
+    priority:
+        label: Priority
+        type: dropdown
+        span: right
+        options:
+            low: Low
+            normal: Normal
+            high: High
+        tooltip:
+            title: <strong>High</strong> ships first, <strong>Low</strong> ships last.
+            isHtml: true
+            placement: bottom
+            icon: ph ph-question

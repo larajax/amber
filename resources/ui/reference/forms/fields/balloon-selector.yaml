@@ -1,0 +1,9 @@
+fields:
+    status:
+        label: Status
+        type: balloon-selector
+        options:
+            draft: Draft
+            active: Active
+            archived: Archived
+        comment: Click an option, or tab to one and press Enter or Space.

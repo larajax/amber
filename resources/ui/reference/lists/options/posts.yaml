@@ -1,0 +1,16 @@
+columns:
+    title:
+        label: Title
+
+    category:
+        label: Category
+        relation: category
+        select: name
+
+    status:
+        label: Status
+        type: selectable
+
+    published_at:
+        label: Published
+        type: timetense

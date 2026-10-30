@@ -1,0 +1,17 @@
+scopes:
+    hide_archived:
+        label: Hide archived
+        type: checkbox
+        default: 1
+        conditions: status <> 'archived'
+
+    status:
+        label: Status
+        type: dropdown
+        emptyOption: Any status
+        default: approved
+        options:
+            draft: Draft
+            review: In Review
+            approved: Approved
+            archived: Archived

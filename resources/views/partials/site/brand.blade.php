@@ -1,6 +1,6 @@
 <a
     class="brand"
-    href="{{ url('users') }}"
+    href="{{ url('/') }}"
     aria-label="Amber home">
     <span class="brand-mark" aria-hidden="true">
         <i class="ph ph-cube"></i>

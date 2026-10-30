@@ -8,16 +8,13 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use October\Contracts\Database\SortableInterface;
 
 /**
- * User model.
- *
- * A stock Illuminate Eloquent model driving the Amber Form, List, Filter and
- * ListStructure widgets. The SortableInterface contract lets the reorderable
- * list persist a manual ordering.
+ * User is a stock Eloquent model, shown in the showcase as the blog's authors beside the Rain models of the posts, whose SortableInterface contract lets a reorderable list store a manual order.
  */
 #[Fillable([
     'name',
@@ -26,7 +23,6 @@ use October\Contracts\Database\SortableInterface;
     'password',
     'notes',
     'links',
-    'contacts',
     'is_mail_blocked',
     'is_two_factor_enabled',
     'primary_group_id',
@@ -48,7 +44,6 @@ class User extends Authenticatable implements SortableInterface
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'links' => 'array',
-            'contacts' => 'array',
             'is_mail_blocked' => 'boolean',
             'is_two_factor_enabled' => 'boolean',
         ];
@@ -73,8 +68,7 @@ class User extends Authenticatable implements SortableInterface
     }
 
     /**
-     * Filter users by email domain. Used by the "Email Domain" filter scope
-     * (see resources/ui/user/scopes.yaml).
+     * Filter users by email domain, used by the "Email Domain" scope on the Filter Options reference page.
      */
     public function scopeApplyDomain($query, $scope)
     {
@@ -82,7 +76,7 @@ class User extends Authenticatable implements SortableInterface
     }
 
     /**
-     * Search users by the start of their name or email, used as the kitchen sink owner finder's searchScope.
+     * Search users by the start of their name or email, used as a record finder's searchScope on the Record Finder reference page.
      *
      * @param  array<int, string>  $columns
      */
@@ -104,25 +98,19 @@ class User extends Authenticatable implements SortableInterface
     }
 
     /**
-     * Options for the AJAX dropdown columns of the "Contacts" data table, where
-     * the cities depend on the country picked in the same row.
-     *
-     * @param  array<string, mixed>  $rowData
-     * @return array<string, string>
+     * The posts this user wrote, a has-many relation to a Rain model counted by the authors list.
      */
-    public function getDataTableOptions(string $fieldName, ?string $column, array $rowData = []): array
+    public function posts(): HasMany
     {
-        if ($fieldName !== 'contacts' || $column !== 'city') {
-            return [];
-        }
+        return $this->hasMany(Post::class, 'author_id');
+    }
 
-        $cities = [
-            'au' => ['sydney' => 'Sydney', 'melbourne' => 'Melbourne', 'brisbane' => 'Brisbane'],
-            'nz' => ['auckland' => 'Auckland', 'wellington' => 'Wellington'],
-            'us' => ['new-york' => 'New York', 'chicago' => 'Chicago', 'seattle' => 'Seattle'],
-        ];
-
-        return $cities[$rowData['country'] ?? ''] ?? [];
+    /**
+     * Limit the query to users who wrote at least one post, used by the author filter on the posts list.
+     */
+    public function scopeHasPosts(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
+    {
+        return $query->has('posts');
     }
 
     /**

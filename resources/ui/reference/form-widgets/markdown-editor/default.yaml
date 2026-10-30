@@ -1,0 +1,6 @@
+fields:
+    readme:
+        label: Readme
+        type: markdown
+        placeholder: Describe the product in Markdown
+        comment: Write, then switch to Preview to see the result.

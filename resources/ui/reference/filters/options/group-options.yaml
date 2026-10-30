@@ -1,0 +1,8 @@
+scopes:
+    category:
+        label: Category
+        type: group
+        modelClass: App\Models\Category
+        nameFrom: name
+        optionsScope: hasPosts
+        matchMode: toggle

@@ -1,0 +1,7 @@
+fields:
+    reminder_at:
+        label: Reminder Hour
+        type: datepicker
+        mode: time
+        hoursOnly: true
+        comment: Only the hour is picked, and the minutes save as 00.

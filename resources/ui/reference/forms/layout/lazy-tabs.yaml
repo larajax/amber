@@ -1,0 +1,16 @@
+tabs:
+    lazy:
+        - Notes
+
+    fields:
+        summary:
+            label: Summary
+            type: textarea
+            size: small
+            tab: Overview
+
+        notes:
+            label: Notes
+            type: textarea
+            tab: Notes
+            comment: Rendered by the form's onLazyLoadTab handler when this tab first opens.

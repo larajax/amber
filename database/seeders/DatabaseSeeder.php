@@ -59,6 +59,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(PostsSeeder::class);
         $this->call(SampleSeeder::class);
+        $this->call(ReferenceListsSeeder::class);
     }
 
     /**

@@ -1,0 +1,38 @@
+fields:
+    delivery:
+        label: Delivery
+        type: dropdown
+        span: left
+        emptyOption: Pick a method
+        options:
+            pickup: Pick up in store
+            courier: Courier
+            courier_express: Express courier
+            post: Post
+
+    delivery_address:
+        label: Delivery Address
+        span: right
+        trigger:
+            action: show
+            field: delivery
+            condition: value[courier*][post]
+        comment: The wildcard in courier* matches both couriers.
+
+    _pickup_hint:
+        label: Ready for pick up
+        type: hint
+        mode: success
+        trigger:
+            action: show
+            field: delivery
+            condition: value[pickup]
+
+    _no_delivery_hint:
+        label: Pick a delivery method
+        type: hint
+        mode: warning
+        trigger:
+            action: show
+            field: delivery
+            condition: value[]

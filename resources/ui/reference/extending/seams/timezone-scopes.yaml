@@ -1,0 +1,4 @@
+scopes:
+    published_at:
+        label: Published
+        type: date

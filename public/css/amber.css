@@ -133,14 +133,90 @@
 }
 
 /*
- * UI element pages: each example shows the live element above the Blade that renders it
+ * Reference pages: each example shows the live element above the Blade or YAML that renders it
  */
 
 .amber-layout {
-    .ui-page-nav .nav-link {
+    .reference-nav .nav-link {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
+    }
+
+    .reference-nav {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+
+    .reference-eyebrow {
+        margin-bottom: 0.25rem;
+        font-size: 13px;
+        color: var(--amber-muted);
+
+        a {
+            color: inherit;
+        }
+    }
+
+    .reference-intro {
+        max-width: 75ch;
+    }
+
+    /* Form pages end in a bar that stays in view while the examples scroll past */
+    .reference-save-bar {
+        position: sticky;
+        bottom: 0;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-top: 1px solid var(--amber-border);
+        background: var(--amber-canvas);
+        font-size: 14px;
+    }
+
+    .reference-groups {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .reference-group-card {
+        padding: 1.5rem;
+        border: 1px solid var(--amber-border);
+        border-radius: 8px;
+        background: var(--amber-surface);
+
+        > h2 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        > p {
+            font-size: 14px;
+        }
+    }
+
+    .reference-page-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 1rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-size: 14px;
+
+        a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            text-decoration: none;
+        }
     }
 
     .ui-section {
@@ -234,24 +310,6 @@
         .is-saved {
             display: none;
         }
-    }
-}
-
-/*
- * Kitchen sink: the cssClass demo field and the headline stats partial
- */
-
-.amber-layout {
-    .form-group.kitchen-sink-highlight {
-        padding-inline-start: 0.75rem;
-        border-inline-start: 3px solid var(--amber-brand);
-    }
-
-    .kitchen-sink-stats {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0.5rem;
     }
 }
 
@@ -356,6 +414,21 @@
 
     .sidebar-nav-item + .sidebar-nav-item {
         margin-top: 4px;
+    }
+
+    .sidebar-nav-heading {
+        margin: 0 0 6px;
+        padding: 0 12px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--amber-sidebar-text);
+        opacity: 0.6;
+    }
+
+    .sidebar-nav-list + .sidebar-nav-heading {
+        margin-top: 24px;
     }
 
     .sidebar-nav-children {
@@ -666,5 +739,131 @@
         .sidebar-nav-chevron {
             transition: none;
         }
+    }
+}
+
+/*
+ * Reference, Forms: the cssClass example, the inline partial fields, and the source boxes that follow an example
+ */
+
+.amber-layout {
+    .form-group.reference-forms-highlight {
+        padding-inline-start: 0.75rem;
+        border-inline-start: 3px solid var(--amber-brand);
+    }
+
+    .reference-forms-inline {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .reference-forms-related {
+        margin-top: 0.75rem;
+
+        > .ui-example-source {
+            border-top: 0;
+        }
+    }
+}
+
+/*
+ * Reference, Lists and Filters: source boxes without a preview, tall lists that scroll inside their example, and the drag scroll strip
+ */
+
+.amber-layout {
+    --reference-strip-fade: 2rem;
+
+    .ui-example > .ui-example-source:first-child {
+        border-top: 0;
+    }
+
+    .ui-section > .ui-example + .ui-example {
+        margin-top: 0.75rem;
+    }
+
+    .ui-example-preview.reference-scroll-preview {
+        max-height: 28rem;
+        overflow-y: auto;
+    }
+
+    .reference-drag-strip {
+        position: relative;
+        max-width: 420px;
+
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            z-index: 1;
+            width: var(--reference-strip-fade);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.1s ease-out;
+        }
+
+        &::before {
+            left: 0;
+            background: linear-gradient(90deg, var(--amber-surface), transparent);
+        }
+
+        &::after {
+            right: 0;
+            background: linear-gradient(270deg, var(--amber-surface), transparent);
+        }
+
+        &.scroll-before::before,
+        &.scroll-after::after {
+            opacity: 1;
+        }
+
+        > [data-control="drag-scroll"] {
+            display: flex;
+            gap: 0.5rem;
+            overflow: hidden;
+            white-space: nowrap;
+            cursor: grab;
+        }
+    }
+
+    .reference-toolbar-narrow > .toolbar-widget {
+        max-width: 520px;
+    }
+}
+
+/*
+ * Reference UI and Extending pages: icon samples, the icon key grid and source-only examples
+ */
+
+.amber-layout {
+    .ui-icon-sample {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-inline-end: 0.75rem;
+        font-size: 14px;
+
+        > i {
+            font-size: 22px;
+        }
+    }
+
+    .ui-icon-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 0.75rem 1.5rem;
+        width: 100%;
+
+        code {
+            font-size: 12px;
+        }
+    }
+
+    /* An example that only prints source files needs no divider above its first one */
+    .ui-example > .ui-example-source:first-child {
+        border-top: 0;
     }
 }

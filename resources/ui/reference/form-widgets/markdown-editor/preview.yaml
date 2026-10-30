@@ -1,0 +1,4 @@
+fields:
+    care_guide:
+        label: Care Guide
+        type: markdown

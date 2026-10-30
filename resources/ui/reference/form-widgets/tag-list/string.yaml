@@ -1,0 +1,9 @@
+fields:
+    keywords:
+        label: Keywords
+        type: taglist
+        mode: string
+        separator: space
+        customTags: true
+        placeholder: Type keywords
+        comment: Typed tags saved as one string, separated by spaces.

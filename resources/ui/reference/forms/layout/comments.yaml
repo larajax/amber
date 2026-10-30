@@ -1,0 +1,12 @@
+fields:
+    name:
+        label: Name
+        span: left
+        commentAbove: commentAbove sits between the label and the field.
+        comment: comment sits below the field.
+
+    slug:
+        label: Slug
+        span: right
+        comment: With commentHtml, a comment can hold <strong>HTML markup</strong>.
+        commentHtml: true

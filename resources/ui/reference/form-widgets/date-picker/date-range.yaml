@@ -1,0 +1,8 @@
+fields:
+    launch_on:
+        label: Launch On
+        type: datepicker
+        mode: date
+        minDate: '2026-01-01'
+        maxDate: '2027-06-30'
+        comment: Only dates from January 2026 to June 2027 can be picked.

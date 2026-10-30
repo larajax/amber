@@ -1,0 +1,19 @@
+fields:
+    suppliers:
+        label: Suppliers
+        type: datatable
+        searching: true
+        csvExport: true
+        csvImport: true
+        comment: Search filters the rows, Export downloads them as CSV, and Import adds the rows of a CSV file.
+        columns:
+            name:
+                title: Name
+            contact:
+                title: Contact
+            email:
+                title: Email
+            lead_days:
+                title: Lead Days
+                type: numeric
+                width: 110px

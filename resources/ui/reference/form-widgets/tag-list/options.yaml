@@ -1,0 +1,13 @@
+fields:
+    topics:
+        label: Topics
+        type: taglist
+        maxItems: 3
+        placeholder: Pick up to three topics
+        options:
+            design: Design
+            engineering: Engineering
+            marketing: Marketing
+            research: Research
+            support: Support
+        comment: Fixed options saved by their keys, three at most.

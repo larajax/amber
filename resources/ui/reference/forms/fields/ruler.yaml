@@ -1,0 +1,8 @@
+fields:
+    _ruler:
+        type: ruler
+
+    _packaging_ruler:
+        label: Packaging
+        type: ruler
+        comment: A ruler can carry a label and a comment.

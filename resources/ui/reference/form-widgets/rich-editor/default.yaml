@@ -1,0 +1,5 @@
+fields:
+    overview:
+        label: Overview
+        type: richeditor
+        comment: Select text for formatting, or use the toolbar above it.

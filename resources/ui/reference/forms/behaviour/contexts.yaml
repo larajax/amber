@@ -1,0 +1,24 @@
+fields:
+    _create_hint:
+        label: Creating
+        type: hint
+        mode: tip
+        context: create
+        comment: This hint has context create.
+
+    _update_hint:
+        label: Editing
+        type: hint
+        mode: success
+        context: update
+        comment: This hint has context update.
+
+    reference@create:
+        label: Reference
+        placeholder: REF-0001
+        comment: Editable while creating.
+
+    reference@update:
+        label: Reference
+        readOnly: true
+        comment: Read-only once the record exists.

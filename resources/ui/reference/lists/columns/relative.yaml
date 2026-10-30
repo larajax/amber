@@ -1,0 +1,12 @@
+columns:
+    title:
+        label: Title
+
+    published_at:
+        label: Published
+        type: timetense
+
+    published_since:
+        label: Since
+        type: timesince
+        valueFrom: published_at

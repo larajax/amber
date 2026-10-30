@@ -1,0 +1,13 @@
+fields:
+    primary_group:
+        label: Primary Group
+        type: nestedform
+        comment: Editing these fields changes the group itself, which saves with the sample.
+        form:
+            fields:
+                name:
+                    label: Name
+                    span: left
+                code:
+                    label: Code
+                    span: right

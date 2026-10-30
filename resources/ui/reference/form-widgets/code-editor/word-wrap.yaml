@@ -1,0 +1,8 @@
+fields:
+    html_code:
+        label: HTML
+        type: codeeditor
+        language: html
+        wordWrap: 80
+        showPrintMargin: true
+        comment: Long lines wrap at column 80, marked by the print margin.

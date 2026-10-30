@@ -1,0 +1,15 @@
+fields:
+    links:
+        label: Links
+        type: repeater
+        prompt: Add link
+        titleFrom: title
+        form:
+            fields:
+                title:
+                    label: Title
+                    span: left
+                url:
+                    label: Address
+                    span: right
+        comment: Each item is a link record, saved through the hasMany relation.

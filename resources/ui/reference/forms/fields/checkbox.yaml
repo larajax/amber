@@ -1,0 +1,5 @@
+fields:
+    has_discount:
+        label: Offer a discount
+        type: checkbox
+        comment: The label and comment sit beside the box.

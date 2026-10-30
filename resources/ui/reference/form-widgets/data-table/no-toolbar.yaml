@@ -1,0 +1,13 @@
+fields:
+    bundle_items:
+        label: Bundle Items
+        type: datatable
+        toolbar: false
+        comment: Right click a row, or press Alt+A and Alt+D, to add and remove rows.
+        columns:
+            item:
+                title: Item
+            quantity:
+                title: Qty
+                type: numeric
+                width: 90px

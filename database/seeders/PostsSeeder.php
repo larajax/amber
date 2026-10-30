@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\File;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -80,6 +81,11 @@ class PostsSeeder extends Seeder
     ];
 
     /**
+     * @var int authorCount is how many of the seeded users write the posts, taken in the order they were created.
+     */
+    protected int $authorCount = 6;
+
+    /**
      * @var array<int, string> colors used as the post accent colors and image backgrounds.
      */
     protected array $colors = [
@@ -87,7 +93,7 @@ class PostsSeeder extends Seeder
     ];
 
     /**
-     * Seed the categories, tags and posts with their comments and featured images.
+     * Seed the categories, tags and posts with their authors, comments and featured images.
      */
     public function run(): void
     {
@@ -102,8 +108,10 @@ class PostsSeeder extends Seeder
             fn (string $name) => [$name => Tag::create(['name' => $name])]
         );
 
+        $authors = User::query()->orderBy('id')->limit($this->authorCount)->get();
+
         foreach ($this->posts as $index => [$title, $categoryName]) {
-            $this->seedPost($index, $title, $categories[$categoryName], $tags);
+            $this->seedPost($index, $title, $categories[$categoryName], $tags, $authors);
         }
     }
 
@@ -133,11 +141,12 @@ class PostsSeeder extends Seeder
     }
 
     /**
-     * seedPost creates one post with tags, comments and, for most posts, a generated featured image.
+     * seedPost creates one post by one of the authors, with tags, comments and, for most posts, a generated featured image.
      *
      * @param  Collection<string, Tag>  $tags
+     * @param  Collection<int, User>  $authors
      */
-    protected function seedPost(int $index, string $title, Category $category, Collection $tags): void
+    protected function seedPost(int $index, string $title, Category $category, Collection $tags, Collection $authors): void
     {
         $color = $this->colors[$index % count($this->colors)];
         $status = match (true) {
@@ -152,6 +161,7 @@ class PostsSeeder extends Seeder
             'title' => $title,
             'slug' => Str::slug($title),
             'category' => $category->id,
+            'author' => $authors->isEmpty() ? null : $authors[$index % $authors->count()]->id,
             'excerpt' => fake()->sentence(18),
             'content' => '<h2>'.e($title).'</h2>'.PHP_EOL.'<p>'.fake()->paragraph(5).'</p>'.PHP_EOL.'<p>'.fake()->paragraph(4).'</p>',
             'notes' => $index % 3 === 0 ? '**To do:** '.fake()->sentence().PHP_EOL.PHP_EOL.'- '.fake()->sentence().PHP_EOL.'- '.fake()->sentence() : null,

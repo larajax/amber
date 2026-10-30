@@ -1,0 +1,7 @@
+fields:
+    brand_color:
+        label: Brand Color
+        type: colorpicker
+        availableColors: getBrandColors
+        allowCustom: false
+        comment: The swatches come from the getBrandColors method of the model.

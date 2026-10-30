@@ -1,0 +1,6 @@
+fields:
+    teaser:
+        label: Teaser
+        type: richeditor
+        size: small
+        comment: A small editor that still grows with its content.

@@ -1,0 +1,13 @@
+fields:
+    gallery_preview:
+        label: Gallery
+        type: fileupload
+        mode: image
+        valueFrom: gallery
+        disabled: true
+        imageWidth: 120
+        imageHeight: 120
+        thumbOptions:
+            mode: crop
+            extension: auto
+        comment: Shows the gallery without its toolbar, and says so when there are no files.

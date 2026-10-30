@@ -35,12 +35,15 @@ tabs:
             required: true
             emptyOption: Choose a category
 
-        status:
-            label: Status
+        author:
+            label: Author
             tab: Details
-            type: dropdown
+            type: relation
             span: right
-            comment: The options and their icons come from the model.
+            emptyOption: No author
+            defaultSort:
+                column: name
+                direction: asc
 
         _permalink:
             label: Permalink
@@ -63,24 +66,22 @@ tabs:
             nameFrom: name
             customTags: true
             placeholder: Add tags
-            span: left
             comment: Pick existing tags, or type a new one and press Enter to create it.
 
-        keywords:
-            label: Keywords
+        featured_image:
+            label: Featured Image
             tab: Details
-            type: taglist
-            mode: array
-            customTags: true
-            placeholder: Add keywords
-            span: right
-            comment: Saved on the post as a JSON array.
-            options:
-                - accessibility
-                - performance
-                - security
-                - testing
-                - tutorial
+            type: fileupload
+            mode: image
+            imageWidth: 260
+            imageHeight: 160
+            fileTypes: jpg,jpeg,png,gif,webp
+
+        status:
+            label: Status
+            tab: Publishing
+            type: dropdown
+            span: left
 
         published:
             label: Published
@@ -100,57 +101,13 @@ tabs:
                 field: published
                 condition: checked
 
-        review_on:
-            label: Review Date
-            tab: Publishing
-            type: datepicker
-            mode: date
-            span: left
-            showWeekNumber: true
-            comment: When the content should be checked for accuracy.
-
-        share_time:
-            label: Social Share Time
-            tab: Publishing
-            type: datepicker
-            mode: time
-            twelveHour: true
-            span: right
-            comment: The time of day the post is shared to social channels.
-
-        views:
-            label: Views
-            tab: Publishing
-            type: number
-            span: left
-            min: 0
-
-        featured_image:
-            label: Featured Image
-            tab: Appearance
-            type: fileupload
-            mode: image
-            imageWidth: 260
-            imageHeight: 160
-            fileTypes: jpg,jpeg,png,gif,webp
-            span: left
-
-        featured_color:
-            label: Accent Color
-            tab: Appearance
-            type: colorpicker
-            span: right
-            comment: Used as the post's highlight color.
-
 secondaryTabs:
     fields:
 
         content:
             tab: Content
-            type: codeeditor
-            language: html
+            type: richeditor
             size: huge
-            commentAbove: The post body, written in HTML.
 
         notes:
             tab: Editor Notes

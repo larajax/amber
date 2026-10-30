@@ -1,0 +1,8 @@
+fields:
+    review_on:
+        label: Review On
+        type: datepicker
+        mode: date
+        firstDay: 1
+        showWeekNumber: true
+        comment: Weeks start on Monday, with the week number at the start of each row.

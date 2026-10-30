@@ -1,24 +1,18 @@
 # ===================================
-#  Toolbar Button Definitions
+#  Author Toolbar Button Definitions
 # ===================================
 
 buttons:
     create:
-        label: New User
+        label: New Author
         icon: ph ph-plus
         type: primary
-        url: users/create
-
-    reorder:
-        label: Reorder
-        icon: ph ph-dots-six-vertical
-        type: secondary
-        url: users/structure
+        url: authors/create
 
     delete:
         label: Delete
         icon: action.delete
         type: danger
         handler: onDelete
-        confirm: Delete the selected users?
+        confirm: Delete the selected authors? Their posts stay, without an author.
         checked: true

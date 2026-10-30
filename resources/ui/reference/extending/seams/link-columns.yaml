@@ -1,0 +1,10 @@
+columns:
+    name:
+        label: Name
+    stored_link:
+        label: Stored Value
+        valueFrom: page_link
+        sortable: false
+    page_link:
+        label: Link
+        type: linkage

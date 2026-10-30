@@ -1,0 +1,39 @@
+fields:
+    icon:
+        label: Icon
+        span: left
+        readOnly: true
+
+    stock_status:
+        label: Stock Status
+        type: dropdown
+        span: right
+        readOnly: true
+        options:
+            in_stock: [In stock, '#27ae60']
+            low: [Low stock, '#f39c12']
+            out: [Out of stock, '#e74c3c']
+        comment: A read-only dropdown shows its value as text.
+
+    has_discount:
+        label: Offer a discount
+        type: checkbox
+        span: left
+        readOnly: true
+
+    is_featured:
+        label: Featured
+        type: switch
+        span: right
+        readOnly: true
+
+    features:
+        label: Features
+        type: checkboxlist
+        inlineOptions: true
+        readOnly: true
+        options:
+            wifi: Wi-Fi
+            parking: Parking
+            pool: Pool
+            gym: Gym

@@ -1,0 +1,6 @@
+fields:
+    primary_category:
+        label: Primary Category
+        type: relation
+        emptyOption: No category
+        comment: Categories form a nested tree, so child options are indented under their parent.

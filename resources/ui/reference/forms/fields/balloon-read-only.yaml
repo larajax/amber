@@ -1,0 +1,10 @@
+fields:
+    audience:
+        label: Audience
+        type: balloon-selector
+        readOnly: true
+        options:
+            retail: Retail
+            trade: Trade
+            wholesale: Wholesale
+        comment: Ignores clicks and keys, while its value still saves.

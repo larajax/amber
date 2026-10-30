@@ -1,0 +1,6 @@
+fields:
+    license_key:
+        label: License Key
+        type: sensitive
+        readOnly: true
+        comment: The key can be revealed, but not changed.

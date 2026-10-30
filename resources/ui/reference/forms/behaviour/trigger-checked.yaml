@@ -1,0 +1,24 @@
+fields:
+    has_discount:
+        label: Offer a discount
+        type: checkbox
+        comment: Tick to show the code and enable the percentage.
+
+    discount_code:
+        label: Discount Code
+        span: left
+        trigger:
+            action: show
+            field: has_discount
+            condition: checked
+
+    discount_percent:
+        label: Discount Percent
+        type: number
+        span: right
+        min: 1
+        max: 90
+        trigger:
+            action: enable
+            field: has_discount
+            condition: checked

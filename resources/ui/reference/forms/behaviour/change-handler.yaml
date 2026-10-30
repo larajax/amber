@@ -1,0 +1,11 @@
+fields:
+    headline:
+        label: Headline
+        placeholder: Write a headline, then leave the field
+        changeHandler: onChangeHeadline
+        comment: Changing it calls onChangeHeadline, which redraws the stats below.
+
+    _headline_stats:
+        label: Headline Stats
+        type: partial
+        path: ~/resources/views/reference/forms/_field_headline_stats.php

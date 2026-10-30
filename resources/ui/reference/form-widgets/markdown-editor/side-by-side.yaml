@@ -1,0 +1,6 @@
+fields:
+    changelog:
+        label: Changelog
+        type: markdown
+        sideBySide: true
+        comment: The preview sits beside the text and follows its scrolling.

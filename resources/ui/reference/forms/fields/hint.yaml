@@ -1,0 +1,24 @@
+fields:
+    _info_hint:
+        label: Info
+        type: hint
+        mode: info
+        comment: The default mode, which tip also uses.
+
+    _success_hint:
+        label: Success
+        type: hint
+        mode: success
+        comment: With commentHtml, the comment can hold <strong>HTML markup</strong>.
+        commentHtml: true
+
+    _warning_hint:
+        label: Warning
+        type: hint
+        mode: warning
+        comment: Without commentHtml, the comment is read as **Markdown**.
+
+    _danger_hint:
+        label: Danger
+        type: hint
+        mode: danger

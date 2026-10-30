@@ -1,0 +1,25 @@
+fields:
+    specs:
+        label: Specifications
+        type: repeater
+        prompt: Add specification
+        titleFrom: property
+        useTabs: true
+        form:
+            fields:
+                property:
+                    label: Property
+                    tab: Value
+                value:
+                    label: Value
+                    span: left
+                    tab: Value
+                unit:
+                    label: Unit
+                    span: right
+                    tab: Value
+                note:
+                    label: Note
+                    type: textarea
+                    size: tiny
+                    tab: Notes

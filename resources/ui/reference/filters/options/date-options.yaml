@@ -1,0 +1,10 @@
+scopes:
+    published_at:
+        label: Published
+        type: date
+        minDate: '2026-01-01'
+        maxDate: '2026-12-31'
+        firstDay: 1
+        showWeekNumber: true
+        yearRange: 1
+        useTimezone: false

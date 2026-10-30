@@ -1,0 +1,9 @@
+scopes:
+    published:
+        label: Published
+        type: checkbox
+
+    commented:
+        label: Has comments
+        type: checkbox
+        conditions: exists (select 1 from comments where comments.post_id = posts.id)

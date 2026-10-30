@@ -1,0 +1,17 @@
+fields:
+    certifications:
+        label: Certifications
+        type: datatable
+        readOnly: true
+        searching: true
+        csvExport: true
+        comment: The rows can be searched and exported, but not changed.
+        columns:
+            standard:
+                title: Standard
+            issued_by:
+                title: Issued By
+            year:
+                title: Year
+                type: numeric
+                width: 90px

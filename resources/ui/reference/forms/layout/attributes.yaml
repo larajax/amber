@@ -1,0 +1,9 @@
+fields:
+    reference:
+        label: Reference
+        placeholder: REF-1234
+        attributes:
+            pattern: 'REF-[0-9]{4}'
+            maxlength: 8
+            title: REF, a dash and four digits
+        comment: The browser marks the field invalid until it matches REF-1234.

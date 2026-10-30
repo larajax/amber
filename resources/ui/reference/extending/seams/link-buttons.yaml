@@ -1,0 +1,11 @@
+buttons:
+    buttons:
+        label: Buttons page
+        icon: ph ph-cursor-click
+        type: secondary
+        url: reference://ui/buttons
+    retired:
+        label: Retired page
+        icon: ph ph-prohibit
+        type: secondary
+        url: reference://extending/retired

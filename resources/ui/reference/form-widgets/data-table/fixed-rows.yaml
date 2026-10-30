@@ -1,0 +1,16 @@
+fields:
+    price_breaks:
+        label: Price Breaks
+        type: datatable
+        adding: false
+        deleting: false
+        comment: The three rows can be edited, but none can be added or removed.
+        columns:
+            from_quantity:
+                title: From Qty
+                type: numeric
+                readOnly: true
+                width: 110px
+            discount:
+                title: Discount (%)
+                type: numeric

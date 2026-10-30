@@ -1,0 +1,36 @@
+fields:
+    _shipping_section:
+        label: Shipping
+        type: section
+        comment: Click to show or hide the fields of this section.
+        containerAttributes:
+            data-field-collapsible: true
+
+    delivery:
+        label: Delivery
+        type: dropdown
+        span: left
+        options:
+            pickup: Pick up in store
+            courier: Courier
+            post: Post
+
+    transport:
+        label: Transport
+        type: dropdown
+        span: right
+        options:
+            road: Road
+            air: Air
+            sea: Sea
+
+    _membership_section:
+        label: Membership
+        type: section
+        containerAttributes:
+            data-field-collapsible: true
+
+    level:
+        label: Level
+        type: dropdown
+        emptyOption: Pick a level

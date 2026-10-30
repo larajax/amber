@@ -1,0 +1,9 @@
+fields:
+    config_code:
+        label: Config
+        type: codeeditor
+        language: yaml
+        tabSize: 2
+        showInvisibles: true
+        codeFolding: markbegin
+        comment: Tab indents by two spaces, spaces show as dots, and the fold arrows always show.

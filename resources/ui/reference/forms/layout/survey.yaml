@@ -1,0 +1,27 @@
+tabs:
+    fields:
+        audience:
+            label: Audience
+            type: dropdown
+            tab: Who it is for
+            span: left
+            options:
+                retail: Retail
+                trade: Trade
+                wholesale: Wholesale
+
+        visibility:
+            label: Visibility
+            type: dropdown
+            tab: Who it is for
+            span: right
+            options:
+                public: Public
+                members: Members
+                private: Private
+
+        currency:
+            label: Currency
+            type: dropdown
+            tab: How it is sold
+            optionsMethod: App\Models\Sample::listCurrencies

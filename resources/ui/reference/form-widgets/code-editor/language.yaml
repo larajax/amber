@@ -1,0 +1,6 @@
+fields:
+    template:
+        label: Template
+        type: codeeditor
+        language: twig
+        comment: Twig highlighting, where Emmet abbreviations expand with Tab.

@@ -1,0 +1,6 @@
+fields:
+    starts_on:
+        label: Starts On
+        type: datepicker
+        mode: date
+        comment: A calendar of days, with no time controls.

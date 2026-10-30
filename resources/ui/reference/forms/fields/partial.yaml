@@ -1,0 +1,6 @@
+fields:
+    _record_card:
+        label: Record
+        type: partial
+        path: ~/resources/views/reference/forms/_field_record_card.php
+        comment: The partial reads the form model, so it shows the saved record.

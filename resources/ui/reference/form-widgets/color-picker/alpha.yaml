@@ -1,0 +1,7 @@
+fields:
+    overlay_color:
+        label: Overlay Color
+        type: colorpicker
+        showAlpha: true
+        allowEmpty: true
+        comment: The opacity slider stores 8 digit hex, and the clear button empties the value.

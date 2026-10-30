@@ -1,0 +1,17 @@
+fields:
+    name:
+        label: Name
+        span: left
+        autoFocus: true
+    code:
+        label: Code
+        span: right
+    description:
+        label: Description
+        type: textarea
+        size: tiny
+    users:
+        label: Members
+        type: taglist
+        nameFrom: name
+        context: [create, update]

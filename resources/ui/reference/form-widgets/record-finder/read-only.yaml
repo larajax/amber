@@ -1,0 +1,13 @@
+fields:
+    _reviewer_readonly:
+        label: Reviewer
+        type: recordfinder
+        valueFrom: reviewer
+        readOnly: true
+        list:
+            columns:
+                name:
+                    label: Name
+        nameFrom: name
+        descriptionFrom: email
+        comment: Shows the reviewer without the Replace and Clear buttons, and still posts its key.

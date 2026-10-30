@@ -1,0 +1,38 @@
+fields:
+    is_featured:
+        label: Featured
+        type: switch
+        comment: Turn it on and off to drive the fields below.
+
+    priority:
+        label: Priority
+        type: dropdown
+        span: left
+        options:
+            low: Low
+            normal: Normal
+            high: High
+        trigger:
+            action: fill[high]
+            field: is_featured
+            condition: checked
+        comment: Set to High when Featured turns on.
+
+    excerpt:
+        label: Teaser
+        span: right
+        trigger:
+            action: disable
+            field: is_featured
+            condition: unchecked
+        comment: Disabled while Featured is off.
+
+    notes:
+        label: Why is it not featured?
+        type: textarea
+        size: tiny
+        trigger:
+            action: hide|empty
+            field: is_featured
+            condition: checked
+        comment: Hidden and cleared while Featured is on.

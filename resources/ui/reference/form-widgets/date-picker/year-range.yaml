@@ -1,0 +1,7 @@
+fields:
+    manufactured_on:
+        label: Manufactured On
+        type: datepicker
+        mode: date
+        yearRange: [2015, 2026]
+        comment: The year view lists 2015 to 2026.

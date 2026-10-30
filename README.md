@@ -4,18 +4,24 @@ A sample Laravel application demonstrating [`larajax/ui`](https://github.com/lar
 the Form, List and UI widget engine (the same one behind the October CMS admin panel),
 packaged for any Laravel app. No CMS dependency, no JavaScript framework, no build step.
 
-The app is a small user directory: it manages **Users** and **User Groups** using stock
-Illuminate Eloquent models, driving every screen from YAML configuration.
+The app has two halves:
 
-## What it demonstrates
+- **Reference** (`/reference`) has one page for every part of the library, each example
+  shown beside the YAML or Blade that renders it. The pages are listed in
+  [`config/reference.php`](config/reference.php).
+- **Showcase** is a small blog that puts the pieces together, with October Rain models
+  (posts, categories, tags, groups) and a plain Eloquent model (the authors) side by side.
 
-| Screen | URL | Widgets |
+## The Showcase
+
+| Screen | URL | What it shows |
 | --- | --- | --- |
-| Users list | `/users` | Toolbar (declarative buttons + search), Filter (checkbox, dropdown and popover scopes), List (sortable, paginated) |
-| Users reorder | `/users/structure` | ListStructure (drag-to-reorder, persisted via `SortableInterface`) |
-| Create / edit user | `/users/create`, `/users/{id}/edit` | Form (tabs, contexts, relation fields, repeater, validation, AJAX save/delete) |
-| Groups list | `/user-groups` | Toolbar, List |
-| Create / edit group | `/user-groups/create`, `/user-groups/{id}/edit` | Form |
+| Posts | `/posts` | Toolbar with a quick post popup and bulk actions, Filter, List with a setup popup |
+| Create / edit post | `/posts/create`, `/posts/{id}/edit` | Form with tabs, relations to the category, author and tags, an image upload committed with the session key |
+| Categories | `/categories` | ListStructure as a nested tree, reordered by dragging |
+| Authors | `/authors` | Filter, List with a post count, bulk delete |
+| Create / edit author | `/authors/create`, `/authors/{id}/edit` | Form on an Eloquent model, validated in the controller |
+| Groups | `/groups` | List whose rows edit the group in a popup |
 
 The widget definitions live in [`resources/ui`](resources/ui) and the controllers that
 build them in [`app/Controllers`](app/Controllers).
@@ -42,7 +48,8 @@ composer dev
 ```
 
 Then open <http://localhost:8000>. The seeder creates five user groups and fifty users
-(each wired to a primary and secondary groups) plus a stable `demo@example.com` account.
+(each wired to a primary and secondary groups) plus a stable `demo@example.com` account,
+and a blog of thirty posts written by the first six users.
 
 > The default password for every seeded user is `password`.
 
@@ -68,18 +75,18 @@ Larajax view components, their AJAX handlers (`onStore`, `onUpdate`, `onDestroy`
 pagination, filtering) route automatically back to the controller that created them.
 
 ```php
-// app/Controllers/UsersController.php
+// app/Controllers/AuthorsController/AuthorList.php
 $list = Lists::make(
     model: new User,
     columns: '~/resources/ui/user/columns.yaml',
     recordsPerPage: 10,
 );
 
-return view('users.index', ['list' => $list]);
+return view('authors.index', ['list' => $list]);
 ```
 
 ```blade
-{{-- resources/views/users/index.blade.php --}}
+{{-- resources/views/authors/index.blade.php --}}
 {{ $list }}
 ```
 

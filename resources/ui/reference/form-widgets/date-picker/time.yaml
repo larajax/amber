@@ -1,0 +1,6 @@
+fields:
+    opens_at:
+        label: Opens At
+        type: datepicker
+        mode: time
+        comment: The time panel opens on its own, with sliders for the hour and minute.

@@ -1,0 +1,31 @@
+fields:
+    step_style:
+        label: Step Style
+        type: balloon-selector
+        default: simple
+        options:
+            simple: Simple
+            detailed: Detailed
+    steps:
+        label: Steps
+        type: repeater
+        prompt: Add step
+        titleFrom: title
+        form:
+            fields:
+                title:
+                    label: Title
+                    span: left
+                minutes:
+                    label: Minutes
+                    type: number
+                    span: right
+                    min: 0
+                details:
+                    label: Details
+                    type: textarea
+                    size: tiny
+                    trigger:
+                        action: show
+                        field: ^step_style
+                        condition: value[detailed]

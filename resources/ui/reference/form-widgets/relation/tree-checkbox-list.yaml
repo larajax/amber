@@ -1,0 +1,5 @@
+fields:
+    categories:
+        label: Categories
+        type: relation
+        comment: The same tree as a checkbox list, with child categories nested under their parent.

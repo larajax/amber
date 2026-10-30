@@ -1,0 +1,5 @@
+fields:
+    php_code:
+        label: PHP
+        type: codeeditor
+        comment: The toolbar runs undo, find, replace, format, word wrap and fullscreen.

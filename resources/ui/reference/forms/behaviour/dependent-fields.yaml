@@ -1,0 +1,29 @@
+fields:
+    country:
+        label: Country
+        type: dropdown
+        span: left
+        emptyOption: Pick a country
+        comment: Starts the chain of dependent fields.
+
+    state:
+        label: State
+        type: dropdown
+        span: right
+        emptyOption: Pick a state
+        dependsOn: country
+        comment: Reloads its options when the country changes.
+
+    city:
+        label: City
+        type: dropdown
+        span: left
+        emptyOption: Pick a city
+        dependsOn: [country, state]
+        comment: Reloads when the country or the state changes.
+
+    postcode:
+        label: Postcode
+        span: right
+        dependsOn: country
+        comment: Hidden by the model's filterFields until a country is picked, and called ZIP Code for the United States.

@@ -1,0 +1,6 @@
+fields:
+    contract:
+        label: Contract
+        type: fileupload
+        mode: file
+        comment: Stored in the protected uploads folder, since the relation sets public to false.

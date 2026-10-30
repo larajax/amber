@@ -1,0 +1,47 @@
+fields:
+    name:
+        label: Name
+        span: left
+
+    email:
+        label: Email
+        type: email
+        span: right
+
+    transport:
+        label: Transport
+        type: dropdown
+        span: left
+        options:
+            road: [Road, ph ph-truck]
+            air: [Air, ph ph-airplane-tilt]
+            sea: [Sea, ph ph-boat]
+
+    status:
+        label: Status
+        type: balloon-selector
+        span: right
+        options:
+            draft: Draft
+            active: Active
+            archived: Archived
+
+    description:
+        label: Description
+        type: textarea
+        size: small
+
+    features:
+        label: Features
+        type: checkboxlist
+        span: left
+        options:
+            wifi: Wi-Fi
+            parking: Parking
+            pool: Pool
+            gym: Gym
+
+    is_featured:
+        label: Featured
+        type: switch
+        span: right

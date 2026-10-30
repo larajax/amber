@@ -1,13 +1,8 @@
 # ===================================
-#  User List Column Definitions
+#  Author List Column Definitions
 # ===================================
 
 columns:
-    id:
-        label: ID
-        searchable: true
-        sortable: true
-
     name:
         label: Name
         searchable: true
@@ -18,7 +13,16 @@ columns:
         searchable: true
         sortable: true
 
-    created_at:
-        label: Created
-        type: datetime
+    posts_count:
+        label: Posts
+        type: number
+        relation: posts
+        relationCount: true
         sortable: true
+        width: 100px
+
+    created_at:
+        label: Joined
+        type: date
+        sortable: true
+        width: 160px

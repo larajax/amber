@@ -1,0 +1,14 @@
+scopes:
+    category:
+        label: Category
+        type: group
+        nameFrom: name
+
+    status:
+        label: Status
+        type: group
+        options:
+            draft: Draft
+            review: In Review
+            approved: Approved
+            archived: Archived

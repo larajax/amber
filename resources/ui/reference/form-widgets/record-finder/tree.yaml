@@ -1,0 +1,16 @@
+fields:
+    primary_category:
+        label: Primary Category
+        type: recordfinder
+        title: Pick a category
+        list:
+            columns:
+                name:
+                    label: Name
+                    searchable: true
+                slug:
+                    label: Slug
+        nameFrom: name
+        descriptionFrom: description
+        inlineOptions: false
+        comment: Categories are a nested tree, so the popup lists them as one.

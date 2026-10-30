@@ -1,0 +1,6 @@
+fields:
+    access_token:
+        label: Access Token
+        type: sensitive
+        hideOnTabChange: false
+        comment: Stays revealed when you switch to another browser tab and back.

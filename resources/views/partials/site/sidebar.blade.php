@@ -1,77 +1,68 @@
 @php
-    $navItems = [
+    $referenceItems = [
         [
-            'label' => 'Users',
-            'icon' => 'ph-users',
-            'href' => url('users'),
-            'active' => request()->is('users', 'users/*') && ! request()->is('users/structure', 'users/create'),
+            'label' => 'Overview',
+            'icon' => 'ph-compass',
+            'href' => route('reference.index'),
+            'active' => request()->routeIs('reference.index'),
+        ],
+    ];
+
+    foreach (config('reference.groups') as $groupCode => $group) {
+        $referenceItems[] = [
+            'label' => $group['label'],
+            'icon' => $group['icon'],
+            'href' => route('reference.'.$groupCode.'.'.array_key_first($group['pages'])),
+            'active' => request()->routeIs("reference.{$groupCode}.*"),
+        ];
+    }
+
+    $showcaseItems = [
+        [
+            'label' => 'Posts',
+            'icon' => 'ph-article',
+            'href' => route('posts.index'),
+            'active' => request()->routeIs('posts.index', 'posts.edit'),
             'children' => [
                 [
-                    'label' => 'Structure',
-                    'icon' => 'ph-tree-structure',
-                    'href' => url('users/structure'),
-                    'active' => request()->is('users/structure'),
+                    'label' => 'Categories',
+                    'icon' => 'ph-folders',
+                    'href' => route('categories.index'),
+                    'active' => request()->routeIs('categories.*'),
                 ],
                 [
-                    'label' => 'New User',
+                    'label' => 'New Post',
+                    'icon' => 'ph-note-pencil',
+                    'href' => route('posts.create'),
+                    'active' => request()->routeIs('posts.create'),
+                ],
+            ],
+        ],
+        [
+            'label' => 'Authors',
+            'icon' => 'ph-pen-nib',
+            'href' => route('authors.index'),
+            'active' => request()->routeIs('authors.index', 'authors.edit'),
+            'children' => [
+                [
+                    'label' => 'New Author',
                     'icon' => 'ph-user-plus',
-                    'href' => url('users/create'),
-                    'active' => request()->is('users/create'),
+                    'href' => route('authors.create'),
+                    'active' => request()->routeIs('authors.create'),
                 ],
             ],
         ],
         [
             'label' => 'Groups',
             'icon' => 'ph-users-three',
-            'href' => url('user-groups'),
-            'active' => request()->is('user-groups', 'user-groups/*'),
+            'href' => route('groups.index'),
+            'active' => request()->routeIs('groups.*'),
         ],
-        [
-            'label' => 'Posts',
-            'icon' => 'ph-article',
-            'href' => url('posts'),
-            'active' => request()->is('posts', 'posts/*') && ! request()->is('posts/create'),
-            'children' => [
-                [
-                    'label' => 'Categories',
-                    'icon' => 'ph-folders',
-                    'href' => url('categories'),
-                    'active' => request()->is('categories', 'categories/*'),
-                ],
-                [
-                    'label' => 'New Post',
-                    'icon' => 'ph-note-pencil',
-                    'href' => url('posts/create'),
-                    'active' => request()->is('posts/create'),
-                ],
-            ],
-        ],
-        [
-            'label' => 'Kitchen Sink',
-            'icon' => 'ph-flask',
-            'href' => url('kitchen-sink'),
-            'active' => request()->is('kitchen-sink', 'kitchen-sink/*'),
-        ],
-        [
-            'label' => 'UI Elements',
-            'icon' => 'ph-squares-four',
-            'href' => url('ui'),
-            'active' => request()->is('ui'),
-            'children' => [
-                [
-                    'label' => 'Feedback',
-                    'icon' => 'ph-chat-centered-text',
-                    'href' => url('ui/feedback'),
-                    'active' => request()->is('ui/feedback'),
-                ],
-                [
-                    'label' => 'Controls',
-                    'icon' => 'ph-sliders-horizontal',
-                    'href' => url('ui/controls'),
-                    'active' => request()->is('ui/controls'),
-                ],
-            ],
-        ],
+    ];
+
+    $navSections = [
+        'Reference' => $referenceItems,
+        'Showcase' => $showcaseItems,
     ];
 @endphp
 
@@ -88,72 +79,78 @@
     </div>
 
     <nav class="sidebar-nav" aria-label="Main navigation">
-        <ul class="sidebar-nav-list">
-            @foreach ($navItems as $item)
-                @php
-                    $children = $item['children'] ?? [];
-                    $childIsActive = collect($children)->contains('active', true);
-                    $isActive = $item['active'] || $childIsActive;
-                @endphp
+        @foreach ($navSections as $sectionLabel => $navItems)
+            <p class="sidebar-nav-heading">
+                {{ $sectionLabel }}
+            </p>
 
-                <li
-                    @class(['sidebar-nav-item', 'active' => $isActive, 'show' => $children])
-                    @if ($children) data-amber-nav-group @endif>
-                    @if ($children)
-                        <div class="sidebar-nav-link sidebar-nav-group">
+            <ul class="sidebar-nav-list">
+                @foreach ($navItems as $item)
+                    @php
+                        $children = $item['children'] ?? [];
+                        $childIsActive = collect($children)->contains('active', true);
+                        $isActive = $item['active'] || $childIsActive;
+                    @endphp
+
+                    <li
+                        @class(['sidebar-nav-item', 'active' => $isActive, 'show' => $children])
+                        @if ($children) data-amber-nav-group @endif>
+                        @if ($children)
+                            <div class="sidebar-nav-link sidebar-nav-group">
+                                <a
+                                    class="sidebar-nav-group-link"
+                                    href="{{ $item['href'] }}"
+                                    @if ($item['active']) aria-current="page" @endif>
+                                    <i class="ph {{ $item['icon'] }} sidebar-nav-icon" aria-hidden="true"></i>
+                                    <span class="sidebar-nav-label">
+                                        {{ $item['label'] }}
+                                    </span>
+                                </a>
+                                <button
+                                    class="sidebar-nav-group-toggle"
+                                    type="button"
+                                    aria-label="Toggle {{ $item['label'] }} navigation"
+                                    aria-expanded="true"
+                                    data-amber-nav-group-toggle>
+                                    <i class="ph ph-caret-up sidebar-nav-chevron" aria-hidden="true"></i>
+                                </button>
+                            </div>
+
+                            <ul class="sidebar-nav-children">
+                                @foreach ($children as $child)
+                                    <li @class(['sidebar-nav-child', 'active' => $child['active']])>
+                                        <a
+                                            class="sidebar-nav-link sidebar-nav-link-child"
+                                            href="{{ $child['href'] }}"
+                                            @if ($child['active']) aria-current="page" @endif>
+                                            <i class="ph {{ $child['icon'] }} sidebar-nav-icon" aria-hidden="true"></i>
+                                            <span class="sidebar-nav-label">
+                                                {{ $child['label'] }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
                             <a
-                                class="sidebar-nav-group-link"
+                                class="sidebar-nav-link"
                                 href="{{ $item['href'] }}"
-                                @if ($item['active']) aria-current="page" @endif>
+                                @if ($isActive) aria-current="page" @endif>
                                 <i class="ph {{ $item['icon'] }} sidebar-nav-icon" aria-hidden="true"></i>
                                 <span class="sidebar-nav-label">
                                     {{ $item['label'] }}
                                 </span>
+                                @isset($item['badge'])
+                                    <span class="sidebar-nav-badge">
+                                        {{ $item['badge'] }}
+                                    </span>
+                                @endisset
                             </a>
-                            <button
-                                class="sidebar-nav-group-toggle"
-                                type="button"
-                                aria-label="Toggle {{ $item['label'] }} navigation"
-                                aria-expanded="true"
-                                data-amber-nav-group-toggle>
-                                <i class="ph ph-caret-up sidebar-nav-chevron" aria-hidden="true"></i>
-                            </button>
-                        </div>
-
-                        <ul class="sidebar-nav-children">
-                            @foreach ($children as $child)
-                                <li @class(['sidebar-nav-child', 'active' => $child['active']])>
-                                    <a
-                                        class="sidebar-nav-link sidebar-nav-link-child"
-                                        href="{{ $child['href'] }}"
-                                        @if ($child['active']) aria-current="page" @endif>
-                                        <i class="ph {{ $child['icon'] }} sidebar-nav-icon" aria-hidden="true"></i>
-                                        <span class="sidebar-nav-label">
-                                            {{ $child['label'] }}
-                                        </span>
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <a
-                            class="sidebar-nav-link"
-                            href="{{ $item['href'] }}"
-                            @if ($isActive) aria-current="page" @endif>
-                            <i class="ph {{ $item['icon'] }} sidebar-nav-icon" aria-hidden="true"></i>
-                            <span class="sidebar-nav-label">
-                                {{ $item['label'] }}
-                            </span>
-                            @isset($item['badge'])
-                                <span class="sidebar-nav-badge">
-                                    {{ $item['badge'] }}
-                                </span>
-                            @endisset
-                        </a>
-                    @endif
-                </li>
-            @endforeach
-        </ul>
+                        @endif
+                    </li>
+                @endforeach
+            </ul>
+        @endforeach
     </nav>
 
     <div class="sidebar-support">

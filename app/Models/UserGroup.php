@@ -8,11 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use October\Rain\Database\Model;
 
 /**
- * User group model.
- *
- * Groups a user can belong to, used to demonstrate the relation field types on
- * the user form and as a second resource with its own list and form. An October
- * Rain model, so its logo and documents can use the file upload fields.
+ * UserGroup is a group the authors belong to, an October Rain model with its relations declared in the array style.
  */
 #[Fillable(['name', 'code', 'description'])]
 class UserGroup extends Model
@@ -25,20 +21,6 @@ class UserGroup extends Model
      */
     public $belongsToMany = [
         'users' => [User::class, 'table' => 'user_user_group'],
-    ];
-
-    /**
-     * @var array attachOne relations
-     */
-    public $attachOne = [
-        'logo' => File::class,
-    ];
-
-    /**
-     * @var array attachMany relations
-     */
-    public $attachMany = [
-        'documents' => File::class,
     ];
 
     /**

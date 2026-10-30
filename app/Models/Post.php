@@ -26,6 +26,7 @@ use October\Rain\Database\Traits\Validation;
     'review_on',
     'share_time',
     'category',
+    'author',
     'tags',
 ])]
 class Post extends Model
@@ -60,10 +61,11 @@ class Post extends Model
     protected $jsonable = ['keywords'];
 
     /**
-     * @var array<string, mixed> belongsTo relations
+     * @var array<string, mixed> belongsTo relations, where the author is a plain Eloquent model.
      */
     public $belongsTo = [
         'category' => Category::class,
+        'author' => User::class,
     ];
 
     /**
@@ -164,7 +166,7 @@ class Post extends Model
     }
 
     /**
-     * scopeApplySearch is the list search scope, matching any word in the searchable columns, the category name or a tag name.
+     * scopeApplySearch is the list search scope, matching any word in the searchable columns, the category name or a tag name, or the term in the author name.
      *
      * @param  array<int, mixed>  $columns
      */
@@ -178,6 +180,10 @@ class Post extends Model
                 })
                 ->orWhereHas('tags', function ($query) use ($term) {
                     $query->searchWhere($term, ['name'], 'any');
+                })
+                ->orWhereHas('author', function ($query) use ($term) {
+                    // The author is a plain Eloquent model, which has no searchWhere
+                    $query->where('name', 'like', '%'.$term.'%');
                 });
         });
     }

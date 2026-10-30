@@ -1,0 +1,29 @@
+scopes:
+    popular:
+        label: Popular
+        type: dropdown
+        emptyOption: Any views
+        conditions: views >= :value
+        options:
+            1000: 1,000 views or more
+            5000: 5,000 views or more
+
+    comment_count:
+        label: Comments
+        type: number
+        conditions:
+            greater: (select count(*) from comments where comments.post_id = posts.id) >= :value
+            lesser: (select count(*) from comments where comments.post_id = posts.id) <= :value
+
+    review_on:
+        label: Review Date
+        type: date
+        conditions:
+            before: review_on <= :valueDate
+            after: review_on >= :valueDate
+
+    slug:
+        label: Address
+        type: text
+        conditions:
+            contains: true
