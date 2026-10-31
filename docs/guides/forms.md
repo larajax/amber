@@ -6,7 +6,7 @@ subtitle: Render a form for a model, save it, validate it and extend it.
 This guide builds the post editor of the demo app's Showcase, the pages at `/posts/create` and
 `/posts/{id}/edit`. It covers rendering a form from a controller, saving and validating what comes
 back, serving the create and edit pages from one set of field definitions, and extending a form. Every
-snippet is the demo's own code, so you can [run the demo app](/getting-started#run-the-demo-app) and
+snippet is the demo's own code, so you can [run the demo app](/#run-the-demo-app) and
 watch it work.
 
 ## Describe the fields {#describe-the-fields}

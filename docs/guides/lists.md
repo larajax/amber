@@ -6,7 +6,7 @@ subtitle: Bind a list, a filter and a toolbar into one page, then edit its rows 
 This guide builds the index pages of the demo app's Showcase. The Posts page binds a list, a filter and
 a toolbar together, with bulk actions on the checked rows and a quick post popup. The Groups page edits
 its rows in a popup, and the Categories page shows a tree that you can reorder by dragging. Every
-snippet is the demo's own code, so you can [run the demo app](/getting-started#run-the-demo-app) and
+snippet is the demo's own code, so you can [run the demo app](/#run-the-demo-app) and
 try each page as you read.
 
 ## Rendering a list {#rendering-a-list}

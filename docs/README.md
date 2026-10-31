@@ -12,8 +12,7 @@ because the docs and the app split the work:
 
 | Path | Covers |
 |------|--------|
-| `index.md` | The landing page |
-| `getting-started.md` | What Larajax UI is, running the demo app, the sixty second version, a map of the docs |
+| `index.md` | The home page: what Larajax UI is, running the demo app, the sixty second version, a map of the docs |
 | `installation.md` | Requirements, Composer, assets, the layout, the base controller and routes |
 | `guides/` | Building a form page, building a list page, models, widgets and controllers |
 | `lists/`, `filters/`, `forms/`, `form-widgets/`, `ui/`, `extending/` | One page for each page of the demo app's Reference |

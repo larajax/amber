@@ -3,7 +3,7 @@ const sharedSidebar = [
     {
         text: 'Introduction',
         items: [
-            { text: 'Getting Started', link: '/getting-started' },
+            { text: 'Getting Started', link: '/' },
             { text: 'Installation', link: '/installation' }
         ]
     },
@@ -94,8 +94,11 @@ export default {
         ['link', { rel: 'icon', href: '/favicon.svg' }]
     ],
     themeConfig: {
+        // The logo sits on the purple sidebar column in both colour modes, so it is the white one-colour version
+        logo: '/logo-white.svg',
+        siteTitle: 'UI',
         nav: [
-            { text: 'Guide', link: '/getting-started' },
+            { text: 'Guide', link: '/' },
             { text: 'Demo App', link: 'https://github.com/larajax/amber' },
             { text: 'GitHub', link: 'https://github.com/larajax/ui' }
         ],

@@ -1,1 +1,118 @@
-/* Amber docs theme overrides */
+/*
+ * Larajax UI docs theme: the demo app's purple brand and its sidebar, on VitePress's default theme
+ */
+
+:root {
+    --vp-font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --vp-font-family-mono: Menlo, Monaco, Consolas, "Courier New", monospace;
+    --vp-nav-logo-height: 28px;
+
+    /* The demo app's brand purple drives links, buttons and the active marks */
+    --vp-c-brand-1: #5557e6;
+    --vp-c-brand-2: #6a6cf7;
+    --vp-c-brand-3: #4f51d9;
+    --vp-c-brand-soft: rgba(106, 108, 247, 0.14);
+
+    --docs-sidebar-bg: #4f51d9;
+    --docs-sidebar-text: #ffffff;
+    --docs-sidebar-muted: rgba(255, 255, 255, 0.6);
+    --docs-sidebar-hover: rgba(255, 255, 255, 0.12);
+    --docs-sidebar-active: rgba(255, 255, 255, 0.18);
+    --docs-sidebar-line: rgba(255, 255, 255, 0.22);
+}
+
+.dark {
+    --vp-c-brand-1: #9395fa;
+    --vp-c-brand-2: #7c7ef8;
+    --vp-c-brand-3: #6a6cf7;
+    --vp-c-brand-soft: rgba(106, 108, 247, 0.2);
+
+    --docs-sidebar-bg: #25265f;
+}
+
+/* The sidebar is the demo app's purple column, with white links and quiet uppercase group titles */
+.VPSidebar {
+    --vp-sidebar-bg-color: var(--docs-sidebar-bg);
+    --vp-c-text-1: var(--docs-sidebar-text);
+    --vp-c-text-2: var(--docs-sidebar-text);
+    --vp-c-divider: var(--docs-sidebar-line);
+    --vp-c-gutter: var(--docs-sidebar-line);
+    --vp-c-brand-1: var(--docs-sidebar-text);
+
+    .group + .group {
+        border-top: 0;
+    }
+
+    .VPSidebarItem.level-0 > .item > .text {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--docs-sidebar-muted);
+    }
+
+    .VPSidebarItem.level-0 > .item .caret {
+        color: var(--docs-sidebar-muted);
+    }
+
+    .VPSidebarItem.level-1 > .item {
+        margin: 1px 0;
+        padding: 0 10px;
+        border-radius: 8px;
+        transition: background-color 0.15s ease;
+
+        > .indicator {
+            display: none;
+        }
+
+        &:hover {
+            background: var(--docs-sidebar-hover);
+        }
+    }
+
+    .VPSidebarItem.level-1 .text {
+        font-size: 14px;
+        font-weight: 400;
+        color: var(--docs-sidebar-text);
+    }
+
+    .VPSidebarItem.level-1.is-active > .item {
+        background: var(--docs-sidebar-active);
+
+        .text {
+            font-weight: 600;
+        }
+    }
+}
+
+/* The white logo sits on a purple chip wherever it is not on the purple column: the home page and small screens */
+.VPNavBarTitle .title {
+    --vp-c-text-1: var(--docs-sidebar-text);
+    height: 40px;
+    margin-block: calc((var(--vp-nav-height) - 40px) / 2);
+    padding: 0 12px;
+    border-radius: 8px;
+    background: var(--docs-sidebar-bg);
+}
+
+/* On wide screens the logo sits at the top of the purple column itself */
+@media (min-width: 960px) {
+    .VPNavBar.has-sidebar .VPNavBarTitle .title {
+        height: var(--vp-nav-height);
+        margin-block: 0;
+        padding: 0;
+        border-radius: 0;
+        background: none;
+    }
+}
+
+/* "UI" sits after the Larajax wordmark as a light badge */
+.VPNavBarTitle .title > span {
+    margin-left: 2px;
+    padding: 1px 7px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.16);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}

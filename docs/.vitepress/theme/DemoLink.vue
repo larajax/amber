@@ -19,7 +19,7 @@ const sourceUrl = computed(() => {
         </p>
         <p>
             Every example on this page is live in Amber at <code>{{ frontmatter.demo }}</code>, where you can
-            change it and save it. <a href="/getting-started#run-the-demo-app">Spin up the demo app</a>, or
+            change it and save it. <a href="/#run-the-demo-app">Spin up the demo app</a>, or
             <a :href="sourceUrl" target="_blank" rel="noopener">browse the page's source</a>.
         </p>
     </div>
