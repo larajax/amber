@@ -11,7 +11,7 @@
     {{ Ui::dropdownItem(
         label: 'Delete',
         handler: 'onDropdownAction',
-        icon: 'action.delete',
+        icon: 'ph ph-trash',
         class: 'theme-danger',
         dataRequestData: "action: 'delete'",
         dataRequestConfirm: 'Delete the project?',

@@ -219,7 +219,7 @@ Argument | Description
 **label** | the button text, escaped.
 **handler** | the AJAX handler that returns the dialog markup, rendered as `data-handler`.
 **requestData** | an array of extra values to send to the handler, rendered as `data-request-data`.
-**icon** | icon classes or an icon pack key, rendered before the label.
+**icon** | icon classes, rendered before the label.
 **primary** | primary styling, `btn-solid theme-primary`. Default: `false`.
 **secondary** | secondary styling, `btn-solid theme-secondary`. Default: `false`.
 **danger** | danger styling, `btn-solid theme-danger`. Default: `false`.

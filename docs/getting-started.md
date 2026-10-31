@@ -64,10 +64,11 @@ prints their markup as it is.
 
 ## How it fits together {#how-it-fits-together}
 
-A widget built with `make()` inside a controller action is bound to that controller. When a control in
-the browser sends an AJAX request, such as a click on a sortable header, Larajax runs the same action
-again and calls the widget's handler, so the page needs no routes beyond its own address, accepting
-GET and POST. The [AJAX guide](/guides/ajax) explains the lifecycle.
+A widget built with `make()` inside a controller action is bound to that controller, so its AJAX
+handlers, such as a click on a sortable header, reach it with no routes beyond the page's own address.
+The widgets are [Larajax](https://larajax.org) view components: see
+[Widgets and Controllers](/guides/widgets) for what that means for your controllers, and the Larajax
+documentation for Larajax itself.
 
 Configuration is declarative but never a cage: each widget also takes plain PHP arrays, can be extended
 by subclassing or by binding to its events, and reads any model, including plain Eloquent models (see
@@ -78,7 +79,7 @@ by subclassing or by binding to its events, and reads any model, including plain
 - **Introduction**: this page and [Installation](/installation), which adds Larajax UI to an
   application.
 - **Guides** walk through the Showcase pages: [Building a Form Page](/guides/forms),
-  [Building a List Page](/guides/lists), [Models](/guides/models) and [AJAX & Larajax](/guides/ajax).
+  [Building a List Page](/guides/lists), [Models](/guides/models) and [Widgets and Controllers](/guides/widgets).
 - **Reference** pages explain every option, one page for each page of the demo's Reference, section for
   section:
   - [Lists](/lists/columns): columns, list options, the list structure, the toolbar and search;

@@ -22,7 +22,7 @@
 </section>
 
 <section class="ui-section" id="icons">
-    @include('reference._heading', ['id' => 'icons', 'title' => 'With an icon', 'caption' => '<code>icon</code> with icon classes or an icon pack key.'])
+    @include('reference._heading', ['id' => 'icons', 'title' => 'With an icon', 'caption' => '<code>icon</code> with icon classes.'])
     @include('reference._example', ['view' => 'reference.ui.examples.button-icons'])
 </section>
 

@@ -45,7 +45,7 @@ When the callout has an action and no body, open it with `->slot('action')` in p
 
 ## Callout icons {#callout-icons}
 
-`icon` swaps the type's icon for any icon classes or icon pack key, and `icon: false` leaves the icon
+`icon` swaps the type's icon for any icon classes, and `icon: false` leaves the icon
 out, so the text starts at the left edge.
 
 <<< @/../resources/views/reference/ui/examples/callout-icons.blade.php{blade}
@@ -59,7 +59,7 @@ Argument | Description
 **success** | success styling. Default: `false`.
 **warning** | warning styling. Default: `false`.
 **danger** | danger styling. Default: `false`.
-**icon** | icon classes or an icon pack key, or `false` for no icon. Default: the type's icon.
+**icon** | icon classes, or `false` for no icon. Default: the type's icon.
 **commentHtml** | prints the comment as HTML, unescaped. Use it only with markup you trust. Default: `false`.
 
 Any other argument becomes an attribute on the callout, with `class` merged into its classes. Add

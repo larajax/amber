@@ -88,7 +88,7 @@ toggle. `shown` and `hidden` fire after the menu's transition, so change a menu'
 Argument | Description
 ------------- | -------------
 **label** | the toggle text, escaped.
-**icon** | icon classes or an icon pack key, rendered before the label.
+**icon** | icon classes, rendered before the label.
 **primary** | primary styling, `btn-solid theme-primary`. Default: `false`.
 **secondary** | secondary styling, `btn-solid theme-secondary`. Default: `false`.
 **caret** | shows the caret after the label. Default: `true`.
@@ -102,7 +102,7 @@ Argument | Description
 **label** | the item text, escaped.
 **handler** | an AJAX handler to run when the item is clicked.
 **href** | an address to follow. Default: `javascript:;`.
-**icon** | icon classes or an icon pack key, rendered before the label.
+**icon** | icon classes, rendered before the label.
 
 Any other argument becomes an attribute on the item, with `class` merged into `menu-item`.
 

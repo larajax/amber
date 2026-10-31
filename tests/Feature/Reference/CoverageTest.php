@@ -18,18 +18,23 @@ class CoverageTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * @var array<int, string> internalUnits are Ui methods the library calls itself to draw its icons, which apps override through icon packs instead of calling, so no page shows them.
+     */
+    protected array $internalUnits = ['ui:icon', 'ui:iconClass'];
+
     public function test_every_library_unit_is_covered_by_a_reference_page(): void
     {
-        $missing = array_values(array_diff($this->libraryUnits(), $this->coveredUnits()));
+        $missing = array_values(array_diff($this->libraryUnits(), $this->coveredUnits(), $this->internalUnits));
 
         $this->assertSame([], $missing, 'These library units have no reference page: '.implode(', ', $missing));
     }
 
     public function test_every_covered_unit_exists_in_the_library(): void
     {
-        $unknown = array_values(array_diff($this->coveredUnits(), $this->libraryUnits()));
+        $unknown = array_values(array_diff([...$this->coveredUnits(), ...$this->internalUnits], $this->libraryUnits()));
 
-        $this->assertSame([], $unknown, 'These covered units are not in the library: '.implode(', ', $unknown));
+        $this->assertSame([], $unknown, 'These covered or internal units are not in the library: '.implode(', ', $unknown));
     }
 
     public function test_every_reference_page_has_its_named_route(): void

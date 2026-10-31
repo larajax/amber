@@ -13,7 +13,7 @@ const sharedSidebar = [
             { text: 'Building a Form Page', link: '/guides/forms' },
             { text: 'Building a List Page', link: '/guides/lists' },
             { text: 'Models', link: '/guides/models' },
-            { text: 'AJAX & Larajax', link: '/guides/ajax' }
+            { text: 'Widgets and Controllers', link: '/guides/widgets' }
         ]
     },
     {

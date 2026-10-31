@@ -6,26 +6,24 @@ use Larajax\Ui\Classes\Icons\PhosphorIconPack;
 use Larajax\Ui\Facades\Ui;
 
 /**
- * IconRegistrations adds the icon pack and icon keys the Icons page shows, which an app adds once in a service provider instead.
+ * IconRegistrations changes some of the icons the library draws for the Icons page, which an app does once in a service provider instead.
  */
 trait IconRegistrations
 {
     /**
-     * registerExampleIcons registers the amber pack on top of the phosphor pack, then adds status keys to every pack.
+     * registerExampleIcons registers an amber pack on top of the phosphor pack, then overrides two keys the widgets use in every pack.
      */
     protected function registerExampleIcons(): void
     {
         Ui::registerIconPack('amber', function (): array {
             return array_replace((new PhosphorIconPack)->icons(), [
                 'action.delete' => 'ph ph-trash-simple',
-                'callout.info' => 'ph ph-lightbulb',
-                'search.icon' => 'ph ph-binoculars',
             ]);
         });
 
         Ui::extendIcons([
-            'status.draft' => 'ph ph-note-pencil',
-            'status.published' => 'ph ph-globe-simple',
+            'callout.info' => 'ph ph-lightbulb',
+            'search.icon' => 'ph ph-binoculars',
         ]);
 
         Ui::extendIcons(function (array $icons, string $pack): array {
@@ -34,8 +32,8 @@ trait IconRegistrations
             }
 
             return array_replace($icons, [
-                'status.draft' => 'bi bi-pencil-square',
-                'status.published' => 'bi bi-globe',
+                'callout.info' => 'bi bi-lightbulb',
+                'search.icon' => 'bi bi-binoculars',
             ]);
         });
     }

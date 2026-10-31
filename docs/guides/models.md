@@ -152,4 +152,4 @@ model everywhere else.
 
 - [Building a Form Page](/guides/forms): saving and validating each kind of model
 - [Relation](/form-widgets/relation): relation fields on both kinds of model
-- [AJAX & Larajax](/guides/ajax): how the widgets' handlers reach your controller
+- [Widgets and Controllers](/guides/widgets): how the widgets' handlers reach your controller

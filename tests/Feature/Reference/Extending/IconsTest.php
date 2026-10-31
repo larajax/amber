@@ -15,12 +15,12 @@ class IconsTest extends TestCase
     {
         $html = $this->get(route('reference.extending.icons'))->assertOk()->getContent();
 
-        foreach (['icon-keys', 'icon-attributes', 'icon-class', 'icon-packs', 'icon-extend', 'icon-pack-keys'] as $example) {
+        foreach (['icon-extend', 'icon-packs', 'icon-pack-keys'] as $example) {
             $source = e(trim(file_get_contents(resource_path("views/reference/extending/examples/{$example}.blade.php"))));
             $this->assertStringContainsString('<pre><code>'.$source.'</code></pre>', $html, "{$example} is not shown.");
         }
 
-        foreach (['keys', 'attributes', 'icon-class', 'packs', 'extend', 'all-keys'] as $section) {
+        foreach (['extend', 'packs', 'all-keys'] as $section) {
             $this->assertStringContainsString('id="'.$section.'"', $html);
         }
 
@@ -29,39 +29,42 @@ class IconsTest extends TestCase
         $this->assertStringContainsString('<pre><code>'.e(trim(file_get_contents(base_path($path)))).'</code></pre>', $html);
     }
 
-    public function test_the_page_renders_icons_from_keys_attributes_and_packs(): void
+    public function test_the_page_examples_never_call_the_internal_icon_methods(): void
+    {
+        foreach (glob(resource_path('views/reference/extending/examples/icon-*.blade.php')) as $file) {
+            $this->assertStringNotContainsString('Ui::icon', file_get_contents($file), basename($file).' calls an internal icon method.');
+        }
+    }
+
+    public function test_overridden_keys_change_the_icons_the_widgets_draw(): void
+    {
+        $html = $this->get(route('reference.extending.icons'))->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/<div class="callout fade show callout-info">\s*<div class="header">\s*<div class="custom-icon">\s*<i class="ph ph-lightbulb" aria-hidden="true"><\/i>/', $html);
+        $this->assertMatchesRegularExpression('/<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-binoculars" aria-hidden="true"><\/i>/', $html);
+
+        // The bootstrap pack gets its own glyphs for the same keys from the closure
+        $this->assertSame('bi bi-lightbulb', Ui::iconClass('callout.info', 'bootstrap'));
+        $this->assertSame('bi bi-binoculars', Ui::iconClass('search.icon', 'bootstrap'));
+    }
+
+    public function test_the_pack_table_compares_keys_across_the_packs(): void
     {
         $html = $this->get(route('reference.extending.icons'))->assertOk()->getContent();
 
         $this->assertStringContainsString('<i class="ph ph-trash" aria-hidden="true"></i>', $html);
-        $this->assertStringContainsString('<i class="ph ph-check-circle fg-success" title="Saved" aria-hidden="true"></i>', $html);
-        $this->assertStringContainsString('<i aria-hidden="false" aria-label="Delete" class="ph ph-trash"></i>', $html);
-        $this->assertStringContainsString('<i class="ph ph-rocket-launch" aria-hidden="true"></i>', $html);
-        $this->assertStringContainsString('<i class="ph ph-magnifying-glass" aria-hidden="true"></i>', $html);
-        $this->assertStringContainsString('<i class="bi bi-search" aria-hidden="true"></i>', $html);
         $this->assertStringContainsString('<i class="bi bi-trash" aria-hidden="true"></i>', $html);
-    }
-
-    public function test_the_page_registers_the_amber_pack_and_the_status_keys(): void
-    {
-        $html = $this->get(route('reference.extending.icons'))->assertOk()->getContent();
-
         $this->assertStringContainsString('<i class="ph ph-trash-simple" aria-hidden="true"></i>', $html);
-        $this->assertStringContainsString('<i class="ph ph-lightbulb" aria-hidden="true"></i>', $html);
-        $this->assertStringContainsString('<i class="ph ph-globe-simple" aria-hidden="true"></i>', $html);
-        $this->assertStringContainsString('<i class="bi bi-globe" aria-hidden="true"></i>', $html);
-        $this->assertStringContainsString('<i class="bi bi-pencil-square" aria-hidden="true"></i>', $html);
 
         // The amber pack builds on phosphor, so keys it does not swap keep their phosphor icon
         $this->assertSame('ph ph-caret-down', Ui::iconClass('dropdown.caret', 'amber'));
-        $this->assertSame('ph ph-binoculars', Ui::iconClass('search.icon', 'amber'));
     }
 
     public function test_the_key_grid_lists_every_key_of_the_default_pack(): void
     {
         $html = $this->get(route('reference.extending.icons'))->assertOk()->getContent();
 
-        foreach (['action.delete', 'pagination.next', 'file.type.pdf', 'status.published'] as $key) {
+        foreach (['action.delete', 'pagination.next', 'file.type.pdf', 'search.icon'] as $key) {
             $this->assertMatchesRegularExpression('/<code>\s*'.preg_quote($key, '/').'\s*<\/code>/', $html);
         }
     }

@@ -39,8 +39,7 @@ a `btn-group`, as `btn-group-sm` or `btn-group-lg`, size every button inside it.
 ## With an icon {#icons}
 
 The `icon` argument renders an icon before the label. It takes icon classes, such as
-`ph ph-floppy-disk`, or a key from the icon pack, such as `action.delete`, which follows the pack your
-app uses. See [Icons](/extending/icons) for the keys and packs.
+`ph ph-floppy-disk` or `ph ph-trash`.
 
 <<< @/../resources/views/reference/ui/examples/button-icons.blade.php{blade}
 
@@ -87,7 +86,9 @@ The handlers live in a trait on the page's controller:
 
 <<< @/../app/Controllers/Reference/UiController/ButtonHandlers.php{php}
 
-See [AJAX & Larajax](/guides/ajax) for how handlers are found and what they can return.
+Larajax's [AJAX handlers](https://larajax.org/guide/ajax-handlers.html) and
+[responses](https://larajax.org/guide/ajax-responses.html) guides cover how handlers are found and what
+they can return.
 
 ## Loading state {#loading}
 
@@ -138,7 +139,7 @@ Argument | Description
 ------------- | -------------
 **label** | the button text, escaped.
 **href** | renders an `<a>` link with this address in place of a `<button>`.
-**icon** | icon classes or an icon pack key, rendered before the label.
+**icon** | icon classes, rendered before the label.
 **primary** | primary styling, `btn-solid theme-primary`. Default: `false`.
 **secondary** | secondary styling, `btn-solid theme-secondary`. Default: `false`.
 **danger** | danger styling, `btn-solid theme-danger`. Default: `false`.
@@ -160,7 +161,7 @@ Argument | Description
 Argument | Description
 ------------- | -------------
 **label** | the button's `title`, shown on hover and read by screen readers.
-**icon** | icon classes or an icon pack key, set on the button itself.
+**icon** | icon classes, set on the button itself.
 **handler** | an AJAX handler to run when clicked.
 **danger** | turns the icon red on hover. Default: `false`.
 **hotkey** | a keyboard shortcut, or an array of them, that clicks the button.

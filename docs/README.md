@@ -15,7 +15,7 @@ because the docs and the app split the work:
 | `index.md` | The landing page |
 | `getting-started.md` | What Larajax UI is, running the demo app, the sixty second version, a map of the docs |
 | `installation.md` | Requirements, Composer, assets, the layout, the base controller and routes |
-| `guides/` | Building a form page, building a list page, models, AJAX and Larajax |
+| `guides/` | Building a form page, building a list page, models, widgets and controllers |
 | `lists/`, `filters/`, `forms/`, `form-widgets/`, `ui/`, `extending/` | One page for each page of the demo app's Reference |
 
 Each reference page carries `demo: /reference/{group}/{page}` in its frontmatter, which shows the "Run

@@ -13,9 +13,10 @@ example.
 - Laravel 12 or higher
 - [october/rain](https://github.com/octobercms/library), which provides the database, validation and
   HTML helpers the library builds on. Composer installs it with the library.
-- [larajax/larajax](https://larajax.org), which provides the view component interface the widgets
-  implement, and the `window.jax` browser API their controls register with. Composer installs it with
-  the library.
+- [Larajax](https://larajax.org), which provides the view component interface the widgets implement and
+  the `window.jax` browser API their controls register with. Composer installs it with the library;
+  follow its [installation guide](https://larajax.org/guide/installation.html) for its own assets and
+  setup.
 - [Bootstrap 6](https://getbootstrap.com). The library's styles layer over Bootstrap's, and its menus
   use Bootstrap's data API. Load Bootstrap's stylesheet and JavaScript module in your layout before the
   library's assets (see [Bootstrap 6](#bootstrap-6) below).
@@ -56,17 +57,17 @@ provider to add by hand.
 
 The widgets load a small CSS and JS bundle in the browser. It is **plain CSS and ES modules, with no
 build step**. The package's `resources/assets` directory is the browser-ready root, and publishing
-copies it as it is, so the published paths always match the source paths. Publish the library's assets
-and Larajax's once after installing, and again after upgrading:
+copies it as it is, so the published paths always match the source paths. Publish them once after
+installing, and again after upgrading:
 
 ```bash
-php artisan vendor:publish --tag=larajax-assets
 php artisan vendor:publish --tag=larajax-ui-assets
 ```
 
-The files are copied into `public/vendor/larajax/` and `public/vendor/larajax/ui/`. The demo app runs
-both commands with `--force` from the `post-autoload-dump` scripts in its `composer.json`, so every
-`composer install` and `composer update` republishes them.
+The files are copied into `public/vendor/larajax/ui/`. Larajax's own assets are published as its
+[installation guide](https://larajax.org/guide/installation.html) describes. The demo app republishes
+both with `--force` from the `post-autoload-dump` scripts in its `composer.json`, so every
+`composer install` and `composer update` keeps them current.
 
 ## Include the assets in your layout {#include-the-assets}
 
@@ -113,22 +114,20 @@ runs, and Bootstrap's stylesheet before `ui.css`.
 
 ## Prepare your controller {#prepare-your-controller}
 
-The widgets are [Larajax view components](https://larajax.org/guide/defining-components.html), so their
-AJAX handlers (uploads, validation, partial reloads) reach your code when the controller extends the
-Larajax controller. Extend `Larajax\LarajaxController`, directly or through a base class of your own, and
-include the library's `ViewMaker` trait, which lets widgets render partials through the controller, such
-as toolbar buttons, partial columns and hint fields. The demo app's controllers extend this base class:
+Pages that show widgets use a Larajax controller, as Larajax's
+[controller integration](https://larajax.org/guide/laravel-integration.html) guide sets up, and add the
+library's `ViewMaker` trait, which lets widgets render partials through the controller, such as toolbar
+buttons, partial columns and hint fields. The demo app's controllers extend this base class:
 
 <<< @/../app/Classes/ControllerBase.php
 
 ## Routes {#routes}
 
-A page and its widgets' AJAX requests share one address: the page loads with GET, and each AJAX request
-is a POST to the same URL, which runs the same action. Each page route accepts both:
+A page and its widgets' AJAX requests share one address, so each page route answers both GET and POST,
+as Larajax's [controller integration](https://larajax.org/guide/laravel-integration.html) guide
+explains:
 
 <<< @/../routes/web.php#docs-post-routes{php}
-
-The [AJAX guide](/guides/ajax) explains the request lifecycle.
 
 ## Render your first form {#render-your-first-form}
 

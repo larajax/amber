@@ -35,9 +35,9 @@ features:
   - title: Rain or Eloquent
     details: Drive the widgets from stock Eloquent models or October Rain models, side by side in the same app.
     link: /guides/models
-  - title: Larajax Components
-    details: Every widget is a Larajax view component, so its AJAX handlers reach the controller that built it.
-    link: /guides/ajax
+  - title: Built on Larajax
+    details: Every widget is a Larajax view component, built in a controller action that also answers its AJAX handlers.
+    link: /guides/widgets
   - title: A Live Demo
     details: Amber, the demo app, runs every example in these docs beside its code, and a small blog that puts them together.
     link: /getting-started#run-the-demo-app

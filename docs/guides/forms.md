@@ -44,8 +44,8 @@ see [Contexts](#contexts). The full list of options is under
 
 The trait keeps the form in the public `$formWidget` property. A widget built inside a controller
 action is bound to that controller, which is what routes the widget's own AJAX handlers, such as the
-file upload and the refresh of a field that `dependsOn` another, back to it. The
-[AJAX guide](/guides/ajax) explains the lifecycle.
+file upload and the refresh of a field that `dependsOn` another, back to it, see
+[Widgets and Controllers](/guides/widgets#built-in-the-action).
 
 The view wraps the widget in a `<form>` element:
 

@@ -244,7 +244,7 @@ return [
                 'icons' => [
                     'label' => 'Icons',
                     'icon' => 'ph-shapes',
-                    'covers' => ['ui:icon', 'ui:iconClass', 'ui:registerIconPack', 'ui:extendIcons'],
+                    'covers' => ['ui:registerIconPack', 'ui:extendIcons'],
                 ],
                 'seams' => [
                     'label' => 'URLs and Timezones',
