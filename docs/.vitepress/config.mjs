@@ -99,6 +99,7 @@ export default {
         siteTitle: 'UI',
         nav: [
             { text: 'Guide', link: '/' },
+            { text: 'Larajax', link: 'https://larajax.org' },
             { text: 'Demo App', link: 'https://github.com/larajax/amber' },
             { text: 'GitHub', link: 'https://github.com/larajax/ui' }
         ],
