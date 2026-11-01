@@ -1,0 +1,12 @@
+fields:
+    mobile:
+        label: Mobile
+        type: phone
+        span: left
+        defaultCountry: AU
+
+    support_phone:
+        label: Support Line
+        type: phone
+        span: right
+        defaultCountry: AU

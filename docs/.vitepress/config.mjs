@@ -55,6 +55,7 @@ const sharedSidebar = [
             { text: 'File Upload', link: '/form-widgets/file-upload' },
             { text: 'Markdown Editor', link: '/form-widgets/markdown-editor' },
             { text: 'Nested Form', link: '/form-widgets/nested-form' },
+            { text: 'Phone', link: '/form-widgets/phone' },
             { text: 'Record Finder', link: '/form-widgets/record-finder' },
             { text: 'Relation', link: '/form-widgets/relation' },
             { text: 'Repeater', link: '/form-widgets/repeater' },
@@ -72,6 +73,7 @@ const sharedSidebar = [
             { text: 'Popups', link: '/ui/popups' },
             { text: 'Tabs', link: '/ui/tabs' },
             { text: 'Feedback', link: '/ui/feedback' },
+            { text: 'Flags', link: '/ui/flags' },
             { text: 'Inputs', link: '/ui/inputs' }
         ]
     },

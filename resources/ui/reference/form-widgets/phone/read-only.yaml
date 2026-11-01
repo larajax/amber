@@ -1,0 +1,6 @@
+fields:
+    support_phone:
+        label: Support Line
+        type: phone
+        readOnly: true
+        comment: Shown in its own country's format, with the picker locked.

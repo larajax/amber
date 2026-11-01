@@ -62,6 +62,14 @@ class UiController extends ReferenceControllerBase
     }
 
     /**
+     * flags displays the Flags page.
+     */
+    public function flags(): View
+    {
+        return view('reference.ui.flags');
+    }
+
+    /**
      * inputs displays the Inputs page.
      */
     public function inputs(): View

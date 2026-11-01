@@ -1,0 +1,8 @@
+fields:
+    office_phone:
+        label: Office Phone
+        type: phone
+        defaultCountry: AU
+        countries: [AU, NZ, GB, US, CA]
+        preferredCountries: [AU, NZ]
+        comment: Five countries, with Australia and New Zealand first.

@@ -1,0 +1,6 @@
+fields:
+    mobile:
+        label: Mobile
+        type: phone
+        defaultCountry: AU
+        comment: Shows 0412 345 678 and saves +61412345678. Type a number starting with + to switch country.

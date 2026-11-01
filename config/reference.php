@@ -157,6 +157,11 @@ return [
                     'icon' => 'ph-stack',
                     'covers' => ['formwidget:NestedForm'],
                 ],
+                'phone' => [
+                    'label' => 'Phone',
+                    'icon' => 'ph-phone',
+                    'covers' => ['formwidget:Phone'],
+                ],
                 'record-finder' => [
                     'label' => 'Record Finder',
                     'icon' => 'ph-binoculars',
@@ -222,6 +227,11 @@ return [
                         'element:callout', 'element:scoreboard', 'ui:callout', 'ui:slot', 'ui:end',
                         'control:load-indicator', 'control:loader-container', 'control:change-monitor',
                     ],
+                ],
+                'flags' => [
+                    'label' => 'Flags',
+                    'icon' => 'ph-flag',
+                    'covers' => ['element:flag'],
                 ],
                 'inputs' => [
                     'label' => 'Inputs',

@@ -123,6 +123,7 @@ Route::match(['get', 'post'], '/reference/form-widgets/date-picker', [FormWidget
 Route::match(['get', 'post'], '/reference/form-widgets/file-upload', [FormWidgetsController::class, 'fileUpload'])->name('reference.form-widgets.file-upload');
 Route::match(['get', 'post'], '/reference/form-widgets/markdown-editor', [FormWidgetsController::class, 'markdownEditor'])->name('reference.form-widgets.markdown-editor');
 Route::match(['get', 'post'], '/reference/form-widgets/nested-form', [FormWidgetsController::class, 'nestedForm'])->name('reference.form-widgets.nested-form');
+Route::match(['get', 'post'], '/reference/form-widgets/phone', [FormWidgetsController::class, 'phone'])->name('reference.form-widgets.phone');
 Route::match(['get', 'post'], '/reference/form-widgets/record-finder', [FormWidgetsController::class, 'recordFinder'])->name('reference.form-widgets.record-finder');
 Route::match(['get', 'post'], '/reference/form-widgets/relation', [FormWidgetsController::class, 'relation'])->name('reference.form-widgets.relation');
 Route::match(['get', 'post'], '/reference/form-widgets/repeater', [FormWidgetsController::class, 'repeater'])->name('reference.form-widgets.repeater');
@@ -140,6 +141,7 @@ Route::match(['get', 'post'], '/reference/ui/dropdowns', [UiController::class, '
 Route::match(['get', 'post'], '/reference/ui/popups', [UiController::class, 'popups'])->name('reference.ui.popups');
 Route::match(['get', 'post'], '/reference/ui/tabs', [UiController::class, 'tabs'])->name('reference.ui.tabs');
 Route::match(['get', 'post'], '/reference/ui/feedback', [UiController::class, 'feedback'])->name('reference.ui.feedback');
+Route::match(['get', 'post'], '/reference/ui/flags', [UiController::class, 'flags'])->name('reference.ui.flags');
 Route::match(['get', 'post'], '/reference/ui/inputs', [UiController::class, 'inputs'])->name('reference.ui.inputs');
 
 /*

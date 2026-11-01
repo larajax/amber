@@ -103,6 +103,17 @@ class FormWidgetsController extends ReferenceControllerBase
     }
 
     /**
+     * phone displays the Phone page.
+     */
+    public function phone(): View
+    {
+        $forms = $this->makeExampleForms('form-widgets/phone', ['default', 'countries', 'read-only', 'preview']);
+        $forms['preview']->previewMode = true;
+
+        return view('reference.form-widgets.phone', $this->exampleVars());
+    }
+
+    /**
      * recordFinder displays the Record Finder page.
      */
     public function recordFinder(): View
