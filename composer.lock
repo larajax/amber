@@ -2431,15 +2431,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/larajax/ui.git",
-                "reference": "d0ca7f481c22ae32222a7ec9ff6e035f6e2b3fee"
+                "reference": "904106ef56343f400ea725dfa4bdbaa8980e6d02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/larajax/ui/zipball/d0ca7f481c22ae32222a7ec9ff6e035f6e2b3fee",
-                "reference": "d0ca7f481c22ae32222a7ec9ff6e035f6e2b3fee",
+                "url": "https://api.github.com/repos/larajax/ui/zipball/904106ef56343f400ea725dfa4bdbaa8980e6d02",
+                "reference": "904106ef56343f400ea725dfa4bdbaa8980e6d02",
                 "shasum": ""
             },
             "require": {
+                "larajax/larajax": "^3.0",
                 "october/rain": "^4.4",
                 "php": "^8.2"
             },
@@ -2460,10 +2461,10 @@
             "description": "Form, List and UI tools",
             "homepage": "https://github.com/larajax/ui",
             "support": {
-                "source": "https://github.com/larajax/ui/tree/main",
+                "source": "https://github.com/larajax/ui/tree/v0.1.0",
                 "issues": "https://github.com/larajax/ui/issues"
             },
-            "time": "2026-09-09T10:28:56+00:00"
+            "time": "2026-11-01T06:36:23+00:00"
         },
         {
             "name": "laravel/framework",
