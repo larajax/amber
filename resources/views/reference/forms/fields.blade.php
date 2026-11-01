@@ -107,19 +107,19 @@
         @include('reference._form_example', ['name' => 'checkboxlist-scrollable'])
     </section>
 
-    <section class="ui-section" id="balloon-selector">
-        @include('reference._heading', ['id' => 'balloon-selector', 'title' => 'Balloon selector', 'caption' => '<code>balloon-selector</code>, one option from a row of joined buttons.'])
-        @include('reference._form_example', ['name' => 'balloon-selector'])
+    <section class="ui-section" id="selector">
+        @include('reference._heading', ['id' => 'selector', 'title' => 'Selector', 'caption' => '<code>selector</code>, one option from a row of joined buttons.'])
+        @include('reference._form_example', ['name' => 'selector'])
     </section>
 
-    <section class="ui-section" id="balloon-allow-empty">
-        @include('reference._heading', ['id' => 'balloon-allow-empty', 'title' => 'Clearing a balloon selector', 'caption' => '<code>allowEmpty</code> clears the value on a second click.'])
-        @include('reference._form_example', ['name' => 'balloon-allow-empty'])
+    <section class="ui-section" id="selector-allow-empty">
+        @include('reference._heading', ['id' => 'selector-allow-empty', 'title' => 'Clearing a selector', 'caption' => '<code>allowEmpty</code> clears the value on a second click.'])
+        @include('reference._form_example', ['name' => 'selector-allow-empty'])
     </section>
 
-    <section class="ui-section" id="balloon-read-only">
-        @include('reference._heading', ['id' => 'balloon-read-only', 'title' => 'Read-only balloon selector', 'caption' => '<code>readOnly</code> locks the buttons and keeps the value.'])
-        @include('reference._form_example', ['name' => 'balloon-read-only'])
+    <section class="ui-section" id="selector-read-only">
+        @include('reference._heading', ['id' => 'selector-read-only', 'title' => 'Read-only selector', 'caption' => '<code>readOnly</code> locks the buttons and keeps the value.'])
+        @include('reference._form_example', ['name' => 'selector-read-only'])
     </section>
 
     <section class="ui-section" id="section">

@@ -134,7 +134,7 @@ A read-only dropdown, or one in preview mode, shows the label of its value as te
 With no `options`, the field calls `get{Field}Options` on the model, where `{Field}` is the field name in
 studly case, so the `country` field calls `getCountryOptions`. `optionsMethod` names any other model
 method, or a static method written as `Class::method`. An option with `optgroup: true` and `children`
-becomes an option group, as `getCategoryOptions` returns here. Radio lists, checkbox lists and balloon
+becomes an option group, as `getCategoryOptions` returns here. Radio lists, checkbox lists and
 selectors take their options the same ways; [Option lists](#option-lists) has the full order and the
 arguments each method receives.
 
@@ -217,29 +217,29 @@ unless `quickselect: false` turns them off, and stacks its options even with `in
 
 <<< @/../resources/ui/reference/forms/fields/checkboxlist-scrollable.yaml
 
-## Balloon selector {#balloon-selector}
+## Selector {#selector}
 
-`balloon-selector` picks one option from a row of joined buttons, which suits a short list of states.
+`selector` picks one option from a row of joined buttons, which suits a short list of states.
 The buttons are Bootstrap's radio toggle buttons, so the field is a radio group: Tab moves into it and
 the arrow keys pick an option. Options wrap onto another row when they don't fit.
 
-<<< @/../resources/ui/reference/forms/fields/balloon-selector.yaml
+<<< @/../resources/ui/reference/forms/fields/selector.yaml
 
-## Clearing a balloon selector {#balloon-allow-empty}
+## Clearing a selector {#selector-allow-empty}
 
-By default a balloon selector always holds one of its options once one is picked. `allowEmpty` lets the
+By default a selector always holds one of its options once one is picked. `allowEmpty` lets the
 checked option be clicked again, or Space be pressed on it, to clear the value. A cleared selector
 saves an empty value.
 
-<<< @/../resources/ui/reference/forms/fields/balloon-allow-empty.yaml
+<<< @/../resources/ui/reference/forms/fields/selector-allow-empty.yaml
 
-## Read-only balloon selector {#balloon-read-only}
+## Read-only selector {#selector-read-only}
 
 With `readOnly`, the options ignore clicks and keys, while the checked option still posts its value, so
-saving the form keeps it. A `disabled` balloon selector looks the same but its value is left out of the
+saving the form keeps it. A `disabled` selector looks the same but its value is left out of the
 saved data.
 
-<<< @/../resources/ui/reference/forms/fields/balloon-read-only.yaml
+<<< @/../resources/ui/reference/forms/fields/selector-read-only.yaml
 
 ## Section {#section}
 
@@ -398,7 +398,7 @@ Option | Description
 **emptyOption** | text shown when there are no options.
 **placeholder** | text shown in preview mode when nothing is ticked.
 
-### Balloon selector {#balloon-selector-options}
+### Selector {#selector-options}
 
 Option | Description
 ------------- | -------------
@@ -426,7 +426,7 @@ Option | Description
 
 ## Option lists {#option-lists}
 
-The `dropdown`, `radio`, `checkboxlist` and `balloon-selector` types need a list of options, each keyed
+The `dropdown`, `radio`, `checkboxlist` and `selector` types need a list of options, each keyed
 by the value that is saved. The field takes the first of these that it finds:
 
 1. `options` as a list in the YAML.

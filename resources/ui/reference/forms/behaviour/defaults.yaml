@@ -1,7 +1,7 @@
 fields:
     status:
         label: Status
-        type: balloon-selector
+        type: selector
         span: left
         default: draft
         options:

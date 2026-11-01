@@ -1,7 +1,7 @@
 fields:
     visibility:
         label: Visibility
-        type: balloon-selector
+        type: selector
         allowEmpty: true
         options:
             public: Public

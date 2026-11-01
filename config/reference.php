@@ -100,8 +100,8 @@ return [
                         'widget:Form',
                         'field:text', 'field:email', 'field:number', 'field:password', 'field:textarea',
                         'field:dropdown', 'field:radio', 'field:checkbox', 'field:checkboxlist', 'field:switch',
-                        'field:balloon-selector', 'field:section', 'field:hint', 'field:ruler', 'field:partial',
-                        'control:balloon-selector', 'control:password-reveal', 'control:number-input',
+                        'field:selector', 'field:section', 'field:hint', 'field:ruler', 'field:partial',
+                        'control:selector', 'control:password-reveal', 'control:number-input',
                     ],
                 ],
                 'layout' => [

@@ -1,7 +1,7 @@
 fields:
     audience:
         label: Audience
-        type: balloon-selector
+        type: selector
         readOnly: true
         options:
             retail: Retail

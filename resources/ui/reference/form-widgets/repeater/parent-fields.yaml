@@ -1,7 +1,7 @@
 fields:
     step_style:
         label: Step Style
-        type: balloon-selector
+        type: selector
         default: simple
         options:
             simple: Simple

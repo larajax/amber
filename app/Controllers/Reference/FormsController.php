@@ -27,7 +27,7 @@ class FormsController extends ReferenceControllerBase
             'text', 'email', 'number', 'number-format', 'password', 'password-reveal', 'adorn-text', 'adorn-icons', 'textarea', 'textarea-sizes',
             'dropdown', 'dropdown-model-options', 'dropdown-preset', 'option-styles',
             'radio', 'checkbox', 'switch', 'checkboxlist', 'checkboxlist-nested', 'checkboxlist-scrollable',
-            'balloon-selector', 'balloon-allow-empty', 'balloon-read-only',
+            'selector', 'selector-allow-empty', 'selector-read-only',
             'section', 'hint', 'hint-partial', 'ruler', 'partial', 'partial-ajax',
         ]);
 
