@@ -22,6 +22,11 @@
         @include('reference._form_example', ['name' => 'number'])
     </section>
 
+    <section class="ui-section" id="number-format">
+        @include('reference._heading', ['id' => 'number-format', 'title' => 'Formatted numbers', 'caption' => '<code>format</code> shows thousands separators and fixed decimals, and saves the plain number.'])
+        @include('reference._form_example', ['name' => 'number-format'])
+    </section>
+
     <section class="ui-section" id="password">
         @include('reference._heading', ['id' => 'password', 'title' => 'Password', 'caption' => '<code>password</code> under an underscore name, so it is never saved.'])
         @include('reference._form_example', ['name' => 'password'])

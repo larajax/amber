@@ -19,7 +19,7 @@ class FieldsTest extends TestCase
      * @var array<int, string> examples on the page, one YAML file each.
      */
     protected array $examples = [
-        'text', 'email', 'number', 'password', 'password-reveal', 'adorn-text', 'adorn-icons', 'textarea', 'textarea-sizes',
+        'text', 'email', 'number', 'number-format', 'password', 'password-reveal', 'adorn-text', 'adorn-icons', 'textarea', 'textarea-sizes',
         'dropdown', 'dropdown-model-options', 'dropdown-preset', 'option-styles',
         'radio', 'checkbox', 'switch', 'checkboxlist', 'checkboxlist-nested', 'checkboxlist-scrollable',
         'balloon-selector', 'balloon-allow-empty', 'balloon-read-only',
@@ -187,8 +187,8 @@ class FieldsTest extends TestCase
 
         $this->assertMatchesRegularExpression('/type="text"\s+name="code"[^>]*placeholder="auroraDeskLamp"/', $html);
         $this->assertMatchesRegularExpression('/type="email"\s+name="email"[^>]*placeholder="name@example.com"/', $html);
-        $this->assertMatchesRegularExpression('/type="number"\s+step="0.01"\s+name="price"\s+id="[^"]+"\s+value="89.50?"/', $html);
-        $this->assertMatchesRegularExpression('/type="number"\s+step="1"\s+name="quantity"[^>]*min="0"\s+max="999"/s', $html);
+        $this->assertMatchesRegularExpression('/type="text"\s+inputmode="decimal"\s+name="price"\s+id="[^"]+"\s+value="89.50?"[^>]*data-control="number-input"\s+data-min="0"\s+data-step="0.01"/', $html);
+        $this->assertMatchesRegularExpression('/type="text"\s+inputmode="numeric"\s+name="quantity"[^>]*data-control="number-input"\s+data-min="0"\s+data-max="999"\s+data-step="1"/s', $html);
         $this->assertMatchesRegularExpression('/type="password"\s+name="_password"[^>]*value=""/', $html);
 
         foreach (['tiny' => 'excerpt', 'small' => 'summary', 'large' => 'description', 'huge' => 'body', 'giant' => 'notes'] as $size => $name) {
@@ -200,7 +200,7 @@ class FieldsTest extends TestCase
     {
         $html = $this->pageHtml(['shipping_fee' => 12.5, 'discount_percent' => 10]);
 
-        $this->assertMatchesRegularExpression('/<label class="form-control form-adorn">\s*<span class="form-adorn-text">\s*\$\s*<\/span>\s*<input\s+type="number"[^>]*name="shipping_fee"[^>]*class="form-ghost[^"]*"[^>]*\/>\s*<span class="form-adorn-text">\s*AUD\s*<\/span>\s*<\/label>/s', $html);
+        $this->assertMatchesRegularExpression('/<label class="form-control form-adorn">\s*<span class="form-adorn-text">\s*\$\s*<\/span>\s*<input\s+type="text"[^>]*name="shipping_fee"[^>]*class="form-ghost[^"]*"[^>]*\/>\s*<span class="form-adorn-text">\s*AUD\s*<\/span>\s*<\/label>/s', $html);
         $this->assertMatchesRegularExpression('/name="discount_percent"[^>]*class="form-ghost[^"]*"[^>]*\/>\s*<span class="form-adorn-text">\s*%\s*<\/span>\s*<\/label>/s', $html);
     }
 
@@ -230,7 +230,7 @@ class FieldsTest extends TestCase
         ]);
         $form->bindToController();
 
-        $this->assertMatchesRegularExpression('/<span class="form-control form-adorn">\s*<span class="form-adorn-text">\s*\$\s*<\/span>\s*<span class="form-ghost">12.50?<\/span>\s*<span class="form-adorn-text">\s*AUD\s*<\/span>\s*<\/span>/', (string) $form->render());
+        $this->assertMatchesRegularExpression('/<span class="form-control form-adorn">\s*<span class="form-adorn-text">\s*\$\s*<\/span>\s*<span\s+class="form-ghost"\s*>12.50?<\/span>\s*<span class="form-adorn-text">\s*AUD\s*<\/span>\s*<\/span>/', (string) $form->render());
     }
 
     public function test_an_adornment_set_at_runtime_renders_like_one_from_yaml(): void
@@ -242,7 +242,7 @@ class FieldsTest extends TestCase
         $form->bindToController();
         $form->getField('shipping_fee')->prefix = '€';
 
-        $this->assertMatchesRegularExpression('/<span class="form-adorn-text">\s*€\s*<\/span>\s*<input\s+type="number"/', (string) $form->render());
+        $this->assertMatchesRegularExpression('/<span class="form-adorn-text">\s*€\s*<\/span>\s*<input\s+type="text"\s+inputmode="decimal"/', (string) $form->render());
     }
 
     public function test_saving_an_adorned_field_stores_the_bare_value(): void
@@ -254,6 +254,102 @@ class FieldsTest extends TestCase
         $sample->refresh();
         $this->assertEquals(9.95, (float) $sample->shipping_fee);
         $this->assertSame(15, (int) $sample->discount_percent);
+    }
+
+    public function test_a_formatted_number_shows_separators_and_posts_the_plain_number_from_a_hidden_input(): void
+    {
+        $html = $this->pageHtml(['annual_revenue' => 1250000, 'units_sold' => 48250]);
+
+        $this->assertMatchesRegularExpression('/<span class="form-adorn-text">\s*\$\s*<\/span>\s*<input\s+type="text"\s+inputmode="decimal"\s+id="[^"]+"\s+value="1,250,000.00"[^>]*data-control="number-input"\s+data-min="0"\s+data-number-format="\{&quot;locale&quot;:&quot;en&quot;,&quot;decimals&quot;:2,&quot;grouping&quot;:true\}"[^>]*\/>\s*<input\s+type="hidden"\s+name="annual_revenue"\s+value="1250000(\.00)?"\s+data-number-value/', $html);
+        $this->assertMatchesRegularExpression('/<input\s+type="text"\s+inputmode="numeric"\s+id="[^"]+"\s+value="48,250"[^>]*\/>\s*<input\s+type="hidden"\s+name="units_sold"\s+value="48250"/', $html);
+    }
+
+    public function test_a_formatted_number_in_another_locale_carries_the_locale_for_the_browser(): void
+    {
+        $html = $this->pageHtml(['export_price' => 1299]);
+        $shown = class_exists(\NumberFormatter::class) ? '1.299,00' : '1299(\.00)?';
+
+        $this->assertMatchesRegularExpression('/value="'.$shown.'"[^>]*data-number-format="\{&quot;locale&quot;:&quot;de-DE&quot;,&quot;decimals&quot;:2,&quot;grouping&quot;:true\}"[^>]*\/>\s*<input\s+type="hidden"\s+name="export_price"\s+value="1299(\.00)?"/', $html);
+    }
+
+    public function test_a_formatted_number_keeps_every_digit_and_rounds_only_what_it_shows(): void
+    {
+        $fields = ['annual_revenue' => ['label' => 'Revenue', 'type' => 'number', 'format' => ['decimals' => 2]]];
+
+        $long = $this->renderField(new Sample(['annual_revenue' => '-12345678901234567.5']), 'annual_revenue', $fields['annual_revenue']);
+        $this->assertMatchesRegularExpression('/value="-12,345,678,901,234,567.50"[^>]*\/>\s*<input\s+type="hidden"\s+name="annual_revenue"\s+value="-12345678901234567.5"/', $long);
+
+        $rounded = $this->renderField(new Sample(['annual_revenue' => '999.995']), 'annual_revenue', $fields['annual_revenue']);
+        $this->assertMatchesRegularExpression('/value="1,000.00"[^>]*\/>\s*<input\s+type="hidden"\s+name="annual_revenue"\s+value="999.995"/', $rounded);
+    }
+
+    public function test_a_formatted_number_shows_formatted_in_preview_mode(): void
+    {
+        $form = Form::createIn(new FormsController, [
+            'model' => $this->makeSample(['annual_revenue' => 1250000]),
+            'previewMode' => true,
+            'fields' => ['annual_revenue' => ['label' => 'Revenue', 'type' => 'number', 'prefix' => '$', 'format' => ['decimals' => 2]]],
+        ]);
+        $form->bindToController();
+        $html = (string) $form->render();
+
+        $this->assertMatchesRegularExpression('/<span\s+class="form-ghost"\s+data-control="number-input"\s+data-number-format="[^"]+"\s+data-number-value="1250000(\.00)?"\s*>1,250,000.00<\/span>/', $html);
+        $this->assertStringNotContainsString('type="hidden"', $html);
+    }
+
+    public function test_a_number_without_a_format_keeps_its_name_on_the_input(): void
+    {
+        $html = $this->renderField($this->makeSample(['price' => 89.5]), 'price', ['label' => 'Price', 'type' => 'number']);
+
+        $this->assertMatchesRegularExpression('/<input\s+type="text"\s+inputmode="decimal"\s+name="price"/', $html);
+        $this->assertStringNotContainsString('data-number-value', $html);
+        $this->assertStringNotContainsString('data-number-format', $html);
+    }
+
+    public function test_a_disabled_formatted_number_posts_nothing(): void
+    {
+        $html = $this->renderField($this->makeSample(['annual_revenue' => 5]), 'annual_revenue', [
+            'label' => 'Revenue',
+            'type' => 'number',
+            'disabled' => true,
+            'format' => true,
+        ]);
+
+        $this->assertMatchesRegularExpression('/<input\s+type="hidden"\s+name="annual_revenue"\s+value="5(\.00)?"\s+data-number-value\s+disabled/', $html);
+    }
+
+    public function test_a_number_saves_the_digits_as_typed_and_an_empty_one_as_null(): void
+    {
+        $form = Form::createIn(new FormsController, [
+            'model' => new Sample,
+            'fields' => [
+                'annual_revenue' => ['type' => 'number', 'format' => true],
+                'units_sold' => ['type' => 'number'],
+                'price' => ['type' => 'number'],
+            ],
+        ]);
+        $form->bindToController();
+        $form->setSaveDataOverride('annual_revenue', ' 12345678901234567.50 ');
+        $form->setSaveDataOverride('units_sold', '');
+        $form->setSaveDataOverride('price', '12.50');
+
+        $data = $form->getSaveData();
+
+        $this->assertSame('12345678901234567.50', $data['annual_revenue']);
+        $this->assertNull($data['units_sold']);
+        $this->assertSame('12.50', $data['price']);
+    }
+
+    public function test_saving_the_formatted_numbers_stores_plain_numbers(): void
+    {
+        $sample = $this->makeSample();
+
+        $this->ajax('onSaveExamples', ['annual_revenue' => '1250000.50', 'units_sold' => '48251', 'export_price' => '1299.5'])->assertOk();
+
+        $sample->refresh();
+        $this->assertEquals(1250000.5, (float) $sample->annual_revenue);
+        $this->assertSame(48251, (int) $sample->units_sold);
+        $this->assertEquals(1299.5, (float) $sample->export_price);
     }
 
     public function test_a_password_ends_its_field_with_a_show_button_by_default(): void

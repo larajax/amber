@@ -1,0 +1,29 @@
+fields:
+    annual_revenue:
+        label: Annual Revenue
+        type: number
+        span: left
+        prefix: $
+        min: 0
+        format:
+            decimals: 2
+        comment: Shows 1,250,000.00 and saves 1250000.00.
+
+    units_sold:
+        label: Units Sold
+        type: number
+        span: right
+        min: 0
+        step: 1
+        format: true
+
+    export_price:
+        label: Export Price
+        type: number
+        span: left
+        suffix: €
+        min: 0
+        format:
+            decimals: 2
+            locale: de-DE
+        comment: German separators, whatever the app locale.

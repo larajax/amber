@@ -31,11 +31,31 @@ the `email` rule (see [Validation](/forms/behaviour#validation)).
 
 ## Number {#number}
 
-`number` passes `min`, `max` and `step` to the input. With no `step`, any decimal is accepted and the
-spinner is hidden. The value is saved as a number, and an empty field saves as `null`, so a nullable
-column is cleared rather than set to zero.
+`number` is a text input that only takes a number, and opens the number keypad on phones (the whole
+number keypad when `step` is a whole number). Other characters are dropped as they are typed, and a
+comma is read as the decimal point. Arrow Up and Arrow Down step the value by `step`, default 1, and when
+an edited field loses focus its value is held between `min` and `max`. The value saves as the digits
+typed, such as `12.50`, and an empty field saves as `null`, so a nullable column is cleared rather than
+set to zero.
 
 <<< @/../resources/ui/reference/forms/fields/number.yaml
+
+## Formatted numbers {#number-format}
+
+`format` shows the number with thousands separators while the field saves the plain number, so
+`1,250,000.00` saves as `1250000.00`. `format: true` groups the digits and shows decimals as typed. As
+an array, `decimals` fixes the decimal places, padded or rounded once the field loses focus, `grouping:
+false` leaves out the separators, and `locale` picks the separators, which default to the app locale.
+
+<<< @/../resources/ui/reference/forms/fields/number-format.yaml
+
+Separators appear as you type, and the cursor stays beside the same digit. The field's input shows the
+formatted number while a hidden input after it posts the plain one, so code reading the value by the
+field's name gets `1250000.00`. Rounding is only shown: a stored `999.995` shows as `1,000.00` with two
+decimals, and keeps its value unless the field is edited. Preview mode shows the formatted number.
+Formatting works on the digits rather than a float, so long values keep every digit. The browser
+formats every locale, while the server formats the first view itself with PHP's `intl` extension, and
+without it only for English locales.
 
 ## Password {#password}
 
@@ -331,9 +351,10 @@ The options each type takes besides the common properties. `text`, `email`, `che
 
 Option | Description
 ------------- | -------------
-**min** | the lowest value the input accepts.
-**max** | the highest value the input accepts.
-**step** | the interval between values, and shows the spinner. Default: any decimal, with no spinner.
+**min** | the lowest value, applied when an edited field loses focus. A minus sign can't be typed when it is zero or more.
+**max** | the highest value, applied when an edited field loses focus.
+**step** | what Arrow Up and Arrow Down add or take away. A whole number opens the whole number keypad. Default: 1.
+**format** | shows thousands separators while the plain number saves, as `true` or an array of `decimals`, `grouping` and `locale`. See [Formatted numbers](#number-format).
 
 ### Password {#password-options}
 
