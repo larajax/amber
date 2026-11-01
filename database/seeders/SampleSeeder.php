@@ -135,6 +135,8 @@ class SampleSeeder extends Seeder
                 'has_discount' => true,
                 'discount_code' => 'AURORA10',
                 'discount_percent' => 10,
+                'shipping_fee' => 12.50,
+                'support_email' => 'help@aurora.test',
                 'delivery' => 'courier',
                 'delivery_address' => '12 Harbour Street, Sydney',
                 'headline' => 'The desk lamp that bends to your work',

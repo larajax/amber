@@ -1,0 +1,14 @@
+fields:
+    shipping_fee:
+        label: Shipping Fee
+        type: number
+        span: left
+        prefix: $
+        suffix: AUD
+
+    discount_percent:
+        label: Discount
+        type: number
+        span: right
+        suffix: '%'
+        comment: Prefixes and suffixes are only shown, so the value saves as a plain number.

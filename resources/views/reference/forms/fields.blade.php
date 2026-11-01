@@ -27,6 +27,16 @@
         @include('reference._form_example', ['name' => 'password'])
     </section>
 
+    <section class="ui-section" id="adorn-text">
+        @include('reference._heading', ['id' => 'adorn-text', 'title' => 'Prefix and suffix', 'caption' => '<code>prefix</code> and <code>suffix</code> text inside the input.'])
+        @include('reference._form_example', ['name' => 'adorn-text'])
+    </section>
+
+    <section class="ui-section" id="adorn-icons">
+        @include('reference._heading', ['id' => 'adorn-icons', 'title' => 'Prefix and suffix icons', 'caption' => '<code>prefixIcon</code> and <code>suffixIcon</code> on text, email and password inputs.'])
+        @include('reference._form_example', ['name' => 'adorn-icons'])
+    </section>
+
     <section class="ui-section" id="textarea">
         @include('reference._heading', ['id' => 'textarea', 'title' => 'Textarea', 'caption' => '<code>textarea</code>, a multi-line input.'])
         @include('reference._form_example', ['name' => 'textarea'])

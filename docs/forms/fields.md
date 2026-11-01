@@ -46,6 +46,31 @@ uses one, so its value is never stored.
 
 <<< @/../resources/ui/reference/forms/fields/password.yaml
 
+## Prefix and suffix {#adorn-text}
+
+`prefix` and `suffix` show short text inside the input, before and after the value, such as a currency
+symbol or a unit. A field can have both. They are only shown: the value still saves as entered, so the
+shipping fee below saves `12.50`, not `$12.50 AUD`. In preview mode they show around the value.
+
+<<< @/../resources/ui/reference/forms/fields/adorn-text.yaml
+
+The text goes through the translator, like a label. A model's `filterFields` method can change it while
+the form renders, such as `$fields->shipping_fee->prefix = '€'` when another field picks the currency
+(see [Dependent fields](/forms/behaviour#dependent-fields)).
+
+## Prefix and suffix icons {#adorn-icons}
+
+`prefixIcon` and `suffixIcon` show an icon inside the input, given as icon classes such as
+`ph ph-envelope-simple`. They combine with `prefix` and `suffix`: before the value an icon comes first,
+then the text, and after the value the text comes first, then the icon. Icons are hidden from screen
+readers, while prefix and suffix text is read with the field.
+
+<<< @/../resources/ui/reference/forms/fields/adorn-icons.yaml
+
+Adornments work on the `text`, `email`, `number` and `password` types. They use Bootstrap 6's adorned
+field, an outer `form-control form-adorn` element holding the `form-ghost` input, so the focus ring,
+validation colours and read-only and disabled styles cover the whole field.
+
 ## Textarea {#textarea}
 
 `textarea` renders a multi-line input. In preview mode it shows the text with its line breaks.
@@ -250,6 +275,10 @@ Property | Description
 **spanClass** | the grid column classes of a `row` field, such as `md:col-6`. See [Rows](/forms/layout#row-span).
 **size** | the height of a field that has one, such as a textarea: `tiny`, `small`, `large`, `huge` or `giant`. Default: `large`.
 **placeholder** | text shown while the field is empty.
+**prefix** | text shown inside the input before the value, for `text`, `email`, `number` and `password`. See [Prefix and suffix](#adorn-text).
+**suffix** | text shown inside the input after the value. See [Prefix and suffix](#adorn-text).
+**prefixIcon** | icon classes shown inside the input before the value. See [Prefix and suffix icons](#adorn-icons).
+**suffixIcon** | icon classes shown inside the input after the value. See [Prefix and suffix icons](#adorn-icons).
 **comment** | text below the field. See [Comments](/forms/layout#comments).
 **commentAbove** | text between the label and the field.
 **commentHtml** | renders the comments as HTML instead of escaping them. Default: `false`.

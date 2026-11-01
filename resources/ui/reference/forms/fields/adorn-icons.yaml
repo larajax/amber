@@ -1,0 +1,22 @@
+fields:
+    support_email:
+        label: Support Email
+        type: email
+        span: left
+        prefixIcon: ph ph-envelope-simple
+
+    discount_code:
+        label: Discount Code
+        span: right
+        prefixIcon: ph ph-ticket
+
+    reference:
+        label: Reference
+        span: left
+        suffixIcon: ph ph-tag
+
+    _adorned_password:
+        label: Password
+        type: password
+        span: right
+        prefixIcon: ph ph-lock-simple

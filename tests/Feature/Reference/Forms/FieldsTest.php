@@ -19,7 +19,7 @@ class FieldsTest extends TestCase
      * @var array<int, string> examples on the page, one YAML file each.
      */
     protected array $examples = [
-        'text', 'email', 'number', 'password', 'textarea', 'textarea-sizes',
+        'text', 'email', 'number', 'password', 'adorn-text', 'adorn-icons', 'textarea', 'textarea-sizes',
         'dropdown', 'dropdown-model-options', 'dropdown-preset', 'option-styles',
         'radio', 'checkbox', 'switch', 'checkboxlist', 'checkboxlist-nested', 'checkboxlist-scrollable',
         'balloon-selector', 'balloon-allow-empty', 'balloon-read-only',
@@ -194,6 +194,66 @@ class FieldsTest extends TestCase
         foreach (['tiny' => 'excerpt', 'small' => 'summary', 'large' => 'description', 'huge' => 'body', 'giant' => 'notes'] as $size => $name) {
             $this->assertMatchesRegularExpression('/<textarea\s+name="'.$name.'"[^>]*class="form-control field-textarea size-'.$size.'"/', $html);
         }
+    }
+
+    public function test_prefix_and_suffix_text_wrap_the_input_in_an_adorned_field(): void
+    {
+        $html = $this->pageHtml(['shipping_fee' => 12.5, 'discount_percent' => 10]);
+
+        $this->assertMatchesRegularExpression('/<label class="form-control form-adorn">\s*<span class="form-adorn-text">\s*\$\s*<\/span>\s*<input\s+type="number"[^>]*name="shipping_fee"[^>]*class="form-ghost[^"]*"[^>]*\/>\s*<span class="form-adorn-text">\s*AUD\s*<\/span>\s*<\/label>/s', $html);
+        $this->assertMatchesRegularExpression('/name="discount_percent"[^>]*class="form-ghost[^"]*"[^>]*\/>\s*<span class="form-adorn-text">\s*%\s*<\/span>\s*<\/label>/s', $html);
+    }
+
+    public function test_prefix_and_suffix_icons_sit_before_and_after_the_input(): void
+    {
+        $html = $this->pageHtml(['support_email' => 'help@aurora.test', 'reference' => 'REF-1001']);
+
+        $this->assertMatchesRegularExpression('/<label class="form-control form-adorn">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-envelope-simple"><\/i>\s*<\/span>\s*<input\s+type="email"\s+name="support_email"[^>]*class="form-ghost"/s', $html);
+        $this->assertMatchesRegularExpression('/name="reference"[^>]*class="form-ghost"[^>]*\/>\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-tag"><\/i>\s*<\/span>\s*<\/label>/s', $html);
+        $this->assertMatchesRegularExpression('/<i class="ph ph-lock-simple"><\/i>\s*<\/span>\s*<input\s+type="password"\s+name="_adorned_password"/s', $html);
+    }
+
+    public function test_a_field_without_adornment_keeps_its_plain_input(): void
+    {
+        $html = $this->renderField($this->makeSample(), 'code', ['label' => 'Code']);
+
+        $this->assertStringNotContainsString('form-adorn', $html);
+        $this->assertMatchesRegularExpression('/name="code"[^>]*class="form-control"/', $html);
+    }
+
+    public function test_adornments_show_around_the_value_in_preview_mode(): void
+    {
+        $form = Form::createIn(new FormsController, [
+            'model' => $this->makeSample(['shipping_fee' => 12.5]),
+            'previewMode' => true,
+            'fields' => ['shipping_fee' => ['label' => 'Shipping Fee', 'type' => 'number', 'prefix' => '$', 'suffix' => 'AUD']],
+        ]);
+        $form->bindToController();
+
+        $this->assertMatchesRegularExpression('/<span class="form-control form-adorn">\s*<span class="form-adorn-text">\s*\$\s*<\/span>\s*<span class="form-ghost">12.50?<\/span>\s*<span class="form-adorn-text">\s*AUD\s*<\/span>\s*<\/span>/', (string) $form->render());
+    }
+
+    public function test_an_adornment_set_at_runtime_renders_like_one_from_yaml(): void
+    {
+        $form = Form::createIn(new FormsController, [
+            'model' => $this->makeSample(),
+            'fields' => ['shipping_fee' => ['label' => 'Shipping Fee', 'type' => 'number']],
+        ]);
+        $form->bindToController();
+        $form->getField('shipping_fee')->prefix = '€';
+
+        $this->assertMatchesRegularExpression('/<span class="form-adorn-text">\s*€\s*<\/span>\s*<input\s+type="number"/', (string) $form->render());
+    }
+
+    public function test_saving_an_adorned_field_stores_the_bare_value(): void
+    {
+        $sample = $this->makeSample(['shipping_fee' => 12.5]);
+
+        $this->ajax('onSaveExamples', ['shipping_fee' => '9.95', 'discount_percent' => '15'])->assertOk();
+
+        $sample->refresh();
+        $this->assertEquals(9.95, (float) $sample->shipping_fee);
+        $this->assertSame(15, (int) $sample->discount_percent);
     }
 
     public function test_a_checkbox_field_renders_a_check_beside_its_label_and_comment(): void
