@@ -7,4 +7,4 @@ fields:
             public: Public
             members: Members
             private: Private
-        comment: Clicking the active option clears the value.
+        comment: Clicking the checked option, or pressing Space on it, clears the value.

@@ -199,23 +199,25 @@ unless `quickselect: false` turns them off, and stacks its options even with `in
 
 ## Balloon selector {#balloon-selector}
 
-`balloon-selector` picks one option from a row of pills and stores it in a hidden input, which suits a
-short list of states. Each option is focusable, and Enter or Space picks the focused one.
+`balloon-selector` picks one option from a row of joined buttons, which suits a short list of states.
+The buttons are Bootstrap's radio toggle buttons, so the field is a radio group: Tab moves into it and
+the arrow keys pick an option. Options wrap onto another row when they don't fit.
 
 <<< @/../resources/ui/reference/forms/fields/balloon-selector.yaml
 
 ## Clearing a balloon selector {#balloon-allow-empty}
 
 By default a balloon selector always holds one of its options once one is picked. `allowEmpty` lets the
-active option be clicked again to clear the value.
+checked option be clicked again, or Space be pressed on it, to clear the value. A cleared selector
+saves an empty value.
 
 <<< @/../resources/ui/reference/forms/fields/balloon-allow-empty.yaml
 
 ## Read-only balloon selector {#balloon-read-only}
 
-With `readOnly`, the options leave the tab order and ignore clicks and keys, while the hidden input still
-posts the value, so saving the form keeps it. A `disabled` balloon selector looks the same but its value
-is left out of the saved data.
+With `readOnly`, the options ignore clicks and keys, while the checked option still posts its value, so
+saving the form keeps it. A `disabled` balloon selector looks the same but its value is left out of the
+saved data.
 
 <<< @/../resources/ui/reference/forms/fields/balloon-read-only.yaml
 
@@ -380,7 +382,7 @@ Option | Description
 Option | Description
 ------------- | -------------
 **options**, **optionsMethod**, **optionsPreset** | the options, as for a dropdown.
-**allowEmpty** | clicking the active option again clears the value. Default: `false`.
+**allowEmpty** | clicking the checked option again, or pressing Space on it, clears the value. Default: `false`.
 
 ### Section {#section-options}
 

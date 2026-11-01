@@ -360,7 +360,8 @@ class LayoutTest extends TestCase
         $this->assertMatchesRegularExpression('/class="form-group form-group-preview text-field span-left  is-required  "\s+data-field-name="name"/', $preview);
         $this->assertMatchesRegularExpression('/<!-- Text -->\s*<span class="form-control">Aurora Desk Lamp<\/span>/', $preview);
         $this->assertMatchesRegularExpression('/<div class="form-control" >\s*<i class="ph ph-truck" aria-hidden="true"><\/i>\s*Road\s*<\/div>/', $preview);
-        $this->assertStringContainsString('class="control-balloon-selector control-disabled"', $preview);
+        $this->assertMatchesRegularExpression('/data-control="balloon-selector"\s*>\s*<input\s+type="hidden"\s+name="Preview\[status\]"\s+value=""\s+disabled/', $preview);
+        $this->assertSame(3, preg_match_all('/type="radio"\s+name="Preview\[status\]"[^>]*disabled/s', $preview));
         $this->assertSame(2, preg_match_all('/name="Preview\[features\]\[\]"[^>]*disabled\s+checked/s', $preview));
         $this->assertStringNotContainsString('<input type="text"', $preview);
         $this->assertStringNotContainsString('<select', $preview);

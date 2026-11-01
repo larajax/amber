@@ -103,7 +103,7 @@
     </section>
 
     <section class="ui-section" id="balloon-selector">
-        @include('reference._heading', ['id' => 'balloon-selector', 'title' => 'Balloon selector', 'caption' => '<code>balloon-selector</code>, one option from a row of pills.'])
+        @include('reference._heading', ['id' => 'balloon-selector', 'title' => 'Balloon selector', 'caption' => '<code>balloon-selector</code>, one option from a row of joined buttons.'])
         @include('reference._form_example', ['name' => 'balloon-selector'])
     </section>
 
@@ -113,7 +113,7 @@
     </section>
 
     <section class="ui-section" id="balloon-read-only">
-        @include('reference._heading', ['id' => 'balloon-read-only', 'title' => 'Read-only balloon selector', 'caption' => '<code>readOnly</code> locks the pills and keeps the value.'])
+        @include('reference._heading', ['id' => 'balloon-read-only', 'title' => 'Read-only balloon selector', 'caption' => '<code>readOnly</code> locks the buttons and keeps the value.'])
         @include('reference._form_example', ['name' => 'balloon-read-only'])
     </section>
 

@@ -409,36 +409,48 @@ class FieldsTest extends TestCase
         $this->assertMatchesRegularExpression('/<option\s+selected="selected"\s+data-icon="ph ph-archive"\s+value="legacy"/', $html);
     }
 
-    public function test_a_balloon_selector_renders_focusable_radio_options_and_one_value_input(): void
+    public function test_a_balloon_selector_renders_radio_toggle_buttons_after_an_empty_value_input(): void
     {
         $html = $this->pageHtml(['status' => 'active']);
 
         $this->assertSame(3, substr_count($html, 'data-control="balloon-selector"'));
-        $this->assertStringContainsString('role="radiogroup"', $html);
-        $this->assertMatchesRegularExpression('/data-value="active"\s+role="radio"\s+aria-checked="true"\s+tabindex="0"\s+class="active"/', $html);
-        $this->assertMatchesRegularExpression('/data-value="draft"\s+role="radio"\s+aria-checked="false"\s+tabindex="0"/', $html);
-        $this->assertMatchesRegularExpression('/<input\s+type="hidden"\s+name="status"\s+value="active"/', $html);
         $this->assertSame(1, substr_count($html, 'id="Form-exampleBalloonSelector-field-status"'));
+        $this->assertMatchesRegularExpression('/id="Form-exampleBalloonSelector-field-status"\s+data-control="balloon-selector"\s*>\s*<input\s+type="hidden"\s+name="status"\s+value=""\s*\/>\s*<div\s+class="btn-group"\s+role="radiogroup"\s+aria-label="Status"\s*>/', $html);
+        $this->assertMatchesRegularExpression('/<label class="btn-check btn-outline theme-primary">\s*<input\s+type="radio"\s+name="status"\s+value="active"\s+autocomplete="off"\s+checked\s*\/>\s*Active\s*<\/label>/', $html);
+        $this->assertMatchesRegularExpression('/<input\s+type="radio"\s+name="status"\s+value="draft"\s+autocomplete="off"\s*\/>\s*Draft\s*<\/label>/', $html);
     }
 
     public function test_a_balloon_selector_can_allow_an_empty_value(): void
     {
         $html = $this->pageHtml(['visibility' => 'public']);
 
-        $this->assertMatchesRegularExpression('/id="Form-exampleBalloonAllowEmpty-field-visibility"\s+class="control-balloon-selector "\s+data-control="balloon-selector"\s+data-selector-allow-empty/', $html);
+        $this->assertMatchesRegularExpression('/id="Form-exampleBalloonAllowEmpty-field-visibility"\s+data-control="balloon-selector"\s+data-selector-allow-empty/', $html);
     }
 
     public function test_a_read_only_balloon_selector_is_locked_but_keeps_its_value(): void
     {
         $html = $this->pageHtml(['audience' => 'retail']);
 
-        preg_match('/id="Form-exampleBalloonReadOnly-field-audience".*?<\/div>/s', $html, $match);
+        preg_match('/id="Form-exampleBalloonReadOnly-field-audience".*?<\/div>\s*<\/div>/s', $html, $match);
         $readOnly = $match[0];
 
-        $this->assertStringContainsString('class="control-balloon-selector control-disabled"', $readOnly);
-        $this->assertSame(3, substr_count($readOnly, 'aria-disabled="true"'));
-        $this->assertStringNotContainsString('tabindex="0"', $readOnly);
-        $this->assertMatchesRegularExpression('/name="audience"\s+value="retail"/', $readOnly);
+        $this->assertMatchesRegularExpression('/role="radiogroup"\s+aria-label="Audience"\s+aria-readonly="true"/', $readOnly);
+        $this->assertMatchesRegularExpression('/name="audience"\s+value="retail"\s+autocomplete="off"\s+checked/', $readOnly);
+        $this->assertStringNotContainsString('disabled', $readOnly);
+    }
+
+    public function test_a_disabled_balloon_selector_posts_nothing(): void
+    {
+        $html = $this->renderField($this->makeSample(['status' => 'active']), 'status', [
+            'label' => 'Status',
+            'type' => 'balloon-selector',
+            'disabled' => true,
+            'options' => ['draft' => 'Draft', 'active' => 'Active'],
+        ]);
+
+        $this->assertMatchesRegularExpression('/<input\s+type="hidden"\s+name="status"\s+value=""\s+disabled/', $html);
+        $this->assertSame(2, preg_match_all('/<input\s+type="radio"\s+name="status"[^>]*\sdisabled/s', $html));
+        $this->assertStringNotContainsString('aria-readonly', $html);
     }
 
     public function test_section_hint_and_ruler_render_their_labels_and_comments(): void

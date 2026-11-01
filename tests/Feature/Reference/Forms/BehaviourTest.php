@@ -402,7 +402,7 @@ class BehaviourTest extends TestCase
     {
         $defaults = $this->exampleHtml($this->pageHtml(), 'defaults');
 
-        $this->assertMatchesRegularExpression('/<input\s+type="hidden"\s+name="NewSample\[status\]"\s+value="draft"/', $defaults);
+        $this->assertMatchesRegularExpression('/<input\s+type="radio"\s+name="NewSample\[status\]"\s+value="draft"\s+autocomplete="off"\s+checked/', $defaults);
         $this->assertMatchesRegularExpression('/<option\s+selected="selected"\s+value="normal"/', $defaults);
         $this->assertMatchesRegularExpression('/name="NewSample\[quantity\]"\s+id="[^"]+"\s+value="1"/', $defaults);
         $this->assertMatchesRegularExpression('/name="NewSample\[is_featured\]"\s+value="1"\s+checked/', $defaults);
@@ -422,7 +422,7 @@ class BehaviourTest extends TestCase
         $form->bindToController();
         $html = (string) $form->render();
 
-        $this->assertMatchesRegularExpression('/<input\s+type="hidden"\s+name="status"\s+value="active"/', $html);
+        $this->assertMatchesRegularExpression('/<input\s+type="radio"\s+name="status"\s+value="active"\s+autocomplete="off"\s+checked/', $html);
         $this->assertMatchesRegularExpression('/name="quantity"\s+id="[^"]+"\s+value="9"/', $html);
         $this->assertMatchesRegularExpression('/name="headline"\s+id="[^"]+"\s+value="Saved headline"/', $html);
     }

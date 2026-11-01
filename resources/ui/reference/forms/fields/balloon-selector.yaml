@@ -6,4 +6,4 @@ fields:
             draft: Draft
             active: Active
             archived: Archived
-        comment: Click an option, or tab to one and press Enter or Space.
+        comment: Click an option, or tab into the group and pick one with the arrow keys.
