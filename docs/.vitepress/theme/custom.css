@@ -106,6 +106,15 @@
     }
 }
 
+/* The demo callout renders above the page body, outside .vp-doc, so it carries the tip spacing itself */
+.demo-link {
+    margin: 0 0 24px;
+
+    p:first-child {
+        margin: 0;
+    }
+}
+
 /* "UI" sits after the Larajax wordmark as a light badge */
 .VPNavBarTitle .title > span {
     margin-left: 2px;
