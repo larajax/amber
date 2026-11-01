@@ -38,9 +38,10 @@ names and tokens may change before the stable version, and a few things follow f
   `data-bs-toggle="menu"` data API, which the Bootstrap module provides.
 - **Set the colour mode on `<html>`.** Bootstrap follows the operating system's light or dark preference
   when no `data-bs-theme` attribute is set, but the library's palette follows the attribute. Set
-  `data-bs-theme="light"` or `data-bs-theme="dark"` on `<html>` before the page paints, from a saved
-  choice or the system preference, as the demo app's layout does [below](#include-the-assets) and as in
-  Bootstrap's [color modes guide](https://getbootstrap.com/docs/6.0/customize/color-modes/).
+  `data-bs-theme="light"` or `data-bs-theme="dark"` on `<html>`, as the layout
+  [below](#include-the-assets) does. To follow a saved choice or the system preference, set it from a
+  script before the page paints, as Bootstrap's
+  [color modes guide](https://getbootstrap.com/docs/6.0/customize/color-modes/) shows.
 
 ## Install the package {#install-the-package}
 
@@ -71,9 +72,31 @@ both with `--force` from the `post-autoload-dump` scripts in its `composer.json`
 
 ## Include the assets in your layout {#include-the-assets}
 
-Add the stylesheets and scripts to your Blade layout. This is the demo app's layout:
+Add the stylesheets and scripts to your Blade layout:
 
-<<< @/../resources/views/layouts/app.blade.php{blade}
+```blade
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>My App</title>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="{{ asset('vendor/larajax/ui/ui.css') }}" rel="stylesheet">
+
+        <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2"></script>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ asset('vendor/larajax/framework-bundle.js') }}"></script>
+        <script type="module" src="{{ asset('vendor/larajax/ui/ui.js') }}"></script>
+
+        {{ Ui::renderAssets() }}
+    </head>
+    <body>
+        @yield('content')
+    </body>
+</html>
+```
 
 The order matters:
 
@@ -81,17 +104,17 @@ The order matters:
 - Larajax's `framework-bundle.js` loads **before** `ui.js`, because the widgets register their controls
   with the `window.jax` API it creates. Use the **bundle** build: the plain `framework.js` build does
   not include the control API (`jax.registerControl`) the library needs.
-- Bootstrap's JavaScript module opens the menus.
 - `Ui::renderAssets()` prints, at the end of `<head>`, any files that widgets add during the request,
   such as a [custom widget](/extending/custom-widgets) that loads its own script with `addJs()`. It works
   in the layout because the page content renders before the layout does. AJAX responses carry the same
   files when a widget is created during a request, and the browser skips files it already has. See
   [printing the assets](/extending/custom-widgets#render-assets).
 
-The rest belongs to the demo: the script at the top sets the colour mode before the page paints, the
-Phosphor icon font draws the icons (the library's built-in icons use Phosphor unless you choose
-[another pack](/extending/icons)), and `amber.css` and `amber.js` style and drive the demo's own
-sidebar and top bar. Beyond Bootstrap and Larajax, the library has no framework dependency.
+The Phosphor script draws the library's built-in icons; to use [another pack](/extending/icons), load
+its font instead. Bootstrap's JavaScript module opens the menus. Beyond Bootstrap and Larajax, the
+library has no framework dependency. The demo app's
+[own layout](https://github.com/larajax/amber/blob/main/resources/views/layouts/app.blade.php) adds a
+colour mode switch, a sidebar and a top bar on top of this.
 
 ### Using with Vite {#using-with-vite}
 
