@@ -24,7 +24,7 @@ class FormsController extends ReferenceControllerBase
     public function fields(): View
     {
         $this->makeExampleForms('forms/fields', [
-            'text', 'email', 'number', 'password', 'adorn-text', 'adorn-icons', 'textarea', 'textarea-sizes',
+            'text', 'email', 'number', 'password', 'password-reveal', 'adorn-text', 'adorn-icons', 'textarea', 'textarea-sizes',
             'dropdown', 'dropdown-model-options', 'dropdown-preset', 'option-styles',
             'radio', 'checkbox', 'switch', 'checkboxlist', 'checkboxlist-nested', 'checkboxlist-scrollable',
             'balloon-selector', 'balloon-allow-empty', 'balloon-read-only',

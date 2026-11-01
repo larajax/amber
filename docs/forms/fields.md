@@ -46,6 +46,19 @@ uses one, so its value is never stored.
 
 <<< @/../resources/ui/reference/forms/fields/password.yaml
 
+## Show password {#password-reveal}
+
+`revealable: true` puts an eye button at the end of a password field. Pressing it shows what was typed,
+and pressing it again hides it. Submitting the form also hides it. It works alongside a `prefixIcon`,
+and the button always comes last.
+
+<<< @/../resources/ui/reference/forms/fields/password-reveal.yaml
+
+Screen readers announce the button as "Show password" and report whether it is pressed. A mouse press
+leaves the cursor in the input, so typing carries on. The button is disabled when the field is
+`disabled` or `readOnly`, and is left out in preview mode. Where a browser draws its own reveal button
+inside password inputs, the field hides it. The button is the `password-reveal` control.
+
 ## Prefix and suffix {#adorn-text}
 
 `prefix` and `suffix` show short text inside the input, before and after the value, such as a currency
@@ -308,8 +321,8 @@ Property | Description
 
 ## Type options {#type-options}
 
-The options each type takes besides the common properties. `text`, `email`, `password`, `checkbox`,
-`switch` and `ruler` take only the common properties.
+The options each type takes besides the common properties. `text`, `email`, `checkbox`, `switch` and
+`ruler` take only the common properties.
 
 ### Number {#number-options}
 
@@ -318,6 +331,12 @@ Option | Description
 **min** | the lowest value the input accepts.
 **max** | the highest value the input accepts.
 **step** | the interval between values, and shows the spinner. Default: any decimal, with no spinner.
+
+### Password {#password-options}
+
+Option | Description
+------------- | -------------
+**revealable** | adds a button that shows and hides what was typed. See [Show password](#password-reveal). Default: `false`.
 
 ### Textarea {#textarea-options}
 

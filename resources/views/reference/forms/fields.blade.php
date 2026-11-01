@@ -27,6 +27,11 @@
         @include('reference._form_example', ['name' => 'password'])
     </section>
 
+    <section class="ui-section" id="password-reveal">
+        @include('reference._heading', ['id' => 'password-reveal', 'title' => 'Show password', 'caption' => '<code>revealable</code> adds a button that shows what was typed.'])
+        @include('reference._form_example', ['name' => 'password-reveal'])
+    </section>
+
     <section class="ui-section" id="adorn-text">
         @include('reference._heading', ['id' => 'adorn-text', 'title' => 'Prefix and suffix', 'caption' => '<code>prefix</code> and <code>suffix</code> text inside the input.'])
         @include('reference._form_example', ['name' => 'adorn-text'])

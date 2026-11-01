@@ -19,7 +19,7 @@ class FieldsTest extends TestCase
      * @var array<int, string> examples on the page, one YAML file each.
      */
     protected array $examples = [
-        'text', 'email', 'number', 'password', 'adorn-text', 'adorn-icons', 'textarea', 'textarea-sizes',
+        'text', 'email', 'number', 'password', 'password-reveal', 'adorn-text', 'adorn-icons', 'textarea', 'textarea-sizes',
         'dropdown', 'dropdown-model-options', 'dropdown-preset', 'option-styles',
         'radio', 'checkbox', 'switch', 'checkboxlist', 'checkboxlist-nested', 'checkboxlist-scrollable',
         'balloon-selector', 'balloon-allow-empty', 'balloon-read-only',
@@ -254,6 +254,63 @@ class FieldsTest extends TestCase
         $sample->refresh();
         $this->assertEquals(9.95, (float) $sample->shipping_fee);
         $this->assertSame(15, (int) $sample->discount_percent);
+    }
+
+    public function test_a_revealable_password_ends_its_field_with_a_show_button(): void
+    {
+        $html = $this->pageHtml();
+
+        $this->assertMatchesRegularExpression('/<label class="form-control form-adorn">\s*<input\s+type="password"\s+name="_new_password"\s+id="([^"]+)"[^>]*class="form-ghost"[^>]*\/>\s*<button\s+type="button"\s+class="btn-icon"\s+aria-label="Show password"\s+aria-pressed="false"\s+aria-controls="\1"\s+data-control="password-reveal"\s+data-icon-show="ph ph-eye"\s+data-icon-hide="ph ph-eye-slash"\s*>\s*<i [^>]*><\/i>\s*<\/button>\s*<\/label>/', $html);
+        $this->assertMatchesRegularExpression('/<i (?=[^>]*class="ph ph-eye")(?=[^>]*data-reveal-icon)(?=[^>]*aria-hidden="true")[^>]*><\/i>\s*<\/button>/', $html);
+    }
+
+    public function test_a_revealable_password_keeps_its_prefix_icon_before_the_input(): void
+    {
+        $html = $this->pageHtml();
+
+        $this->assertMatchesRegularExpression('/<i class="ph ph-lock-simple"><\/i>\s*<\/span>\s*<input\s+type="password"\s+name="_confirm_password"[^>]*class="form-ghost"[^>]*\/>\s*<button\s+type="button"\s+class="btn-icon"[^>]*data-control="password-reveal"/s', $html);
+    }
+
+    public function test_a_password_without_revealable_has_no_show_button(): void
+    {
+        $html = $this->renderField($this->makeSample(), '_password', ['label' => 'Password', 'type' => 'password']);
+
+        $this->assertStringNotContainsString('password-reveal', $html);
+        $this->assertStringNotContainsString('form-adorn', $html);
+        $this->assertMatchesRegularExpression('/name="_password"[^>]*class="form-control"/', $html);
+    }
+
+    public function test_revealable_only_applies_to_password_fields(): void
+    {
+        $html = $this->renderField($this->makeSample(), 'code', ['label' => 'Code', 'revealable' => true]);
+
+        $this->assertStringNotContainsString('password-reveal', $html);
+        $this->assertStringNotContainsString('form-adorn', $html);
+    }
+
+    public function test_a_disabled_or_read_only_revealable_password_disables_its_button(): void
+    {
+        $sample = $this->makeSample();
+
+        foreach (['disabled', 'readOnly'] as $option) {
+            $html = $this->renderField($sample, '_password', ['label' => 'Password', 'type' => 'password', 'revealable' => true, $option => true]);
+
+            $this->assertMatchesRegularExpression('/data-control="password-reveal"[^>]*\sdisabled\s*>/', $html, $option);
+        }
+    }
+
+    public function test_a_revealable_password_shows_no_button_in_preview_mode(): void
+    {
+        $form = Form::createIn(new FormsController, [
+            'model' => $this->makeSample(),
+            'previewMode' => true,
+            'fields' => ['_password' => ['label' => 'Password', 'type' => 'password', 'revealable' => true]],
+        ]);
+        $form->bindToController();
+        $html = (string) $form->render();
+
+        $this->assertStringNotContainsString('password-reveal', $html);
+        $this->assertStringContainsString('********', $html);
     }
 
     public function test_a_checkbox_field_renders_a_check_beside_its_label_and_comment(): void
