@@ -3,4 +3,4 @@ scopes:
         label: Status
         type: dropdown
         emptyOption: Any status
-        optionsMethod: App\Models\Post::listStatusOptions
+        optionsMethod: App\Models\Post::listStatusColorOptions

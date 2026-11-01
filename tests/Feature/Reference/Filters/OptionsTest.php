@@ -101,7 +101,8 @@ class OptionsTest extends TestCase
         $html = $this->exampleHtml('defaults');
 
         $this->assertMatchesRegularExpression('/<input class="check check-sm" type="checkbox" id="Filter-defaultsFilter-scope-hide_archived" checked \/>/', $html);
-        $this->assertStringContainsString('selected="selected"', $html);
+        $this->assertMatchesRegularExpression('/<span class="combobox-value">\s*Approved\s*<\/span>/', $html);
+        $this->assertMatchesRegularExpression('/class="menu-item selected"\s+role="option"\s+aria-selected="true"\s+data-bs-value="approved"/', $html);
         $this->assertStringContainsString('Current Article', $html);
         $this->assertStringNotContainsString('Retired Article', $html);
         $this->assertStringNotContainsString('Draft Article', $html);
@@ -160,15 +161,37 @@ class OptionsTest extends TestCase
         $this->assertStringNotContainsString('Silent Article', $html);
     }
 
+    /**
+     * scopeForms returns the popover form each scope of a filter is rendered with, keyed by scope name.
+     *
+     * @return array<string, string>
+     */
+    protected function scopeForms(string $html, string $filterId): array
+    {
+        $document = \Dom\HTMLDocument::createFromString($html, LIBXML_NOERROR);
+        $forms = [];
+
+        foreach ($document->querySelectorAll("#{$filterId} .filter-group") as $group) {
+            $link = $group->querySelector('[data-scope-name]');
+            $template = $group->querySelector('template[data-scope-form]');
+
+            if ($link && $template) {
+                $forms[$link->getAttribute('data-scope-name')] = $template->innerHTML;
+            }
+        }
+
+        return $forms;
+    }
+
     public function test_scopes_only_offer_their_named_conditions(): void
     {
-        $content = $this->ajax('conditionsFilter::onFilterUpdate', ['preload' => 'true'])->assertOk()->json('popoverContent');
+        $content = $this->scopeForms($this->get(route('reference.filters.options'))->assertOk()->getContent(), 'Filter-conditionsFilter');
 
         $this->assertStringContainsString('value="greater"', $content['comment_count']);
         $this->assertStringContainsString('value="lesser"', $content['comment_count']);
         $this->assertStringNotContainsString('value="between"', $content['comment_count']);
         $this->assertStringNotContainsString('value="equals"', $content['review_on']);
-        $this->assertStringContainsString('<input type="hidden" name="Filter[condition]" value="contains" />', $content['slug']);
+        $this->assertMatchesRegularExpression('/<input type="hidden" name="Filter\[condition\]" value="contains"\s*\/?>/', $content['slug']);
         $this->assertStringContainsString('<span>contains</span>', $content['slug']);
     }
 

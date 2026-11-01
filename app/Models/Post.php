@@ -110,7 +110,6 @@ class Post extends Model
         ];
     }
 
-    // #region docs-list-status-options
     /**
      * listStatusOptions returns the workflow statuses as a label and icon pair, shared by the form, list and filter.
      *
@@ -125,7 +124,23 @@ class Post extends Model
             'archived' => ['Archived', 'ph ph-archive'],
         ];
     }
-    // #endregion docs-list-status-options
+
+    // #region docs-list-status-color-options
+    /**
+     * listStatusColorOptions returns the workflow statuses as a label and color pair, which a dropdown shows as a status dot.
+     *
+     * @return array<string, array{0: string, 1: string}>
+     */
+    public static function listStatusColorOptions(): array
+    {
+        return [
+            'draft' => ['Draft', 'var(--bs-orange-500)'],
+            'review' => ['In Review', 'var(--bs-indigo-500)'],
+            'approved' => ['Approved', 'var(--bs-green-500)'],
+            'archived' => ['Archived', 'var(--bs-gray-400)'],
+        ];
+    }
+    // #endregion docs-list-status-color-options
 
     /**
      * getStatusOptions supplies the status dropdown and the selectable status column by naming convention.

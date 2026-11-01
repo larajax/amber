@@ -39,16 +39,17 @@ false and then with true.
 
 `dropdown` picks one value for the column of the same name. Its options come from `options` in the
 YAML, or from `optionsMethod`, given here as a static method, `Class::method`, whose options carry
-icons. An option is written as `value: label`, or as `value: [label, icon]` or `value: [label, color]`
-like the options of a [dropdown field](/forms/fields#option-styles). `emptyOption` is the option that
-applies no filter.
+colors. An option is written as `value: label`, or as `value: [label, icon]` or `value: [label, color]`
+like the options of a [dropdown field](/forms/fields#option-styles). A color is a value starting with
+`#`, `var(`, `rgb(`, `rgba(` or `hsl(`, and shows as a status dot before the label. `emptyOption` is the
+option that applies no filter.
 
 A static options method is called with the filter's model and the scope, and a plain method name is
 called on the filter's model with the scope.
 
 <<< @/../resources/ui/reference/filters/scopes/dropdown.yaml
 
-<<< @/../app/Models/Post.php#docs-list-status-options{php}
+<<< @/../app/Models/Post.php#docs-list-status-color-options{php}
 
 ## Group {#group}
 

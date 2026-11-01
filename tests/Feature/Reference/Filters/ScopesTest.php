@@ -78,8 +78,8 @@ class ScopesTest extends TestCase
 
         $this->assertStringContainsString('class="filter-scope scope-checkbox form-field"', $html);
         $this->assertMatchesRegularExpression('/class="filter-scope form-field is-indeterminate"\s+data-scope-name="published"/', $html);
-        $this->assertStringContainsString('data-icon="ph ph-pencil-simple"', $html);
-        $this->assertStringContainsString('>Any status</option>', $html);
+        $this->assertMatchesRegularExpression('/data-bs-value="draft"\s*>\s*<span class="status-indicator" style="background: var\(--bs-orange-500\)" aria-hidden="true"><\/span>/', $html);
+        $this->assertMatchesRegularExpression('/data-bs-value=""\s*>\s*<span class="menu-item-content">\s*<span>\s*Any status\s*<\/span>/', $html);
 
         foreach (['category', 'published_at', 'review_on', 'title', 'views', 'id'] as $scopeName) {
             $this->assertMatchesRegularExpression('/<a\s+href="javascript:;"\s+class="filter-scope "\s+data-scope-name="'.$scopeName.'"/', $html);
@@ -140,6 +140,45 @@ class ScopesTest extends TestCase
 
         $this->assertStringContainsString('Approved Article', $html);
         $this->assertStringNotContainsString('Draft Article', $html);
+    }
+
+    public function test_the_dropdown_scope_shows_the_picked_option_with_its_status_dot_beside_the_label(): void
+    {
+        $html = $this->withSession([
+            'widget.app_controllers-FiltersController-Filter-dropdownFilter' => json_encode(['scope-status' => ['value' => 'draft']]),
+        ])->get(route('reference.filters.scopes'))->assertOk()->getContent();
+
+        $this->assertStringContainsString('<span aria-hidden="true" data-scope-mark><span class="status-indicator" style="background: var(--bs-orange-500)" aria-hidden="true"></span></span>', $html);
+        $this->assertMatchesRegularExpression('/<span class="combobox-value">\s*Draft\s*<\/span>/', $html);
+        $this->assertMatchesRegularExpression('/class="menu-item selected"\s+role="option"\s+aria-selected="true"\s+data-bs-value="draft"/', $html);
+    }
+
+    public function test_a_dropdown_scope_shows_an_option_icon_beside_the_label(): void
+    {
+        $filter = Filter::createIn(new FiltersController, [
+            'model' => new Post,
+            'scopes' => ['transport' => [
+                'label' => 'Transport',
+                'type' => 'dropdown',
+                'default' => 'air',
+                'options' => ['road' => ['Road', 'ph ph-truck'], 'air' => ['Air', 'ph ph-airplane-tilt']],
+            ]],
+        ]);
+
+        $filter->bindToController();
+        $html = (string) $filter->renderScopeElement('transport');
+
+        $this->assertStringContainsString('<span aria-hidden="true" data-scope-mark><i class="ph ph-airplane-tilt" aria-hidden="true"></i></span>', $html);
+        $this->assertMatchesRegularExpression('/data-bs-value="road"\s*>\s*<i class="ph ph-truck" aria-hidden="true"><\/i>/', $html);
+    }
+
+    public function test_the_dropdown_scope_shows_its_empty_option_without_a_mark(): void
+    {
+        $html = $this->get(route('reference.filters.scopes'))->assertOk()->getContent();
+
+        $this->assertStringContainsString('<span aria-hidden="true" data-scope-mark></span>', $html);
+        $this->assertMatchesRegularExpression('/<span class="combobox-value">\s*Any status\s*<\/span>/', $html);
+        $this->assertMatchesRegularExpression('/class="menu-item selected"\s+role="option"\s+aria-selected="true"\s+data-bs-value=""/', $html);
     }
 
     public function test_the_category_group_scope_filters_by_the_picked_categories(): void
@@ -327,23 +366,57 @@ class ScopesTest extends TestCase
         $this->assertStringNotContainsString('Numbered 1<', $html);
     }
 
-    public function test_preloading_returns_the_popover_form_of_each_widget_scope(): void
+    /**
+     * scopeForms returns the popover form each scope of a filter is rendered with, keyed by scope name.
+     *
+     * @return array<string, string>
+     */
+    protected function scopeForms(string $html, string $filterId): array
     {
-        $content = $this->ajax('numberFilter::onFilterUpdate', ['preload' => 'true'])->assertOk()->json('popoverContent');
+        $document = \Dom\HTMLDocument::createFromString($html, LIBXML_NOERROR);
+        $forms = [];
 
-        $this->assertEqualsCanonicalizing(['views', 'id'], array_keys($content));
+        foreach ($document->querySelectorAll("#{$filterId} .filter-group") as $group) {
+            $link = $group->querySelector('[data-scope-name]');
+            $template = $group->querySelector('template[data-scope-form]');
 
-        // The number form carries the condition triggers the popover binds
-        $this->assertStringContainsString('data-trigger="[name=\'Filter[condition]\']"', $content['views']);
-        $this->assertStringContainsString('data-filter-action="apply"', $content['id']);
+            if ($link && $template) {
+                $forms[$link->getAttribute('data-scope-name')] = $template->innerHTML;
+            }
+        }
+
+        return $forms;
     }
 
-    public function test_preloading_skips_the_scopes_without_a_popover(): void
+    public function test_each_widget_scope_is_rendered_with_its_popover_form(): void
     {
-        $content = $this->ajax('groupFilter::onFilterUpdate', ['preload' => 'true'])->assertOk()->json('popoverContent');
+        $html = $this->get(route('reference.filters.scopes'))->assertOk()->getContent();
+        $forms = $this->scopeForms($html, 'Filter-numberFilter');
 
-        $this->assertEqualsCanonicalizing(['category', 'status'], array_keys($content));
-        $this->assertStringContainsString('data-control="groupfilter"', $content['category']);
+        $this->assertEqualsCanonicalizing(['views', 'id'], array_keys($forms));
+
+        // The number form carries the condition triggers the popover binds
+        $this->assertStringContainsString('data-trigger="[name=\'Filter[condition]\']"', $forms['views']);
+        $this->assertStringContainsString('data-filter-action="apply"', $forms['id']);
+    }
+
+    public function test_scopes_without_a_popover_have_no_form_and_a_group_form_carries_its_first_options(): void
+    {
+        $guides = Category::factory()->create(['name' => 'Guides', 'slug' => 'guides']);
+        Category::factory()->create(['name' => 'News', 'slug' => 'news']);
+
+        $html = $this->get(route('reference.filters.scopes'))->assertOk()->getContent();
+        $forms = $this->scopeForms($html, 'Filter-groupFilter');
+
+        $this->assertEqualsCanonicalizing(['category', 'status'], array_keys($forms));
+        $this->assertStringContainsString('data-control="groupfilter"', $forms['category']);
+
+        preg_match('/data-options="([^"]*)"/', $forms['category'], $match);
+        $options = json_decode(html_entity_decode($match[1]), true);
+
+        $this->assertSame([], $options['active']);
+        $this->assertEqualsCanonicalizing(['Guides', 'News'], array_column($options['available'], 'name'));
+        $this->assertContains(['id' => $guides->id, 'name' => 'Guides'], $options['available']);
     }
 
     public function test_clear_filters_resets_every_scope_and_refreshes_the_list(): void

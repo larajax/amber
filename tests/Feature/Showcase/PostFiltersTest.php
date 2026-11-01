@@ -27,6 +27,14 @@ class PostFiltersTest extends TestCase
         ])->post('posts', $data);
     }
 
+    public function test_the_filter_names_the_list_it_redraws(): void
+    {
+        $html = $this->get('posts')->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/id="Filter"\s+class="control-filter[^"]*"\s+data-control="filterwidget"[^>]*data-list-linkage="Lists"/s', $html);
+        $this->assertStringContainsString('class="list-widget list-scrollable-container " id="Lists"', $html);
+    }
+
     public function test_archived_posts_are_hidden_until_the_filter_is_cleared(): void
     {
         Post::factory()->create(['title' => 'Current Article', 'status' => 'approved']);

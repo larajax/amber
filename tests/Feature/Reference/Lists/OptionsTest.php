@@ -109,7 +109,7 @@ class OptionsTest extends TestCase
         $html = $this->get(route('reference.lists.options'))->assertOk()->getContent();
 
         $this->assertMatchesRegularExpression('/data-request="pagedList::onPaginate"\s+data-request-query="\{ postsPage: 2 \}"/', $html);
-        $this->assertStringContainsString('records 1 to 5 of 7', $html);
+        $this->assertStringContainsString('Displayed Records: 1-5 of 7', $html);
         $this->assertStringContainsString('id="Lists-pagedList-pageChooserPopover"', $html);
     }
 
@@ -167,7 +167,7 @@ class OptionsTest extends TestCase
 
         $this->assertStringContainsString('list-cell-index-1 list-cell-name-excerpt', $html);
         $this->assertStringNotContainsString('list-cell-name-status', $html);
-        $this->assertStringContainsString('records 1 to 10 of 12', $html);
+        $this->assertStringContainsString('Displayed Records: 1-10 of 12', $html);
     }
 
     public function test_the_checkbox_toolbar_sends_the_checked_rows(): void
