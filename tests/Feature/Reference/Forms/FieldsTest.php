@@ -256,7 +256,7 @@ class FieldsTest extends TestCase
         $this->assertSame(15, (int) $sample->discount_percent);
     }
 
-    public function test_a_revealable_password_ends_its_field_with_a_show_button(): void
+    public function test_a_password_ends_its_field_with_a_show_button_by_default(): void
     {
         $html = $this->pageHtml();
 
@@ -264,20 +264,25 @@ class FieldsTest extends TestCase
         $this->assertMatchesRegularExpression('/<i (?=[^>]*class="ph ph-eye")(?=[^>]*data-reveal-icon)(?=[^>]*aria-hidden="true")[^>]*><\/i>\s*<\/button>/', $html);
     }
 
-    public function test_a_revealable_password_keeps_its_prefix_icon_before_the_input(): void
+    public function test_a_password_keeps_its_prefix_icon_before_the_input_and_the_show_button_after(): void
     {
         $html = $this->pageHtml();
 
-        $this->assertMatchesRegularExpression('/<i class="ph ph-lock-simple"><\/i>\s*<\/span>\s*<input\s+type="password"\s+name="_confirm_password"[^>]*class="form-ghost"[^>]*\/>\s*<button\s+type="button"\s+class="btn-icon"[^>]*data-control="password-reveal"/s', $html);
+        $this->assertMatchesRegularExpression('/<i class="ph ph-lock-simple"><\/i>\s*<\/span>\s*<input\s+type="password"\s+name="_adorned_password"[^>]*class="form-ghost"[^>]*\/>\s*<button\s+type="button"\s+class="btn-icon"[^>]*data-control="password-reveal"/s', $html);
     }
 
-    public function test_a_password_without_revealable_has_no_show_button(): void
+    public function test_revealable_false_leaves_the_show_button_out(): void
     {
-        $html = $this->renderField($this->makeSample(), '_password', ['label' => 'Password', 'type' => 'password']);
+        $html = $this->pageHtml();
+
+        $this->assertMatchesRegularExpression('/<input\s+type="password"\s+name="_access_code"\s+id="([^"]+)"[^>]*class="form-control"/', $html);
+        preg_match('/name="_access_code"\s+id="([^"]+)"/', $html, $match);
+        $this->assertStringNotContainsString('aria-controls="'.$match[1].'"', $html);
+
+        $html = $this->renderField($this->makeSample(), '_password', ['label' => 'Password', 'type' => 'password', 'revealable' => false]);
 
         $this->assertStringNotContainsString('password-reveal', $html);
         $this->assertStringNotContainsString('form-adorn', $html);
-        $this->assertMatchesRegularExpression('/name="_password"[^>]*class="form-control"/', $html);
     }
 
     public function test_revealable_only_applies_to_password_fields(): void
@@ -293,7 +298,7 @@ class FieldsTest extends TestCase
         $sample = $this->makeSample();
 
         foreach (['disabled', 'readOnly'] as $option) {
-            $html = $this->renderField($sample, '_password', ['label' => 'Password', 'type' => 'password', 'revealable' => true, $option => true]);
+            $html = $this->renderField($sample, '_password', ['label' => 'Password', 'type' => 'password', $option => true]);
 
             $this->assertMatchesRegularExpression('/data-control="password-reveal"[^>]*\sdisabled\s*>/', $html, $option);
         }
@@ -304,7 +309,7 @@ class FieldsTest extends TestCase
         $form = Form::createIn(new FormsController, [
             'model' => $this->makeSample(),
             'previewMode' => true,
-            'fields' => ['_password' => ['label' => 'Password', 'type' => 'password', 'revealable' => true]],
+            'fields' => ['_password' => ['label' => 'Password', 'type' => 'password']],
         ]);
         $form->bindToController();
         $html = (string) $form->render();

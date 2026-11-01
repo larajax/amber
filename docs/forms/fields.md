@@ -48,9 +48,10 @@ uses one, so its value is never stored.
 
 ## Show password {#password-reveal}
 
-`revealable: true` puts an eye button at the end of a password field. Pressing it shows what was typed,
-and pressing it again hides it. Submitting the form also hides it. It works alongside a `prefixIcon`,
-and the button always comes last.
+Every password field has an eye button at its end. Pressing it shows what was typed, and pressing it
+again hides it. Submitting the form also hides it. It works alongside a `prefixIcon`, and the button
+always comes last. `revealable: false` leaves the button out, for a field whose value should never
+show on screen.
 
 <<< @/../resources/ui/reference/forms/fields/password-reveal.yaml
 
@@ -336,7 +337,7 @@ Option | Description
 
 Option | Description
 ------------- | -------------
-**revealable** | adds a button that shows and hides what was typed. See [Show password](#password-reveal). Default: `false`.
+**revealable** | the button that shows and hides what was typed; `false` leaves it out. See [Show password](#password-reveal). Default: `true`.
 
 ### Textarea {#textarea-options}
 

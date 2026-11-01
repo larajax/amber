@@ -28,7 +28,7 @@
     </section>
 
     <section class="ui-section" id="password-reveal">
-        @include('reference._heading', ['id' => 'password-reveal', 'title' => 'Show password', 'caption' => '<code>revealable</code> adds a button that shows what was typed.'])
+        @include('reference._heading', ['id' => 'password-reveal', 'title' => 'Show password', 'caption' => 'A button that shows what was typed, on by default, left out with <code>revealable: false</code>.'])
         @include('reference._form_example', ['name' => 'password-reveal'])
     </section>
 
