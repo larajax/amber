@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Reference\FiltersController;
 
+use App\Models\Comment;
 use App\Models\Post;
 use Larajax\Ui\Widgets\Filter;
 use Larajax\Ui\Widgets\Lists;
@@ -41,6 +42,37 @@ trait ScopesExamples
             $examples[$name] = ['filter' => $filter, 'list' => $list];
         }
 
+        $examples['trashed'] = $this->makeTrashedExample();
+
         return $examples;
     }
+
+    // #region docs-trashed
+    /**
+     * makeTrashedExample builds a filter that shows the soft deleted comments, bound to a list of comments.
+     *
+     * @return array{filter: Filter, list: Lists}
+     */
+    protected function makeTrashedExample(): array
+    {
+        $list = Lists::make(
+            alias: 'trashedList',
+            model: new Comment,
+            columns: '~/resources/ui/reference/filters/comments.yaml',
+            recordsPerPage: 5,
+            noRecordsMessage: 'No comments match the filter.',
+            customPageName: false,
+        );
+
+        $filter = Filter::make(
+            alias: 'trashedFilter',
+            model: new Comment,
+            scopes: '~/resources/ui/reference/filters/scopes/trashed.yaml',
+        );
+
+        $filter->bindToListWidget($list);
+
+        return ['filter' => $filter, 'list' => $list];
+    }
+    // #endregion docs-trashed
 }

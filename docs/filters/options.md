@@ -25,7 +25,8 @@ defaults.
 
 A checkbox takes `1` to start on, a switch `1` or `2` for its first or second state, a dropdown the
 value of an option and a group a list of values. The popover types take an array of their values, such
-as a `condition` and a `value`.
+as a `condition` and a `value`, or `condition: inLast`, `count: 30` and `unit: days` for a date scope
+that starts on the last 30 days. The trashed type takes `with` or `only`.
 
 <<< @/../resources/ui/reference/filters/options/defaults.yaml
 
@@ -39,21 +40,27 @@ as a `condition` and a `value`.
   `:value` is the picked values, quoted and separated by commas.
 - Number, date and text scopes take one condition for each choice they offer, keyed by its name, where
   `true` keeps the default query. They offer only the named choices, and with a single choice the
-  popover shows it as a label in place of a select, like the Address scope here.
+  popover shows it as a label in place of a select, like the Address scope here. Without `conditions`
+  they offer every choice in the table but `notEquals`, which a date scope offers when it is named.
 
-Choice | Scope types | SQL placeholders
-------------- | ------------- | -------------
-**equals** | number, date, text | `:value`, and `:valueDate` for a date
-**notEquals** | date | `:value`, `:valueDate`
-**between** | number, date | number: `:min`, `:max`. Date: `:after`, `:afterDate`, `:before`, `:beforeDate`
-**greater** | number | `:value`
-**lesser** | number | `:value`
-**before** | date | `:value`, `:valueDate`
-**after** | date | `:value`, `:valueDate`
-**contains** | text | `:value`
+Choice | Label | Scope types | SQL placeholders
+------------- | ------------- | ------------- | -------------
+**inLast** | is in the last | date | `:after`, `:afterDate`, `:before`, `:beforeDate`, the first and last day of the period
+**inNext** | is in the next | date | as `inLast`
+**equals** | is equal to, or is on for a date | number, date, text | `:value`, and `:valueDate` for a date
+**notEquals** | is not on | date | `:value`, `:valueDate`
+**between** | is between | number, date | number: `:min`, `:max`. Date: `:after`, `:afterDate`, `:before`, `:beforeDate`
+**greater** | is greater than | number | `:value`
+**lesser** | is less than | number | `:value`
+**after** | is on or after | date | `:value`, `:valueDate`
+**before** | is before or on | date | `:value`, `:valueDate`
+**contains** | contains | text | `:value`
+**empty** | is empty | number, date, text | none
+**notEmpty** | is not empty | number, date, text | none
 
-In a date condition, `:value`, `:after` and `:before` hold a date and time in the app timezone, while
-`:valueDate`, `:afterDate` and `:beforeDate` hold the date alone.
+In a date condition, `:value`, `:after` and `:before` hold the start of their day in the app timezone,
+while `:valueDate`, `:afterDate` and `:beforeDate` hold the date alone. A condition that takes in the
+whole last day compares the date alone, as in `date(published_at) <= :beforeDate`.
 
 <<< @/../resources/ui/reference/filters/options/conditions.yaml
 
@@ -145,9 +152,10 @@ Scope type | Properties
 **switch** | `value`: `1` or `2` for the first or second state.
 **dropdown** | `value`: the picked option.
 **group** | `value`: the picked values. `mode`: `include` or `exclude`.
-**date** | `condition`, with `value`, or `after` and `before` for between.
-**number** | `condition`, with `value`, or `min` and `max` for between.
-**text** | `condition` and `value`.
+**date** | `condition`, with `value`, or `after` and `before` for between, or `count` and `unit` (`days`, `weeks`, `months` or `years`) for in the last and in the next. The empty conditions carry the `condition` alone.
+**number** | `condition`, with `value`, or `min` and `max` for between. The empty conditions carry the `condition` alone.
+**text** | `condition`, with `value` unless the condition is empty or not empty.
+**trashed** | `value`: `with` or `only`.
 
 ## Search and list setup {#search}
 

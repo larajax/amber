@@ -133,7 +133,8 @@ List events change single rows. Bind a listener with `bindEvent()` on the list, 
 the matching method in a subclass of the widget, such as `eventInjectRowClass()`.
 
 - `list.injectRowClass` receives the record and returns classes for its row, here fading the archived
-  posts.
+  posts. A soft deleted record's row starts with the `deleted` class, which greys it out, as the
+  [trashed scope](/filters/scopes#trashed) shows, and the classes a listener returns replace it.
 - `list.overrideRecordAction` receives the record, its address and its onclick script, and returns a
   new address as a string, or an array with a new `url` or `onclick`, or `clickable: false` to leave
   the row unlinked.

@@ -6,9 +6,12 @@ use App\Controllers\Reference\FiltersController;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Post;
+use App\Models\Sample;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use Larajax\Ui\Widgets\Filter;
+use SystemException;
 use Tests\TestCase;
 
 class ScopesTest extends TestCase
@@ -22,6 +25,9 @@ class ScopesTest extends TestCase
      */
     protected function ajax(string $handler, array $data = []): TestResponse
     {
+        // Laravel keeps the route's controller across a test's requests, and the controller keeps its first AJAX handler
+        app('router')->getRoutes()->getByName('reference.filters.scopes')->flushController();
+
         return $this->withHeaders([
             'X-AJAX-HANDLER' => $handler,
             'X-Requested-With' => 'XMLHttpRequest',
@@ -57,6 +63,26 @@ class ScopesTest extends TestCase
         return (string) $filter->renderScopeFormElement('scoped');
     }
 
+    /**
+     * filteredValues applies a scope with the given configuration and value to a query of the model, returning one column of the matching records.
+     *
+     * @param  array<string, mixed>  $config
+     * @param  array<string, mixed>  $value
+     * @return array<int, mixed>
+     */
+    protected function filteredValues(Model $model, array $config, array $value, string $column): array
+    {
+        $filter = Filter::createIn(new FiltersController, [
+            'model' => $model,
+            'scopes' => ['scoped' => $config],
+        ]);
+
+        $filter->bindToController();
+        $filter->putScopeValue('scoped', $value);
+
+        return $filter->applyAllScopesToQuery($model->newQuery())->orderBy('id')->pluck($column)->all();
+    }
+
     public function test_the_page_renders_every_example_beside_its_yaml(): void
     {
         $html = $this->get(route('reference.filters.scopes'))->assertOk()->getContent();
@@ -66,6 +92,12 @@ class ScopesTest extends TestCase
             $this->assertStringContainsString('id="Filter-'.$example.'Filter"', $html);
             $this->assertStringContainsString('id="Lists-'.$example.'List"', $html);
         }
+
+        $this->assertStringContainsString('resources/ui/reference/filters/scopes/trashed.yaml', $html);
+        $this->assertStringContainsString('resources/ui/reference/filters/comments.yaml', $html);
+        $this->assertStringContainsString('id="Filter-trashedFilter"', $html);
+        $this->assertStringContainsString('id="Lists-trashedList"', $html);
+        $this->assertStringContainsString('function makeTrashedExample(', $html);
 
         $this->assertStringContainsString('function makeScopeExamples(', $html);
         $this->assertStringContainsString('resources/ui/reference/filters/posts.yaml', $html);
@@ -263,16 +295,25 @@ class ScopesTest extends TestCase
         $this->assertStringNotContainsString('search-input-container', $html);
     }
 
-    public function test_the_date_filter_form_posts_the_raw_date_inputs(): void
+    public function test_the_date_filter_form_offers_relative_periods_first_and_posts_the_raw_date_inputs(): void
     {
         $content = $this->ajax('dateFilter::onLoadFilterForm', ['scopeName' => 'published_at'])->assertOk()->json('result');
+
+        preg_match('/<select name="Filter\[condition\]".*?<\/select>/s', $content, $select);
+        preg_match_all('/<option\s+value="(\w+)"\s*>\s*([^<]+)</', $select[0], $options);
+        $this->assertSame(['inLast', 'inNext', 'equals', 'between', 'after', 'before', 'empty', 'notEmpty'], $options[1]);
+        $this->assertSame(['is in the last', 'is in the next', 'is on', 'is between', 'is on or after', 'is before or on', 'is empty', 'is not empty'], array_map('trim', $options[2]));
+
+        // A relative period starts as the last 7 days, and each row shows for its own conditions
+        $this->assertMatchesRegularExpression('/data-trigger-action="show"\s+data-trigger-condition="value\[inLast\]\[inNext\]"/', $content);
+        $this->assertMatchesRegularExpression('/name="Filter\[count\]"\s+value="7"/', $content);
+        $this->assertStringContainsString('<option value="days" selected="selected">days</option>', $content);
+        $this->assertMatchesRegularExpression('/data-trigger-action="hide"\s+data-trigger-condition="value\[between\]\[inLast\]\[inNext\]\[empty\]\[notEmpty\]"/', $content);
 
         // The date widget only applies when the raw inputs are posted
         $this->assertStringContainsString('Filter[valueRaw]', $content);
         $this->assertStringContainsString('Filter[afterRaw]', $content);
         $this->assertStringContainsString('Filter[beforeRaw]', $content);
-        $this->assertStringContainsString('<option', $content);
-        $this->assertStringContainsString('value="notEquals"', $content);
     }
 
     public function test_date_filter_inputs_sit_in_small_adorned_fields_with_a_calendar_icon(): void
@@ -326,6 +367,175 @@ class ScopesTest extends TestCase
 
         $this->assertStringContainsString('January Review', $html);
         $this->assertStringNotContainsString('March Review', $html);
+    }
+
+    public function test_the_date_filter_matches_the_last_days_including_today_and_labels_its_chip(): void
+    {
+        $this->travelTo('2026-11-02 12:00:00');
+
+        Post::factory()->create(['title' => 'Today Article', 'published_at' => '2026-11-02 08:00:00']);
+        Post::factory()->create(['title' => 'Sixth Day Article', 'published_at' => '2026-10-27 09:00:00']);
+        Post::factory()->create(['title' => 'Week Old Article', 'published_at' => '2026-10-26 23:00:00']);
+
+        $response = $this->ajax('dateFilter::onFilterUpdate', [
+            'scopeName' => 'published_at',
+            'Filter' => ['condition' => 'inLast', 'count' => '7', 'unit' => 'days', 'value' => '', 'valueRaw' => ''],
+        ]);
+
+        $html = $this->listPatch($response, 'dateList');
+        $this->assertStringContainsString('Today Article', $html);
+        $this->assertStringContainsString('Sixth Day Article', $html);
+        $this->assertStringNotContainsString('Week Old Article', $html);
+
+        $chip = collect($response->json('__ajax.ops'))->firstWhere('selector', '#Filter-dateFilter-scope-published_at-group')['html'];
+        $this->assertStringContainsString('<span class="filter-value">Last 7 days</span>', $chip);
+
+        // The scope keeps the period, not its dates, so a saved filter moves with the days
+        $stored = json_decode(session('widget.app_controllers-FiltersController-Filter-dateFilter'), true);
+        $this->assertSame(['condition' => 'inLast', 'count' => 7, 'unit' => 'days'], $stored['scope-published_at']);
+    }
+
+    public function test_relative_dates_count_whole_days_back_or_forward_from_today(): void
+    {
+        $this->travelTo('2026-11-02 12:00:00');
+
+        foreach (['2026-10-02 23:00:00', '2026-10-03 00:30:00', '2026-11-01 10:00:00', '2026-11-15 22:00:00', '2026-11-16 01:00:00'] as $date) {
+            Post::factory()->create(['title' => $date, 'published_at' => $date]);
+        }
+
+        $titles = fn (array $value) => $this->filteredValues(new Post, ['type' => 'date', 'valueFrom' => 'published_at'], $value, 'title');
+
+        $this->assertSame(['2026-10-03 00:30:00', '2026-11-01 10:00:00'], $titles(['condition' => 'inLast', 'count' => 1, 'unit' => 'months']));
+        $this->assertSame(['2026-11-15 22:00:00'], $titles(['condition' => 'inNext', 'count' => 2, 'unit' => 'weeks']));
+        $this->assertSame([], $titles(['condition' => 'inLast', 'count' => 1, 'unit' => 'days']));
+
+        // The same stored period covers different days once time passes
+        $this->travelTo('2026-11-16 09:00:00');
+        $this->assertSame(['2026-11-15 22:00:00', '2026-11-16 01:00:00'], $titles(['condition' => 'inLast', 'count' => 2, 'unit' => 'days']));
+    }
+
+    public function test_a_relative_date_without_a_count_or_a_known_unit_applies_no_filter(): void
+    {
+        $this->ajax('dateFilter::onFilterUpdate', [
+            'scopeName' => 'published_at',
+            'Filter' => ['condition' => 'inLast', 'count' => '0', 'unit' => 'days'],
+        ])->assertOk();
+        $this->assertNull(json_decode(session('widget.app_controllers-FiltersController-Filter-dateFilter'), true)['scope-published_at']);
+
+        $this->ajax('dateFilter::onFilterUpdate', [
+            'scopeName' => 'published_at',
+            'Filter' => ['condition' => 'inLast', 'count' => '3', 'unit' => 'decades'],
+        ])->assertOk();
+        $this->assertNull(json_decode(session('widget.app_controllers-FiltersController-Filter-dateFilter'), true)['scope-published_at']);
+    }
+
+    public function test_each_picked_date_counts_as_its_whole_day(): void
+    {
+        Post::factory()->create(['title' => 'Last Day Article', 'published_at' => '2026-10-30 22:00:00']);
+        Post::factory()->create(['title' => 'Next Day Article', 'published_at' => '2026-10-31 00:30:00']);
+
+        $titles = fn (array $value) => $this->filteredValues(new Post, ['type' => 'date', 'valueFrom' => 'published_at', 'useTimezone' => false], $value, 'title');
+
+        $this->assertSame(['Last Day Article'], $titles(['condition' => 'between', 'after' => '2026-10-01', 'before' => '2026-10-30']));
+        $this->assertSame(['Last Day Article'], $titles(['condition' => 'before', 'value' => '2026-10-30']));
+        $this->assertSame(['Last Day Article'], $titles(['condition' => 'equals', 'value' => '2026-10-30']));
+        $this->assertSame(['Last Day Article', 'Next Day Article'], $titles(['condition' => 'after', 'value' => '2026-10-30']));
+    }
+
+    public function test_a_named_not_equals_condition_is_still_offered_and_applied(): void
+    {
+        $form = $this->renderScopeForm(['label' => 'Published', 'type' => 'date', 'conditions' => ['equals' => true, 'notEquals' => true]]);
+        $this->assertMatchesRegularExpression('/<option\s+value="notEquals"\s*>\s*is not on\s*</', $form);
+
+        Post::factory()->create(['title' => 'Picked Day Article', 'published_at' => '2026-10-30 22:00:00']);
+        Post::factory()->create(['title' => 'Other Day Article', 'published_at' => '2026-10-31 00:30:00']);
+
+        $titles = $this->filteredValues(new Post, ['type' => 'date', 'valueFrom' => 'published_at', 'useTimezone' => false], ['condition' => 'notEquals', 'value' => '2026-10-30'], 'title');
+        $this->assertSame(['Other Day Article'], $titles);
+    }
+
+    public function test_date_number_and_text_scopes_match_records_with_or_without_a_value(): void
+    {
+        Post::factory()->create(['title' => 'Dated Article', 'published_at' => '2026-10-30 10:00:00', 'excerpt' => 'A summary']);
+        Post::factory()->create(['title' => 'Undated Article', 'published_at' => null, 'excerpt' => null]);
+        Post::factory()->create(['title' => 'Blank Article', 'published_at' => null, 'excerpt' => '']);
+
+        $date = ['type' => 'date', 'valueFrom' => 'published_at'];
+        $this->assertSame(['Undated Article', 'Blank Article'], $this->filteredValues(new Post, $date, ['condition' => 'empty'], 'title'));
+        $this->assertSame(['Dated Article'], $this->filteredValues(new Post, $date, ['condition' => 'notEmpty'], 'title'));
+
+        // A text value is empty when it is missing or blank
+        $text = ['type' => 'text', 'valueFrom' => 'excerpt'];
+        $this->assertSame(['Undated Article', 'Blank Article'], $this->filteredValues(new Post, $text, ['condition' => 'empty'], 'title'));
+        $this->assertSame(['Dated Article'], $this->filteredValues(new Post, $text, ['condition' => 'notEmpty'], 'title'));
+
+        $counted = Sample::factory()->create(['units_sold' => 120]);
+        $uncounted = Sample::factory()->create(['units_sold' => null]);
+        $number = ['type' => 'number', 'valueFrom' => 'units_sold'];
+        $this->assertSame([$uncounted->id], $this->filteredValues(new Sample, $number, ['condition' => 'empty'], 'id'));
+        $this->assertSame([$counted->id], $this->filteredValues(new Sample, $number, ['condition' => 'notEmpty'], 'id'));
+    }
+
+    public function test_empty_conditions_take_no_input_and_label_the_chip(): void
+    {
+        $number = $this->renderScopeForm(['label' => 'Views', 'type' => 'number']);
+        $this->assertMatchesRegularExpression('/<option\s+value="empty"\s*>\s*is empty\s*<\/option>\s*<option\s+value="notEmpty"\s*>\s*is not empty\s*<\/option>/', $number);
+        $this->assertStringContainsString('data-trigger-condition="value[between][empty][notEmpty]"', $number);
+
+        $text = $this->renderScopeForm(['label' => 'Title', 'type' => 'text']);
+        $this->assertStringContainsString('data-trigger-condition="value[empty][notEmpty]"', $text);
+
+        // A single empty condition shows its label alone
+        $single = $this->renderScopeForm(['label' => 'Title', 'type' => 'text', 'conditions' => ['empty' => true]]);
+        $this->assertStringContainsString('<input type="hidden" name="Filter[condition]" value="empty" />', $single);
+        $this->assertStringNotContainsString('name="Filter[value]"', $single);
+
+        $response = $this->ajax('textFilter::onFilterUpdate', ['scopeName' => 'title', 'Filter' => ['condition' => 'notEmpty', 'value' => '']]);
+        $chip = collect($response->assertOk()->json('__ajax.ops'))->firstWhere('selector', '#Filter-textFilter-scope-title-group')['html'];
+        $this->assertStringContainsString('Not empty', $chip);
+    }
+
+    public function test_the_trashed_scope_hides_deleted_comments_until_it_shows_them(): void
+    {
+        $post = Post::factory()->create();
+        Comment::factory()->for($post)->create(['author' => 'Kept Author']);
+        Comment::factory()->for($post)->create(['author' => 'Deleted Author'])->delete();
+
+        $page = $this->get(route('reference.filters.scopes'))->assertOk()->getContent();
+        preg_match('/id="Lists-trashedList".*?<\/table>/s', $page, $list);
+        $this->assertStringContainsString('Kept Author', $list[0]);
+        $this->assertStringNotContainsString('Deleted Author', $list[0]);
+
+        $only = $this->ajax('trashedFilter::onFilterUpdate', ['scopeName' => 'deleted', 'value' => 'only']);
+        $html = $this->listPatch($only, 'trashedList');
+        $this->assertMatchesRegularExpression('/<tr class="deleted">.*?Deleted Author/s', $html);
+        $this->assertStringNotContainsString('Kept Author', $html);
+
+        $chip = collect($only->json('__ajax.ops'))->firstWhere('selector', '#Filter-trashedFilter-scope-deleted-group')['html'];
+        $this->assertMatchesRegularExpression('/<span class="combobox-value filter-value">\s*Only\s*<\/span>/', $chip);
+
+        $shown = $this->listPatch($this->ajax('trashedFilter::onFilterUpdate', ['scopeName' => 'deleted', 'value' => 'with']), 'trashedList');
+        $this->assertMatchesRegularExpression('/<tr class="">.*?Kept Author/s', $shown);
+        $this->assertMatchesRegularExpression('/<tr class="deleted">.*?Deleted Author/s', $shown);
+    }
+
+    public function test_the_trashed_scope_picks_from_a_menu_without_a_popover_form(): void
+    {
+        $html = $this->get(route('reference.filters.scopes'))->assertOk()->getContent();
+        preg_match('/id="Filter-trashedFilter-scope-deleted-group".*?<\/div>\s*<\/div>/s', $html, $group);
+
+        preg_match_all('/data-bs-value="(\w*)"\s*>\s*<span class="menu-item-content">\s*<span>\s*(\w+)\s*<\/span>/', $group[0], $items);
+        $this->assertSame(['', 'with', 'only'], $items[1]);
+        $this->assertSame(['Hidden', 'Shown', 'Only'], $items[2]);
+        $this->assertStringNotContainsString('data-scope-form', $group[0]);
+    }
+
+    public function test_the_trashed_scope_needs_a_model_with_soft_deletes(): void
+    {
+        $this->expectException(SystemException::class);
+        $this->expectExceptionMessage("The 'scoped' scope shows deleted records, so its model must use soft deletes.");
+
+        $this->filteredValues(new Post, ['type' => 'trashed'], ['value' => 'with'], 'title');
     }
 
     public function test_the_text_scope_matches_part_of_the_value(): void

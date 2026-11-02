@@ -180,10 +180,13 @@ class PostsSeeder extends Seeder
             $post->tags()->sync($tags->random(($index % 4) + 1)->pluck('id'));
         }
 
-        Comment::factory()
+        $comments = Comment::factory()
             ->count(($index * 7) % 6)
             ->for($post)
             ->create();
+
+        // Some comments are soft deleted, for the trashed filter
+        $comments->filter(fn (Comment $comment, int $key) => ($index + $key) % 5 === 0)->each->delete();
 
         if ($index % 4 !== 2) {
             $this->attachFeaturedImage($post, $color);

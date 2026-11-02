@@ -77,7 +77,7 @@ return [
                     'covers' => [
                         'widget:Filter',
                         'scope:checkbox', 'scope:switch', 'scope:dropdown',
-                        'filterwidget:Group', 'filterwidget:Date', 'filterwidget:Text', 'filterwidget:Number',
+                        'filterwidget:Group', 'filterwidget:Date', 'filterwidget:Text', 'filterwidget:Number', 'filterwidget:Trashed',
                     ],
                 ],
                 'options' => [

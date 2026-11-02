@@ -1,0 +1,16 @@
+columns:
+    author:
+        label: Author
+
+    content:
+        label: Comment
+
+    post:
+        label: Post
+        relation: post
+        select: title
+
+    created_at:
+        label: Posted
+        type: date
+        format: j M Y

@@ -72,27 +72,50 @@ holds any picked value, or, for a column the model stores as JSON, contains one.
 
 ## Date {#date}
 
-`date` compares the column with a date picked from a calendar: the popover offers is equal to, not
-equal to, between, before and after. `daterange` offers only between, and leaving one end of the range
-empty turns it into before or after. Equal to matches any time on the picked day, which is read in the
-[viewer's timezone](/extending/seams#timezone-lists).
+`date` compares the column with dates, and the popover offers:
+
+- **is in the last** and **is in the next**, a number of days, weeks, months or years counted from
+  today, today included, so the last 7 days are today and the six before. The scope keeps the period
+  rather than its dates, so a saved filter moves with the days.
+- **is on**, any time on the picked day.
+- **is between**, **is on or after** and **is before or on**, where each picked day counts whole.
+- **is empty** and **is not empty**, the records without or with a date.
+
+Days are read in the [viewer's timezone](/extending/seams#timezone-lists). `daterange` offers only
+between, and leaving one end of the range empty turns it into on or after, or before or on.
 
 <<< @/../resources/ui/reference/filters/scopes/date.yaml
 
 ## Text {#text}
 
 `text` matches the column against typed text, either as the whole value (is equal to) or as a part of
-it (contains).
+it (contains). Is empty matches the records with no text, missing or blank, and is not empty the
+others.
 
 <<< @/../resources/ui/reference/filters/scopes/text.yaml
 
 ## Number {#number}
 
 `number` compares the column with a number: equal to, greater than, less than, or between two numbers,
-where greater, less and between include the numbers given. `numberrange` offers only between, and
-leaving one end empty turns it into greater or less.
+where greater, less and between include the numbers given, and is empty or is not empty matches the
+records without or with a number. `numberrange` offers only between, and leaving one end empty turns it
+into greater or less.
 
 <<< @/../resources/ui/reference/filters/scopes/number.yaml
+
+## Trashed {#trashed}
+
+`trashed` shows the soft deleted records, which the model's `SoftDeletes` trait otherwise leaves out.
+Its menu picks Shown, for the deleted records alongside the others, or Only, for the deleted records
+alone, while Hidden, the default, filters nothing. The list gives a deleted record's row the `deleted`
+class, which greys it out. The scope needs a model that uses soft deletes, and restoring a record is
+left to the page, such as a toolbar button that calls `restore()` on the checked records.
+
+<<< @/../resources/ui/reference/filters/scopes/trashed.yaml
+
+<<< @/../app/Controllers/Reference/FiltersController/ScopesExamples.php#docs-trashed{php}
+
+<<< @/../resources/ui/reference/filters/comments.yaml
 
 ## Scope properties {#scope-properties}
 
@@ -128,11 +151,12 @@ Type | Shows | Options
 **switch** | a checkbox with three states: off, the first condition and the second. | `conditions`, `modelScope`
 **dropdown** | a select of options, one picked. | `options`, `optionsMethod`, `emptyOption`, `conditions`, `modelScope`
 **group** | a popover with a searchable list, several picked. | `options`, `optionsMethod`, `nameFrom`, `modelClass`, `optionsScope`, `emptyOption`, `matchMode`, `conditions`, `modelScope`
-**date** | a popover comparing with a picked date. | `conditions`, `minDate`, `maxDate`, `yearRange`, `firstDay`, `showWeekNumber`, `useTimezone`, `modelScope`
+**date** | a popover comparing with a period or a picked date. | `conditions`, `minDate`, `maxDate`, `yearRange`, `firstDay`, `showWeekNumber`, `useTimezone`, `modelScope`
 **daterange** | a `date` scope offering only between. | as `date`
 **text** | a popover matching typed text. | `conditions`, `modelScope`
 **number** | a popover comparing with a number. | `conditions`, `format`, `prefix`, `suffix`, `prefixIcon`, `suffixIcon`, `modelScope`
 **numberrange** | a `number` scope offering only between. | as `number`
+**trashed** | a menu that shows the soft deleted records alongside the others or alone. | `modelScope`
 
 ### Type options {#type-options}
 

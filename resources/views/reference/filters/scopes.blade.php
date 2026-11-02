@@ -70,4 +70,13 @@
     ])
 </section>
 
+<section class="ui-section" id="trashed">
+    @include('reference._heading', ['id' => 'trashed', 'title' => 'Trashed', 'caption' => '<code>trashed</code> on a list of soft deleted comments.'])
+    @include('reference._widget_example', [
+        'widgets' => [$examples['trashed']['filter'], $examples['trashed']['list']],
+        'methods' => ['makeTrashedExample'],
+        'sources' => ['resources/ui/reference/filters/scopes/trashed.yaml', 'resources/ui/reference/filters/comments.yaml'],
+    ])
+</section>
+
 @endsection
