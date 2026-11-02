@@ -90,6 +90,20 @@ days with the stored dates as they are, in place of reading them in the
 
 <<< @/../resources/ui/reference/filters/options/date-options.yaml
 
+## Number options {#number-options}
+
+`format` shows the numbers in a number scope's inputs with thousands separators, as on a
+[number field](/forms/fields#number-format): `true` groups the digits, and an array takes `decimals`,
+`grouping` and `locale`. The inputs still post the plain number, so the conditions and model scopes
+receive `2500`, not `2,500`.
+
+`prefix` and `suffix` show text inside the inputs, such as `$` for a price, and `prefixIcon` and
+`suffixIcon` show an icon, as on a [field](/forms/fields#adorn-text). The chip shows the value
+formatted, with the prefix and suffix text: a symbol such as `$` or `%` joins the number, while a word
+is spaced from it, so the views here read ≥ 2,500 views. Icons show only in the inputs.
+
+<<< @/../resources/ui/reference/filters/options/number-options.yaml
+
 ## Names, labels and order {#names}
 
 `valueFrom` filters a column with a name other than the scope's, here `published` for the `live`

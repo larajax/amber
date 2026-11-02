@@ -55,6 +55,14 @@
     ])
 </section>
 
+<section class="ui-section" id="number-options">
+    @include('reference._heading', ['id' => 'number-options', 'title' => 'Number options', 'caption' => 'Formatted numbers, with text or an icon inside the inputs.'])
+    @include('reference._widget_example', [
+        'widgets' => [$examples['number-options']['filter'], $examples['number-options']['list']],
+        'sources' => ['resources/ui/reference/filters/options/number-options.yaml'],
+    ])
+</section>
+
 <section class="ui-section" id="names">
     @include('reference._heading', ['id' => 'names', 'title' => 'Names, labels and order', 'caption' => '<code>valueFrom</code>, <code>shortLabel</code>, <code>before</code> and <code>cssClass</code>.'])
     @include('reference._widget_example', [

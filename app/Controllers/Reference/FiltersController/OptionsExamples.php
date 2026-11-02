@@ -53,7 +53,7 @@ trait OptionsExamples
     {
         $examples = [];
 
-        foreach (['defaults', 'conditions', 'group-options', 'date-options', 'names'] as $name) {
+        foreach (['defaults', 'conditions', 'group-options', 'date-options', 'number-options', 'names'] as $name) {
             $list = $this->makeFilteredPosts(Str::camel($name).'List');
 
             $filter = Filter::make(

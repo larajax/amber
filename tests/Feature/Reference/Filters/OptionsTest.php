@@ -91,11 +91,11 @@ class OptionsTest extends TestCase
     {
         $html = $this->get(route('reference.filters.options'))->assertOk()->getContent();
 
-        foreach (['defaults', 'conditions', 'empty-option', 'group-options', 'date-options', 'names', 'depends', 'search', 'primary-tabs'] as $example) {
+        foreach (['defaults', 'conditions', 'empty-option', 'group-options', 'date-options', 'number-options', 'names', 'depends', 'search', 'primary-tabs'] as $example) {
             $this->assertStringContainsString("resources/ui/reference/filters/options/{$example}.yaml", $html);
         }
 
-        foreach (['defaults', 'conditions', 'emptyOption', 'groupOptions', 'dateOptions', 'names', 'depends', 'search', 'primarySearch', 'primaryTabs'] as $alias) {
+        foreach (['defaults', 'conditions', 'emptyOption', 'groupOptions', 'dateOptions', 'numberOptions', 'names', 'depends', 'search', 'primarySearch', 'primaryTabs'] as $alias) {
             $this->assertStringContainsString('id="Filter-'.$alias.'Filter"', $html);
             $this->assertStringContainsString('id="Lists-'.$alias.'List"', $html);
         }
@@ -360,6 +360,87 @@ class OptionsTest extends TestCase
 
         $this->assertSame(3, substr_count($this->renderDateScopeForm(['firstDay' => 1]), 'data-first-day="1"'));
         $this->assertSame(3, substr_count($this->renderDateScopeForm(['firstDay' => 0]), 'data-first-day="0"'));
+    }
+
+    /**
+     * renderNumberScope renders the chip of a number scope with the given configuration and value.
+     *
+     * @param  array<string, mixed>  $config
+     * @param  array<string, mixed>  $value
+     */
+    protected function renderNumberScope(array $config, array $value): string
+    {
+        $filter = Filter::createIn(new FiltersController, [
+            'model' => new Post,
+            'scopes' => [
+                'price' => $config + ['label' => 'Price', 'type' => 'number'],
+            ],
+        ]);
+
+        $filter->bindToController();
+        $filter->putScopeValue('price', $value);
+
+        return (string) $filter->renderScopeElement('price');
+    }
+
+    public function test_a_formatted_number_scope_shows_its_value_formatted_and_posts_the_plain_number(): void
+    {
+        $content = $this->withSession([
+            'widget.app_controllers-FiltersController-Filter-numberOptionsFilter' => json_encode(['scope-views' => ['condition' => 'greater', 'value' => '2500']]),
+        ])->ajax('numberOptionsFilter::onLoadFilterForm', ['scopeName' => 'views'])->assertOk()->json('result');
+
+        // The shown input has no name, and the hidden input after it posts the plain number
+        $this->assertMatchesRegularExpression('/<label class="form-control form-control-sm form-adorn filter-number">\s*<input\s+type="text"\s+inputmode="decimal"\s+value="2,500"\s+class="form-ghost popup-allow-focus"\s+autocomplete="off"\s+data-control="number-input"\s+data-number-format="\{&quot;locale&quot;:&quot;en&quot;,&quot;decimals&quot;:null,&quot;grouping&quot;:true\}"\s*\/>\s*<input\s+type="hidden"\s+name="Filter\[value\]"\s+value="2500"\s+data-number-value\s*\/>\s*<span class="form-adorn-text">\s*views\s*<\/span>\s*<\/label>/', $content);
+
+        // The range inputs of the between condition start empty
+        $this->assertMatchesRegularExpression('/value=""[^>]*\/>\s*<input\s+type="hidden"\s+name="Filter\[min\]"\s+value=""/', $content);
+        $this->assertMatchesRegularExpression('/value=""[^>]*\/>\s*<input\s+type="hidden"\s+name="Filter\[max\]"\s+value=""/', $content);
+    }
+
+    public function test_a_number_range_shows_its_icon_in_both_inputs_which_post_as_typed(): void
+    {
+        $content = $this->ajax('numberOptionsFilter::onLoadFilterForm', ['scopeName' => 'id'])->assertOk()->json('result');
+
+        $this->assertSame(2, preg_match_all('/<label class="form-control form-control-sm form-adorn filter-number">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-hash"><\/i>\s*<\/span>\s*<input\s+type="text"\s+inputmode="decimal"\s+name="Filter\[(?:min|max)\]"/', $content));
+        $this->assertStringNotContainsString('data-number-value', $content);
+        $this->assertStringNotContainsString('type="number"', $content);
+    }
+
+    public function test_a_formatted_number_scope_filters_by_the_plain_number_and_labels_its_chip(): void
+    {
+        Post::factory()->create(['title' => 'Popular Article', 'views' => 4200]);
+        Post::factory()->create(['title' => 'Quiet Article', 'views' => 90]);
+
+        $response = $this->ajax('numberOptionsFilter::onFilterUpdate', [
+            'scopeName' => 'views',
+            'Filter' => ['condition' => 'greater', 'value' => '2500'],
+        ]);
+
+        $html = $this->listPatch($response, 'numberOptionsList');
+        $this->assertStringContainsString('Popular Article', $html);
+        $this->assertStringNotContainsString('Quiet Article', $html);
+
+        $chip = $this->patchFor($response, 'Filter-numberOptionsFilter-scope-views-group');
+        $this->assertStringContainsString('<span class="filter-value">≥ 2,500 views</span>', $chip);
+    }
+
+    public function test_a_number_chip_joins_a_symbol_to_its_number_and_spaces_a_word(): void
+    {
+        $range = $this->renderNumberScope(['prefix' => '$', 'format' => ['decimals' => 2]], ['condition' => 'between', 'min' => '1000', 'max' => '5000']);
+        $this->assertStringContainsString('<span class="filter-value">$1,000.00 – $5,000.00</span>', $range);
+
+        $percent = $this->renderNumberScope(['suffix' => '%'], ['condition' => 'lesser', 'value' => '50']);
+        $this->assertStringContainsString('<span class="filter-value">≤ 50%</span>', $percent);
+
+        $words = $this->renderNumberScope(['prefix' => 'USD', 'suffix' => 'each'], ['condition' => 'equals', 'value' => '12']);
+        $this->assertStringContainsString('<span class="filter-value">USD 12 each</span>', $words);
+
+        // An icon shows only in the inputs of the popover form, which the scope carries in a template after its chip
+        $icon = $this->renderNumberScope(['prefixIcon' => 'ph ph-hash'], ['condition' => 'equals', 'value' => '12']);
+        [$chip, $form] = explode('<template', $icon, 2);
+        $this->assertStringContainsString('<span class="filter-value">12</span>', $chip);
+        $this->assertStringNotContainsString('ph-hash', $chip);
+        $this->assertStringContainsString('<i class="ph ph-hash"></i>', $form);
     }
 
     public function test_scope_names_labels_order_and_classes(): void

@@ -131,7 +131,7 @@ Type | Shows | Options
 **date** | a popover comparing with a picked date. | `conditions`, `minDate`, `maxDate`, `yearRange`, `firstDay`, `showWeekNumber`, `useTimezone`, `modelScope`
 **daterange** | a `date` scope offering only between. | as `date`
 **text** | a popover matching typed text. | `conditions`, `modelScope`
-**number** | a popover comparing with a number. | `conditions`, `modelScope`
+**number** | a popover comparing with a number. | `conditions`, `format`, `prefix`, `suffix`, `prefixIcon`, `suffixIcon`, `modelScope`
 **numberrange** | a `number` scope offering only between. | as `number`
 
 ### Type options {#type-options}
@@ -147,6 +147,11 @@ Option | Description
 **firstDay** | `date`: the first day of the week, from `0` for Sunday. Default: the locale's.
 **showWeekNumber** | `date`: numbers the weeks in the calendar. Default: `false`.
 **useTimezone** | `date`: reads the picked days in the viewer's timezone. `false` compares them with the stored dates as they are. Default: `true`.
+**format** | `number`: shows thousands separators in the inputs and the chip while the plain number posts, as `true` or an array of `decimals`, `grouping` and `locale`. See [number options](/filters/options#number-options).
+**prefix** | `number`: text shown inside the inputs before the number, and before it in the chip.
+**suffix** | `number`: text shown inside the inputs after the number, and after it in the chip.
+**prefixIcon** | `number`: icon classes shown inside the inputs before the number.
+**suffixIcon** | `number`: icon classes shown inside the inputs after the number.
 
 ## Filter widget {#filter-widget}
 

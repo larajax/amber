@@ -418,6 +418,23 @@ class ScopesTest extends TestCase
         $this->assertStringContainsString('data-filter-action="apply"', $forms['id']);
     }
 
+    public function test_enter_in_a_number_date_or_text_form_applies_it_rather_than_clearing_it(): void
+    {
+        $html = $this->get(route('reference.filters.scopes'))->assertOk()->getContent();
+
+        $forms = [
+            $this->scopeForms($html, 'Filter-numberFilter')['views'],
+            $this->scopeForms($html, 'Filter-dateFilter')['published_at'],
+            $this->scopeForms($html, 'Filter-textFilter')['title'],
+        ];
+
+        // Enter submits with the form's first submit button, so Apply is the only one
+        foreach ($forms as $form) {
+            $this->assertMatchesRegularExpression('/<button type="button" class="[^"]*" data-filter-action="clear">/', $form);
+            $this->assertMatchesRegularExpression('/<button type="submit" class="[^"]*" data-filter-action="apply">/', $form);
+        }
+    }
+
     public function test_scopes_without_a_popover_have_no_form_and_a_group_form_carries_its_first_options(): void
     {
         $guides = Category::factory()->create(['name' => 'Guides', 'slug' => 'guides']);

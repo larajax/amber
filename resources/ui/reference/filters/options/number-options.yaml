@@ -1,0 +1,11 @@
+scopes:
+    views:
+        label: Views
+        type: number
+        format: true
+        suffix: views
+
+    id:
+        label: ID
+        type: numberrange
+        prefixIcon: ph ph-hash
