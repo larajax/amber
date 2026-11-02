@@ -59,9 +59,11 @@ In the setup, drag the columns into a new order, check the ones to show and pick
 missing. Reset to Default forgets the choice. Columns marked `invisible` start unchecked, while a
 `hidden` column is never shown, not even in the setup.
 
-The choice is kept in the session. To keep it for good, such as per user in your database, extend the
-widget and override `getPreferenceStorage()` to return your own store: an object with
-`get($key, $default)`, `set($key, $value)` and `reset($key)` methods.
+The choice is kept in the session. To keep it for good, such as per user in your database, bind your
+own store in the container in place of `Larajax\Ui\Classes\PreferenceStore`: a subclass with
+`get($key, $default)`, `set($key, $value)` and `reset($key)` methods. Every widget that keeps
+preferences uses it, including a filter's [saved filters](/filters/options#saved-filters). To change the
+store of one widget only, extend it and override `getPreferenceStorage()`.
 
 <<< @/../app/Controllers/Reference/ListsController/OptionsExamples.php#docs-setup{php}
 

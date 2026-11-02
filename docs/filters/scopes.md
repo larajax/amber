@@ -8,8 +8,9 @@ The `Filter` widget is a bar of scopes above a list, each shown as a chip that n
 toggles, opens a list of options, or opens a popover with a small form. An active chip shows its value
 and a button that clears it, and active chips move to the front of the bar. `bindToListWidget()`
 applies the active scopes to the list query and refreshes the list when one changes. Each scope
-remembers its value for the session, and the menu at the start of the bar clears them all. Adding a
-filter to a page is covered in [Building a List Page](/guides/lists).
+remembers its value for the session, and the menu at the start of the bar clears them all or
+[saves them](/filters/options#saved-filters) as a named set to apply again. Adding a filter to a page
+is covered in [Building a List Page](/guides/lists).
 
 ## The filters on this page {#building}
 
@@ -160,6 +161,7 @@ Option | Description
 **search** | a search box after the scopes, as a [search widget](/lists/search) configuration, a partial name or a `Search` widget. See [search and list setup](/filters/options#search).
 **setupHandler** | the handler that opens the list setup, usually `$list->getEventHandler('onLoadSetup')`, shown as an icon after the scopes.
 **primary** | a row above the scopes: `search` for the search box and list setup, or the name of a dropdown scope, shown as [tabs](/filters/options#primary-tabs). Default: none, one row.
+**savedFilters** | lets the menu save the scope values under a name and apply them again, see [saved filters](/filters/options#saved-filters). Default: `true`.
 
 `bindToListWidget($list)` applies the active scopes to the list query, refreshes the list when a scope
 changes, and shares the list's page parameter, so the list goes back to its first page. With `search`,

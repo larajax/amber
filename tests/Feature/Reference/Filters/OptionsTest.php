@@ -18,12 +18,25 @@ class OptionsTest extends TestCase
     use RefreshDatabase;
 
     /**
+     * setUp empties the filter's preference cache, which lasts for the PHP process, as each real request starts without it.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        \Closure::bind(fn () => static::$preferenceCache = [], null, Filter::class)();
+    }
+
+    /**
      * ajax posts an AJAX request for the given handler to the Filter Options page.
      *
      * @param  array<string, mixed>  $data
      */
     protected function ajax(string $handler, array $data = []): TestResponse
     {
+        // Laravel keeps the route's controller across a test's requests, and the controller keeps its first AJAX handler
+        app('router')->getRoutes()->getByName('reference.filters.options')->flushController();
+
         return $this->withHeaders([
             'X-AJAX-HANDLER' => $handler,
             'X-Requested-With' => 'XMLHttpRequest',
@@ -478,5 +491,107 @@ class OptionsTest extends TestCase
         $tabs = collect($response->json('__ajax.ops'))->firstWhere('selector', '#Filter-primaryTabsFilter-scope-status-group');
         $this->assertNotNull($tabs, 'The response does not render the status tabs again.');
         $this->assertMatchesRegularExpression('/class="nav-link active"\s+data-filter-tab-value="approved"\s+aria-pressed="true"/', $tabs['html']);
+    }
+
+    /**
+     * patchFor returns the markup an AJAX response puts in the element with the given id, or null.
+     */
+    protected function patchFor(TestResponse $response, string $id): ?string
+    {
+        return collect($response->assertOk()->json('__ajax.ops'))->firstWhere('selector', '#'.$id)['html'] ?? null;
+    }
+
+    public function test_the_filter_menu_offers_to_save_filters_with_nothing_saved_yet(): void
+    {
+        $html = $this->exampleHtml('defaults');
+
+        $this->assertStringContainsString('data-save-handler="defaultsFilter::onSaveFilters"', $html);
+        $this->assertMatchesRegularExpression('/<a\s+data-filter-save\s+class="menu-item"/', $html);
+        $this->assertStringContainsString('<template data-filter-save-form>', $html);
+        $this->assertStringNotContainsString('class="submenu"', $html);
+        $this->assertStringNotContainsString('data-filter-manage-form', $html);
+        $this->assertStringNotContainsString('savedFilterExisting', $html);
+    }
+
+    public function test_a_saved_set_is_listed_and_checked_while_the_scopes_match_it(): void
+    {
+        $saved = $this->ajax('defaultsFilter::onSaveFilters', ['savedFilterName' => '  Approved only  ']);
+
+        $menu = $this->patchFor($saved, 'Filter-defaultsFilter-setupMenu');
+        $this->assertMatchesRegularExpression('/data-filter-saved="Approved only"\s+class="menu-item"\s+role="menuitemradio"\s+aria-checked="true"/', $menu);
+        $forms = $this->patchFor($saved, 'Filter-defaultsFilter-savedForms');
+        $this->assertStringContainsString('data-saved-name="Approved only"', $forms);
+        $this->assertMatchesRegularExpression('/<select\s+id="[^"]+"\s+name="savedFilterExisting"[^>]*>\s*<option value="">\s*- Select -\s*<\/option>\s*<option value="Approved only">\s*Approved only\s*<\/option>/', $forms);
+        $this->assertStringContainsString('data-label-update="Update"', $forms);
+
+        // A scope change leaves the set unchecked
+        $changed = $this->ajax('defaultsFilter::onFilterUpdate', ['scopeName' => 'status', 'value' => 'draft']);
+        $this->assertMatchesRegularExpression('/data-filter-saved="Approved only"\s+class="menu-item"\s+role="menuitemradio"\s+aria-checked="false"/', $this->patchFor($changed, 'Filter-defaultsFilter-setupMenu'));
+    }
+
+    public function test_applying_a_saved_set_puts_its_scopes_back_and_filters_the_list(): void
+    {
+        Post::factory()->create(['title' => 'Approved Article', 'status' => 'approved']);
+        Post::factory()->create(['title' => 'Draft Article', 'status' => 'draft']);
+
+        $this->ajax('defaultsFilter::onSaveFilters', ['savedFilterName' => 'Approved only']);
+        $this->ajax('defaultsFilter::onFilterUpdate', ['scopeName' => 'status', 'value' => 'draft']);
+
+        $response = $this->ajax('defaultsFilter::onApplySavedFilters', ['savedFilterName' => 'Approved only']);
+
+        $filter = $this->patchFor($response, 'Filter-defaultsFilter');
+        $this->assertMatchesRegularExpression('/<span class="combobox-value filter-value">\s*Approved\s*<\/span>/', $filter);
+        $this->assertMatchesRegularExpression('/data-filter-saved="Approved only"\s+class="menu-item"\s+role="menuitemradio"\s+aria-checked="true"/', $filter);
+
+        $list = $this->listPatch($response, 'defaultsList');
+        $this->assertStringContainsString('Approved Article', $list);
+        $this->assertStringNotContainsString('Draft Article', $list);
+    }
+
+    public function test_deleting_a_saved_set_takes_it_out_of_the_menu(): void
+    {
+        $this->ajax('defaultsFilter::onSaveFilters', ['savedFilterName' => 'Approved only']);
+        $this->ajax('defaultsFilter::onSaveFilters', ['savedFilterName' => 'Also approved']);
+
+        $response = $this->ajax('defaultsFilter::onDeleteSavedFilters', ['savedFilterName' => 'Approved only']);
+
+        $menu = $this->patchFor($response, 'Filter-defaultsFilter-setupMenu');
+        $this->assertStringNotContainsString('Approved only', $menu);
+        $this->assertStringContainsString('data-filter-saved="Also approved"', $menu);
+    }
+
+    public function test_saved_sets_are_listed_in_name_order_and_a_name_saved_again_replaces_its_set(): void
+    {
+        $this->ajax('defaultsFilter::onSaveFilters', ['savedFilterName' => 'zebra']);
+        $this->ajax('defaultsFilter::onSaveFilters', ['savedFilterName' => 'Apple']);
+        $this->ajax('defaultsFilter::onFilterUpdate', ['scopeName' => 'status', 'value' => 'draft']);
+        $response = $this->ajax('defaultsFilter::onSaveFilters', ['savedFilterName' => 'zebra']);
+
+        $menu = $this->patchFor($response, 'Filter-defaultsFilter-setupMenu');
+        preg_match_all('/data-filter-saved="([^"]+)"\s+class="menu-item"\s+role="menuitemradio"\s+aria-checked="(true|false)"/', $menu, $sets, PREG_SET_ORDER);
+        $this->assertSame([['Apple', 'false'], ['zebra', 'true']], array_map(fn ($set) => [$set[1], $set[2]], $sets));
+    }
+
+    public function test_a_blank_name_saves_nothing(): void
+    {
+        $response = $this->ajax('defaultsFilter::onSaveFilters', ['savedFilterName' => '   ']);
+
+        $this->assertNull($this->patchFor($response, 'Filter-defaultsFilter-setupMenu'));
+    }
+
+    public function test_saved_filters_can_be_turned_off(): void
+    {
+        $filter = Filter::createIn(new FiltersController, [
+            'model' => new Post,
+            'scopes' => ['published' => ['label' => 'Published', 'type' => 'checkbox']],
+            'savedFilters' => false,
+        ]);
+
+        $filter->bindToController();
+        $html = (string) $filter->render();
+
+        $this->assertStringNotContainsString('data-filter-save', $html);
+        $this->assertStringNotContainsString('data-save-handler', $html);
+        $this->assertMatchesRegularExpression('/<a\s+data-filter-clear\s+class="menu-item"/', $html);
     }
 }

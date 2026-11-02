@@ -165,3 +165,16 @@ row's width, and when there are too many to fit they keep their width and the ro
 <<< @/../app/Controllers/Reference/FiltersController/OptionsExamples.php#docs-primary-tabs{php}
 
 <<< @/../resources/ui/reference/filters/options/primary-tabs.yaml
+
+## Saved filters {#saved-filters}
+
+The menu at the start of the bar keeps named sets of scope values. Save Filters saves the current
+values, under a new name or in place of an existing set picked below it, which turns Save into Update.
+Using one clears the other, and saving with a name already in use replaces that set. Saved Filters lists the
+sets in name order, with a check against the one the scopes match, and picking a set puts every scope
+back to its saved value, and the scopes the set leaves out to their default. Manage deletes sets. The
+search box is not part of a set.
+
+The sets belong to the filter and are kept with the user preferences: in the session unless you bind a
+store of your own, as [list setup](/lists/options#setup) describes. `savedFilters: false` leaves them
+out of the menu.
