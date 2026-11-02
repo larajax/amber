@@ -291,8 +291,17 @@ class ScopesTest extends TestCase
     {
         $html = $this->ajax('groupFilter::onLoadFilterForm', ['scopeName' => 'status'])->assertOk()->json('result');
 
-        $this->assertMatchesRegularExpression('/<div class="filter-search loading-indicator-container size-input-text">\s*<label class="form-control form-control-sm form-adorn">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-magnifying-glass" aria-hidden="true"><\/i>\s*<\/span>\s*<input[^>]*aria-label="Search..."[^>]*class="filter-search-input form-ghost popup-allow-focus"[^>]*data-track-input \/>\s*<\/label>/', $html);
+        $this->assertMatchesRegularExpression('/<div class="filter-search loading-indicator-container size-input-text">\s*<label class="form-control form-adorn">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-magnifying-glass" aria-hidden="true"><\/i>\s*<\/span>\s*<input[^>]*aria-label="Search..."[^>]*class="filter-search-input form-ghost popup-allow-focus"[^>]*data-track-input \/>\s*<\/label>/', $html);
         $this->assertStringNotContainsString('search-input-container', $html);
+    }
+
+    public function test_the_group_popover_is_named_for_assistive_tech_without_a_visible_title(): void
+    {
+        $html = $this->ajax('groupFilter::onLoadFilterForm', ['scopeName' => 'status'])->assertOk()->json('result');
+
+        $this->assertMatchesRegularExpression('/data-control="groupfilter"[^>]*role="group"\s+aria-label="Status"/s', $html);
+        $this->assertStringNotContainsString('filter-title', $html);
+        $this->assertStringNotContainsString('<h3', $html);
     }
 
     public function test_the_date_filter_form_offers_relative_periods_first_and_posts_the_raw_date_inputs(): void
@@ -316,11 +325,11 @@ class ScopesTest extends TestCase
         $this->assertStringContainsString('Filter[beforeRaw]', $content);
     }
 
-    public function test_date_filter_inputs_sit_in_small_adorned_fields_with_a_calendar_icon(): void
+    public function test_date_filter_inputs_sit_in_adorned_fields_with_a_calendar_icon(): void
     {
         $html = $this->renderScopeForm(['label' => 'Published', 'type' => 'date']);
 
-        $this->assertSame(3, preg_match_all('/<label class="form-control form-control-sm form-adorn form-adorn-end w-120">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-calendar-blank" aria-hidden="true"><\/i>\s*<\/span>\s*<input\s+type="text"\s+name="Filter\[(?:valueRaw|afterRaw|beforeRaw)\]"[^>]*class="form-ghost popup-allow-focus"[^>]*data-datepicker \/>\s*<\/label>/', $html));
+        $this->assertSame(3, preg_match_all('/<label class="form-control form-adorn form-adorn-end w-120">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-calendar-blank" aria-hidden="true"><\/i>\s*<\/span>\s*<input\s+type="text"\s+name="Filter\[(?:valueRaw|afterRaw|beforeRaw)\]"[^>]*class="form-ghost popup-allow-focus"[^>]*data-datepicker \/>\s*<\/label>/', $html));
     }
 
     public function test_the_date_filter_applies_an_after_condition(): void

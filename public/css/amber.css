@@ -6,6 +6,11 @@
  * text use a deeper shade so white and body text stay readable.
  */
 
+/* The demo shows the denser interface, with Bootstrap and the library shrinking together from the root font size */
+html {
+    font-size: 87.5%;
+}
+
 :root {
     --amber-brand: #6a6cf7;
     --amber-brand-rgb: 106, 108, 247;

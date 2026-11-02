@@ -42,6 +42,12 @@ names and tokens may change before the stable version, and a few things follow f
   [below](#include-the-assets) does. To follow a saved choice or the system preference, set it from a
   script before the page paints, as Bootstrap's
   [color modes guide](https://getbootstrap.com/docs/6.0/customize/color-modes/) shows.
+- **Sizes follow Bootstrap's.** Lists, filters, forms and the other widgets are sized on Bootstrap's
+  scale, with 16px text beside its 38px buttons and inputs, and every size is in `rem`. For a denser
+  interface, set a smaller root font size and everything shrinks together, such as
+  `html { font-size: 87.5%; }` for 14px text and 33px controls. A percentage keeps the visitor's own
+  browser text size in play. Borders stay in pixels, breakpoints keep their widths, and the code
+  editor's text keeps its own `fontSize`.
 
 ## Install the package {#install-the-package}
 

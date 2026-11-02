@@ -390,7 +390,7 @@ class OptionsTest extends TestCase
         ])->ajax('numberOptionsFilter::onLoadFilterForm', ['scopeName' => 'views'])->assertOk()->json('result');
 
         // The shown input has no name, and the hidden input after it posts the plain number
-        $this->assertMatchesRegularExpression('/<label class="form-control form-control-sm form-adorn filter-number">\s*<input\s+type="text"\s+inputmode="decimal"\s+value="2,500"\s+class="form-ghost popup-allow-focus"\s+autocomplete="off"\s+data-control="number-input"\s+data-number-format="\{&quot;locale&quot;:&quot;en&quot;,&quot;decimals&quot;:null,&quot;grouping&quot;:true\}"\s*\/>\s*<input\s+type="hidden"\s+name="Filter\[value\]"\s+value="2500"\s+data-number-value\s*\/>\s*<span class="form-adorn-text">\s*views\s*<\/span>\s*<\/label>/', $content);
+        $this->assertMatchesRegularExpression('/<label class="form-control form-adorn filter-number">\s*<input\s+type="text"\s+inputmode="decimal"\s+value="2,500"\s+class="form-ghost popup-allow-focus"\s+autocomplete="off"\s+data-control="number-input"\s+data-number-format="\{&quot;locale&quot;:&quot;en&quot;,&quot;decimals&quot;:null,&quot;grouping&quot;:true\}"\s*\/>\s*<input\s+type="hidden"\s+name="Filter\[value\]"\s+value="2500"\s+data-number-value\s*\/>\s*<span class="form-adorn-text">\s*views\s*<\/span>\s*<\/label>/', $content);
 
         // The range inputs of the between condition start empty
         $this->assertMatchesRegularExpression('/value=""[^>]*\/>\s*<input\s+type="hidden"\s+name="Filter\[min\]"\s+value=""/', $content);
@@ -401,7 +401,7 @@ class OptionsTest extends TestCase
     {
         $content = $this->ajax('numberOptionsFilter::onLoadFilterForm', ['scopeName' => 'id'])->assertOk()->json('result');
 
-        $this->assertSame(2, preg_match_all('/<label class="form-control form-control-sm form-adorn filter-number">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-hash"><\/i>\s*<\/span>\s*<input\s+type="text"\s+inputmode="decimal"\s+name="Filter\[(?:min|max)\]"/', $content));
+        $this->assertSame(2, preg_match_all('/<label class="form-control form-adorn filter-number">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-hash"><\/i>\s*<\/span>\s*<input\s+type="text"\s+inputmode="decimal"\s+name="Filter\[(?:min|max)\]"/', $content));
         $this->assertStringNotContainsString('data-number-value', $content);
         $this->assertStringNotContainsString('type="number"', $content);
     }
