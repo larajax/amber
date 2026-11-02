@@ -118,7 +118,7 @@ class DropdownsTest extends TestCase
 
         $html = (string) $filter->render();
 
-        $this->assertMatchesRegularExpression('/class="filter-group filter-setup">\s*<a href="javascript:;"\s+data-bs-toggle="menu"/', $html);
+        $this->assertMatchesRegularExpression('/class="filter-group filter-setup">\s*<a href="javascript:;"\s+class="filter-action"\s+data-bs-toggle="menu"/', $html);
         $this->assertMatchesRegularExpression('/<div class="menu control-dropdown" role="menu">\s*<a\s+data-filter-clear\s+class="menu-item"/', $html);
         $this->assertStringNotContainsString('data-bs-toggle="dropdown"', $html);
         $this->assertStringNotContainsString('dropdown-menu', $html);

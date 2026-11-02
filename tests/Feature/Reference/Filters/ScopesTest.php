@@ -76,13 +76,15 @@ class ScopesTest extends TestCase
     {
         $html = $this->get(route('reference.filters.scopes'))->assertOk()->getContent();
 
-        $this->assertStringContainsString('class="filter-scope scope-checkbox form-field"', $html);
-        $this->assertMatchesRegularExpression('/class="filter-scope form-field is-indeterminate"\s+data-scope-name="published"/', $html);
+        $this->assertMatchesRegularExpression('/aria-pressed="false"\s+class="filter-scope scope-checkbox\s*"\s+data-scope-name="published"/', $html);
+        $this->assertMatchesRegularExpression('/class="filter-scope filter-chip scope-switch\s*"\s+data-scope-name="published">\s*<button\s+type="button"\s+id="Filter-switchFilter-scope-published"\s+class="combobox-toggle"/', $html);
+        $this->assertMatchesRegularExpression('/aria-label="Published: Yes"\s+data-bs-value="2"\s*>\s*<i class="ph ph-check filter-mark" aria-hidden="true"><\/i>/', $html);
+        $this->assertMatchesRegularExpression('/aria-label="Published: No"\s+data-bs-value="1"\s*>\s*<i class="ph ph-x filter-mark" aria-hidden="true"><\/i>/', $html);
         $this->assertMatchesRegularExpression('/data-bs-value="draft"\s*>\s*<span class="status-indicator" style="background: var\(--bs-orange-500\)" aria-hidden="true"><\/span>/', $html);
         $this->assertMatchesRegularExpression('/data-bs-value=""\s*>\s*<span class="menu-item-content">\s*<span>\s*Any status\s*<\/span>/', $html);
 
         foreach (['category', 'published_at', 'review_on', 'title', 'views', 'id'] as $scopeName) {
-            $this->assertMatchesRegularExpression('/<a\s+href="javascript:;"\s+class="filter-scope "\s+data-scope-name="'.$scopeName.'"/', $html);
+            $this->assertMatchesRegularExpression('/<a\s+href="javascript:;"\s+class="filter-scope\s*"\s+data-scope-name="'.$scopeName.'"/', $html);
         }
     }
 
@@ -120,6 +122,19 @@ class ScopesTest extends TestCase
         $this->assertStringNotContainsString('Hidden Article', $html);
     }
 
+    public function test_an_active_switch_shows_a_check_or_cross_with_words_for_assistive_tech_only(): void
+    {
+        foreach ([2 => ['ph ph-check filter-mark', 'Yes'], 1 => ['ph ph-x filter-mark', 'No']] as $value => [$icon, $words]) {
+            $html = $this->withSession([
+                'widget.app_controllers-FiltersController-Filter-switchFilter' => json_encode(['scope-published' => ['value' => $value]]),
+            ])->get(route('reference.filters.scopes'))->assertOk()->getContent();
+
+            $this->assertMatchesRegularExpression('/class="filter-scope filter-chip scope-switch active"\s+data-scope-name="published">\s*<button\s+type="button"\s+class="filter-chip-clear"/', $html);
+            $this->assertStringContainsString('<span aria-hidden="true" data-scope-mark><i class="'.$icon.'" aria-hidden="true"></i></span>', $html);
+            $this->assertStringContainsString('<span class="combobox-value visually-hidden">'.$words.'</span>', $html);
+        }
+    }
+
     public function test_the_switch_scope_applies_its_first_condition(): void
     {
         Post::factory()->published()->create(['title' => 'Live Article']);
@@ -148,8 +163,9 @@ class ScopesTest extends TestCase
             'widget.app_controllers-FiltersController-Filter-dropdownFilter' => json_encode(['scope-status' => ['value' => 'draft']]),
         ])->get(route('reference.filters.scopes'))->assertOk()->getContent();
 
+        $this->assertMatchesRegularExpression('/class="filter-scope filter-chip scope-dropdown active"\s+data-scope-name="status">\s*<button\s+type="button"\s+class="filter-chip-clear"/', $html);
         $this->assertStringContainsString('<span aria-hidden="true" data-scope-mark><span class="status-indicator" style="background: var(--bs-orange-500)" aria-hidden="true"></span></span>', $html);
-        $this->assertMatchesRegularExpression('/<span class="combobox-value">\s*Draft\s*<\/span>/', $html);
+        $this->assertMatchesRegularExpression('/<span class="combobox-value filter-value">\s*Draft\s*<\/span>/', $html);
         $this->assertMatchesRegularExpression('/class="menu-item selected"\s+role="option"\s+aria-selected="true"\s+data-bs-value="draft"/', $html);
     }
 
@@ -176,8 +192,9 @@ class ScopesTest extends TestCase
     {
         $html = $this->get(route('reference.filters.scopes'))->assertOk()->getContent();
 
+        $this->assertMatchesRegularExpression('/class="filter-scope filter-chip scope-dropdown\s*"\s+data-scope-name="status">\s*<button\s+type="button"\s+id="Filter-dropdownFilter-scope-status"/', $html);
         $this->assertStringContainsString('<span aria-hidden="true" data-scope-mark></span>', $html);
-        $this->assertMatchesRegularExpression('/<span class="combobox-value">\s*Any status\s*<\/span>/', $html);
+        $this->assertMatchesRegularExpression('/<span class="combobox-value filter-value">\s*Any status\s*<\/span>/', $html);
         $this->assertMatchesRegularExpression('/class="menu-item selected"\s+role="option"\s+aria-selected="true"\s+data-bs-value=""/', $html);
     }
 
@@ -197,7 +214,8 @@ class ScopesTest extends TestCase
         $this->assertStringNotContainsString('Other Article', $html);
 
         $scope = collect($response->json('__ajax.ops'))->firstWhere('selector', '#Filter-groupFilter-scope-category-group');
-        $this->assertStringContainsString('<span class="filter-setting">1</span>', $scope['html']);
+        $this->assertStringContainsString('<div class="filter-chip active">', $scope['html']);
+        $this->assertStringContainsString('<span class="filter-value">1</span>', $scope['html']);
     }
 
     public function test_the_status_group_scope_matches_the_column_against_its_options(): void

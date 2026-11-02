@@ -12,7 +12,8 @@ every option in one place.
 ## The filters on this page {#building}
 
 Most examples are built like those on [Scope Types](/filters/scopes#building): a filter of posts with
-the scopes from its own YAML file, bound to a list of posts. The last two show their own methods.
+the scopes from its own YAML file, bound to a list of posts. The empty option, dependent scopes, search
+and primary row examples show their own methods.
 
 <<< @/../app/Controllers/Reference/FiltersController/OptionsExamples.php#docs-option-filters{php}
 
@@ -71,8 +72,9 @@ option that applies no filter instead.
 
 `modelClass` names the model whose records are a group's options, in place of the model of the
 relation the scope is named after. `optionsScope` applies one of that model's scopes to the options,
-here offering only the categories that hold posts. `matchMode: toggle` adds a choice between including
-and excluding the picked options, while `matchMode: exclude` always excludes them.
+here offering only the categories that hold posts. `matchMode: toggle` adds an Exclude selected switch
+to the popover, which keeps the records without the picked options, while `matchMode: exclude` always
+excludes them. While a group excludes, its chip shows a cross before the count.
 
 <<< @/../resources/ui/reference/filters/options/group-options.yaml
 
@@ -132,3 +134,34 @@ Scope type | Properties
 **date** | `condition`, with `value`, or `after` and `before` for between.
 **number** | `condition`, with `value`, or `min` and `max` for between.
 **text** | `condition` and `value`.
+
+## Search and list setup {#search}
+
+`search` adds a search box after the scopes, configured like a [toolbar search](/lists/search), and
+`setupHandler` adds the list setup icon beside it. `bindToListWidget()` connects the search to the list,
+so the filter can carry the search and list setup a toolbar would otherwise hold. The search keeps its
+term for the session, and Clear Filters leaves it alone.
+
+<<< @/../app/Controllers/Reference/FiltersController/OptionsExamples.php#docs-filter-search{php}
+
+<<< @/../resources/ui/reference/filters/options/search.yaml
+
+## Search in its own row {#primary-search}
+
+`primary: 'search'` moves the search box and the list setup icon into a row of their own, above the
+scopes, where the search box fills the row in place of growing when focused. It needs a `search` to
+move.
+
+<<< @/../app/Controllers/Reference/FiltersController/OptionsExamples.php#docs-primary-search{php}
+
+## A dropdown as tabs {#primary-tabs}
+
+`primary` set to the name of a `dropdown` scope shows that scope as a row of tabs above the others, in
+place of its chip, while the search box and list setup stay with the other scopes. The scope keeps its
+options, default, saved value and query. The first tab applies no filter, labelled with the scope's
+`emptyOption`, or All without one, and the tabs keep the order of the options. The tabs share the
+row's width, and when there are too many to fit they keep their width and the row drag scrolls.
+
+<<< @/../app/Controllers/Reference/FiltersController/OptionsExamples.php#docs-primary-tabs{php}
+
+<<< @/../resources/ui/reference/filters/options/primary-tabs.yaml

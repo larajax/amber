@@ -4,7 +4,7 @@
 
 scopes:
     published:
-        label: Published
+        label: Live
         type: switch
         conditions:
             - published = false

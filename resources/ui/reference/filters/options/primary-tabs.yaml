@@ -1,0 +1,15 @@
+scopes:
+    status:
+        label: Status
+        type: dropdown
+        emptyOption: All statuses
+        optionsMethod: App\Models\Post::listStatusColorOptions
+
+    category:
+        label: Category
+        type: group
+        nameFrom: name
+
+    published:
+        label: Published
+        type: checkbox

@@ -23,6 +23,9 @@ trait OptionsExamples
     {
         $emptyOptionList = $this->makeFilteredPosts('emptyOptionList');
         $dependsList = $this->makeFilteredUsers();
+        $searchList = $this->makeFilteredPosts('searchList');
+        $primarySearchList = $this->makeFilteredPosts('primarySearchList');
+        $primaryTabsList = $this->makeFilteredPosts('primaryTabsList');
 
         return [
             'examples' => $this->makeOptionFilters(),
@@ -31,6 +34,12 @@ trait OptionsExamples
             'emptyOptionToolbar' => $this->makeEmptyOptionToolbar($emptyOptionList),
             'dependsList' => $dependsList,
             'dependsFilter' => $this->makeDependsFilter($dependsList),
+            'searchList' => $searchList,
+            'searchFilter' => $this->makeSearchFilter($searchList),
+            'primarySearchList' => $primarySearchList,
+            'primarySearchFilter' => $this->makePrimarySearchFilter($primarySearchList),
+            'primaryTabsList' => $primaryTabsList,
+            'primaryTabsFilter' => $this->makePrimaryTabsFilter($primaryTabsList),
         ];
     }
 
@@ -142,4 +151,66 @@ trait OptionsExamples
         return $filter;
     }
     // #endregion docs-depends
+
+    // #region docs-filter-search
+    /**
+     * makeSearchFilter adds a search box and the list setup icon after the scopes.
+     */
+    protected function makeSearchFilter(Lists $list): Filter
+    {
+        $filter = Filter::make(
+            alias: 'searchFilter',
+            model: new Post,
+            scopes: '~/resources/ui/reference/filters/options/search.yaml',
+            search: ['prompt' => 'Search posts...'],
+            setupHandler: $list->getEventHandler('onLoadSetup'),
+        );
+
+        $filter->bindToListWidget($list);
+
+        return $filter;
+    }
+    // #endregion docs-filter-search
+
+    // #region docs-primary-search
+    /**
+     * makePrimarySearchFilter gives the search box and the list setup icon a row of their own above the scopes.
+     */
+    protected function makePrimarySearchFilter(Lists $list): Filter
+    {
+        $filter = Filter::make(
+            alias: 'primarySearchFilter',
+            model: new Post,
+            scopes: '~/resources/ui/reference/filters/options/search.yaml',
+            search: ['prompt' => 'Search posts...'],
+            setupHandler: $list->getEventHandler('onLoadSetup'),
+            primary: 'search',
+        );
+
+        $filter->bindToListWidget($list);
+
+        return $filter;
+    }
+    // #endregion docs-primary-search
+
+    // #region docs-primary-tabs
+    /**
+     * makePrimaryTabsFilter shows the status dropdown as tabs in a row above the other scopes.
+     */
+    protected function makePrimaryTabsFilter(Lists $list): Filter
+    {
+        $filter = Filter::make(
+            alias: 'primaryTabsFilter',
+            model: new Post,
+            scopes: '~/resources/ui/reference/filters/options/primary-tabs.yaml',
+            search: ['prompt' => 'Search posts...'],
+            setupHandler: $list->getEventHandler('onLoadSetup'),
+            primary: 'status',
+        );
+
+        $filter->bindToListWidget($list);
+
+        return $filter;
+    }
+    // #endregion docs-primary-tabs
 }

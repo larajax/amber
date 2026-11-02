@@ -621,7 +621,7 @@ class FieldsTest extends TestCase
         $this->assertSame([['id' => 'Australia/Sydney', 'text' => 'Australia/Sydney']], $resp->json('results'));
     }
 
-    public function test_checkbox_and_switch_filter_scopes_render_small_checks_in_form_fields(): void
+    public function test_checkbox_and_switch_filter_scopes_render_as_a_toggle_and_a_menu_chip(): void
     {
         $filter = Filter::createIn(new FormsController, [
             'model' => new User,
@@ -642,8 +642,11 @@ class FieldsTest extends TestCase
         $filter->bindToController();
         $html = (string) $filter->render();
 
-        $this->assertMatchesRegularExpression('/class="filter-scope scope-checkbox form-field"\s+data-scope-name="verified">\s*<input class="check check-sm" type="checkbox"/', $html);
-        $this->assertMatchesRegularExpression('/class="filter-scope form-field is-indeterminate"\s+data-scope-name="blocked">\s*<input class="check check-sm" type="checkbox"[^>]*data-checked="0"/', $html);
+        $this->assertMatchesRegularExpression('/aria-pressed="false"\s+class="filter-scope scope-checkbox\s*"\s+data-scope-name="verified"/', $html);
+        $this->assertMatchesRegularExpression('/class="filter-scope filter-chip scope-switch\s*"\s+data-scope-name="blocked">\s*<button[^>]*class="combobox-toggle"/', $html);
+        preg_match_all('/data-bs-value="(\d)"/', $html, $states);
+        $this->assertSame(['0', '2', '1'], $states[1]);
         $this->assertStringNotContainsString('form-check', $html);
+        $this->assertStringNotContainsString('type="radio"', $html);
     }
 }

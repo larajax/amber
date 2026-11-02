@@ -75,4 +75,31 @@
     ])
 </section>
 
+<section class="ui-section" id="search">
+    @include('reference._heading', ['id' => 'search', 'title' => 'Search and list setup', 'caption' => 'The <code>search</code> and <code>setupHandler</code> options, after the scopes.'])
+    @include('reference._widget_example', [
+        'widgets' => [$searchFilter, $searchList],
+        'methods' => ['makeSearchFilter'],
+        'sources' => ['resources/ui/reference/filters/options/search.yaml'],
+    ])
+</section>
+
+<section class="ui-section" id="primary-search">
+    @include('reference._heading', ['id' => 'primary-search', 'title' => 'Search in its own row', 'caption' => '<code>primary: \'search\'</code> moves the search box and list setup above the scopes.'])
+    @include('reference._widget_example', [
+        'widgets' => [$primarySearchFilter, $primarySearchList],
+        'methods' => ['makePrimarySearchFilter'],
+        'sources' => ['resources/ui/reference/filters/options/search.yaml'],
+    ])
+</section>
+
+<section class="ui-section" id="primary-tabs">
+    @include('reference._heading', ['id' => 'primary-tabs', 'title' => 'A dropdown as tabs', 'caption' => '<code>primary</code> naming a dropdown scope shows its options as tabs above the other scopes.'])
+    @include('reference._widget_example', [
+        'widgets' => [$primaryTabsFilter, $primaryTabsList],
+        'methods' => ['makePrimaryTabsFilter'],
+        'sources' => ['resources/ui/reference/filters/options/primary-tabs.yaml'],
+    ])
+</section>
+
 @endsection

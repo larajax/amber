@@ -78,16 +78,16 @@ class OptionsTest extends TestCase
     {
         $html = $this->get(route('reference.filters.options'))->assertOk()->getContent();
 
-        foreach (['defaults', 'conditions', 'empty-option', 'group-options', 'date-options', 'names', 'depends'] as $example) {
+        foreach (['defaults', 'conditions', 'empty-option', 'group-options', 'date-options', 'names', 'depends', 'search', 'primary-tabs'] as $example) {
             $this->assertStringContainsString("resources/ui/reference/filters/options/{$example}.yaml", $html);
         }
 
-        foreach (['defaults', 'conditions', 'emptyOption', 'groupOptions', 'dateOptions', 'names', 'depends'] as $alias) {
+        foreach (['defaults', 'conditions', 'emptyOption', 'groupOptions', 'dateOptions', 'names', 'depends', 'search', 'primarySearch', 'primaryTabs'] as $alias) {
             $this->assertStringContainsString('id="Filter-'.$alias.'Filter"', $html);
             $this->assertStringContainsString('id="Lists-'.$alias.'List"', $html);
         }
 
-        foreach (['makeOptionFilters', 'makeFilteredPosts', 'makeEmptyOptionFilter', 'makeEmptyOptionToolbar', 'makeDependsFilter', 'makeFilteredUsers'] as $method) {
+        foreach (['makeOptionFilters', 'makeFilteredPosts', 'makeEmptyOptionFilter', 'makeEmptyOptionToolbar', 'makeDependsFilter', 'makeFilteredUsers', 'makeSearchFilter', 'makePrimarySearchFilter', 'makePrimaryTabsFilter'] as $method) {
             $this->assertStringContainsString("function {$method}(", $html);
         }
     }
@@ -100,8 +100,9 @@ class OptionsTest extends TestCase
 
         $html = $this->exampleHtml('defaults');
 
-        $this->assertMatchesRegularExpression('/<input class="check check-sm" type="checkbox" id="Filter-defaultsFilter-scope-hide_archived" checked \/>/', $html);
-        $this->assertMatchesRegularExpression('/<span class="combobox-value">\s*Approved\s*<\/span>/', $html);
+        $this->assertMatchesRegularExpression('/aria-pressed="true"\s+class="filter-scope scope-checkbox active"\s+data-scope-name="hide_archived">\s*<i class="ph ph-check filter-chip-icon filter-mark" aria-hidden="true"><\/i>\s*<span class="filter-label">Hide archived<\/span>\s*<\/button>/', $html);
+        $this->assertMatchesRegularExpression('/class="filter-scope filter-chip scope-dropdown active"\s+data-scope-name="status"/', $html);
+        $this->assertMatchesRegularExpression('/<span class="combobox-value filter-value">\s*Approved\s*<\/span>/', $html);
         $this->assertMatchesRegularExpression('/class="menu-item selected"\s+role="option"\s+aria-selected="true"\s+data-bs-value="approved"/', $html);
         $this->assertStringContainsString('Current Article', $html);
         $this->assertStringNotContainsString('Retired Article', $html);
@@ -285,13 +286,30 @@ class OptionsTest extends TestCase
         $this->assertNotContains('Empty Category', $names);
     }
 
-    public function test_the_toggle_match_mode_offers_include_and_exclude(): void
+    public function test_the_toggle_match_mode_offers_a_switch_to_exclude_the_picked_options(): void
     {
         $content = $this->ajax('groupOptionsFilter::onLoadFilterForm', ['scopeName' => 'category'])->assertOk()->json('result');
 
-        $this->assertStringContainsString('<div class="filter-mode">', $content);
-        $this->assertStringContainsString('name="Filter[mode]" value="include" checked', $content);
-        $this->assertStringContainsString('name="Filter[mode]" value="exclude"', $content);
+        $this->assertMatchesRegularExpression('/<div class="filter-mode form-field mb-0">\s*<div class="switch">\s*<input\s+type="checkbox"\s+role="switch"\s+switch\s+id="[^"]*-mode"\s+name="Filter\[mode\]"\s+value="exclude"\s+\/>/', $content);
+        $this->assertMatchesRegularExpression('/<label for="[^"]*-mode">Exclude selected<\/label>/', $content);
+        $this->assertStringNotContainsString('value="include"', $content);
+    }
+
+    public function test_an_excluding_group_shows_a_cross_before_its_count_without_words(): void
+    {
+        $guides = Category::factory()->create(['name' => 'Guides', 'slug' => 'guides']);
+        Post::factory()->for($guides)->create(['title' => 'Guide Article']);
+
+        $response = $this->ajax('groupOptionsFilter::onFilterUpdate', [
+            'scopeName' => 'category',
+            'Filter' => ['value' => json_encode([$guides->id]), 'mode' => 'exclude'],
+        ]);
+
+        $scope = collect($response->assertOk()->json('__ajax.ops'))->firstWhere('selector', '#Filter-groupOptionsFilter-scope-category-group');
+        $this->assertNotNull($scope);
+        $this->assertMatchesRegularExpression('/<span class="filter-setting" title="1">\s*<i class="ph ph-x filter-mark" aria-hidden="true"><\/i><span class="visually-hidden">Excluding<\/span>\s*<span class="filter-value">1<\/span>/', $scope['html']);
+        $this->assertStringNotContainsString('Excludes', $scope['html']);
+        $this->assertStringNotContainsString('Guide Article', $this->listPatch($response, 'groupOptionsList'));
     }
 
     public function test_the_exclude_mode_leaves_out_the_picked_categories(): void
@@ -335,7 +353,7 @@ class OptionsTest extends TestCase
     {
         $html = $this->exampleHtml('names');
 
-        $this->assertMatchesRegularExpression('/data-scope-name="live">\s*<input[^>]*>\s*<label[^>]*>\s*Live\s*<\/label>/', $html);
+        $this->assertMatchesRegularExpression('/data-scope-name="live">\s*<i class="[^"]*filter-chip-icon"[^>]*><\/i>\s*<span class="filter-label">Live<\/span>/', $html);
         $this->assertStringNotContainsString('Published posts only', $html);
         $this->assertMatchesRegularExpression('/data-scope-name="status".*data-scope-name="views"/s', $html);
         $this->assertStringContainsString('class="filter-group fst-italic"', $html);
@@ -394,5 +412,71 @@ class OptionsTest extends TestCase
         $store = json_decode(session('widget.app_controllers-FiltersController-Filter-dependsFilter'), true);
         $this->assertSame(['value' => 'example.com'], $store['scope-domain']);
         $this->assertNull($store['scope-name']);
+    }
+
+    public function test_a_filter_carries_the_search_box_and_list_setup_after_its_scopes(): void
+    {
+        $html = $this->exampleHtml('search');
+
+        $this->assertStringNotContainsString('filter-primary', $html);
+        $this->assertMatchesRegularExpression('/<div class="filter-row filter-secondary">.*class="filter-scopes".*<div class="filter-list-controls">\s*<div class="filter-search">.*name="searchFilterSearch\[term\]".*data-handler="searchList::onLoadSetup"/s', $html);
+    }
+
+    public function test_a_filter_search_searches_its_list(): void
+    {
+        Post::factory()->create(['title' => 'Lamp Article']);
+        Post::factory()->create(['title' => 'Desk Article']);
+
+        $html = $this->listPatch($this->ajax('searchFilterSearch::onSubmit', ['searchFilterSearch' => ['term' => 'Lamp']]), 'searchList');
+
+        $this->assertStringContainsString('Lamp Article', $html);
+        $this->assertStringNotContainsString('Desk Article', $html);
+    }
+
+    public function test_primary_search_gives_the_search_box_and_list_setup_their_own_row(): void
+    {
+        $html = $this->exampleHtml('primarySearch');
+
+        $this->assertMatchesRegularExpression('/<div class="filter-row filter-primary">\s*<div class="filter-list-controls">\s*<div class="filter-search">.*data-handler="primarySearchList::onLoadSetup".*<div class="filter-row filter-secondary">/s', $html);
+        $this->assertSame(1, substr_count($html, 'class="filter-list-controls"'));
+
+        // The search fills its row, so it does not grow when focused
+        $this->assertMatchesRegularExpression('/<div class="filter-row filter-primary">.*?<label class="form-control form-adorn is-searchable\s*">/s', $html);
+        $this->assertStringNotContainsString('is-growable', $html);
+        $this->assertStringContainsString('is-growable', $this->exampleHtml('search'));
+    }
+
+    public function test_a_primary_dropdown_shows_its_options_as_tabs_above_the_other_scopes(): void
+    {
+        $html = $this->exampleHtml('primaryTabs');
+
+        $this->assertMatchesRegularExpression('/<div class="filter-row filter-primary">(.*?)<div class="filter-row filter-secondary">(.*)/s', $html);
+        preg_match('/<div class="filter-row filter-primary">(.*?)<div class="filter-row filter-secondary">(.*)/s', $html, $rows);
+        [, $primary, $secondary] = $rows;
+
+        $this->assertMatchesRegularExpression('/class="filter-scope scope-tabs nav"\s+data-scope-name="status"/', $primary);
+        preg_match_all('/data-filter-tab-value="([^"]*)"/', $primary, $tabs);
+        $this->assertSame(['', 'draft', 'review', 'approved', 'archived'], $tabs[1]);
+        $this->assertMatchesRegularExpression('/class="nav-link active"\s+data-filter-tab-value=""\s+aria-pressed="true">.*?All statuses/s', $primary);
+
+        $this->assertStringNotContainsString('data-scope-name="status"', $secondary);
+        $this->assertStringContainsString('data-scope-name="category"', $secondary);
+        $this->assertStringContainsString('class="filter-list-controls"', $secondary);
+    }
+
+    public function test_a_primary_tab_filters_the_list_and_renders_the_tabs_again(): void
+    {
+        Post::factory()->create(['title' => 'Draft Article', 'status' => 'draft']);
+        Post::factory()->create(['title' => 'Approved Article', 'status' => 'approved']);
+
+        $response = $this->ajax('primaryTabsFilter::onFilterUpdate', ['scopeName' => 'status', 'value' => 'approved']);
+
+        $html = $this->listPatch($response, 'primaryTabsList');
+        $this->assertStringContainsString('Approved Article', $html);
+        $this->assertStringNotContainsString('Draft Article', $html);
+
+        $tabs = collect($response->json('__ajax.ops'))->firstWhere('selector', '#Filter-primaryTabsFilter-scope-status-group');
+        $this->assertNotNull($tabs, 'The response does not render the status tabs again.');
+        $this->assertMatchesRegularExpression('/class="nav-link active"\s+data-filter-tab-value="approved"\s+aria-pressed="true"/', $tabs['html']);
     }
 }

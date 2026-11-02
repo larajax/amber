@@ -4,11 +4,12 @@ demo: /reference/filters/scopes
 ---
 # Scope Types
 
-The `Filter` widget is a bar of scopes above a list. Each scope narrows the list: a checkbox, a
-switch, a dropdown, or a label that opens a popover with a small form. `bindToListWidget()` applies the
-active scopes to the list query and refreshes the list when one changes. Each scope remembers its value
-for the session, and the menu at the start of the bar clears them all. Adding a filter to a page is
-covered in [Building a List Page](/guides/lists).
+The `Filter` widget is a bar of scopes above a list, each shown as a chip that narrows the list. A chip
+toggles, opens a list of options, or opens a popover with a small form. An active chip shows its value
+and a button that clears it, and active chips move to the front of the bar. `bindToListWidget()`
+applies the active scopes to the list query and refreshes the list when one changes. Each scope
+remembers its value for the session, and the menu at the start of the bar clears them all. Adding a
+filter to a page is covered in [Building a List Page](/guides/lists).
 
 ## The filters on this page {#building}
 
@@ -21,23 +22,26 @@ lists share one columns file.
 
 ## Checkbox {#checkbox}
 
-`checkbox` is on or off. Off, it applies nothing. On, it keeps the records whose column of the same
-name is true, like `published`, or the records that match the SQL in `conditions`, like the posts with
+`checkbox` is on or off, and a click on its chip toggles it, with a check mark in place of the plus
+while it is on. Off, it applies nothing. On, it keeps the records whose column of the same name is
+true, like `published`, or the records that match the SQL in `conditions`, like the posts with
 comments here.
 
 <<< @/../resources/ui/reference/filters/scopes/checkbox.yaml
 
 ## Switch {#switch}
 
-`switch` has three states. Click it once for the first of its two `conditions`, again for the second,
-and again to turn it off. Without conditions, the two states compare the column of the same name with
-false and then with true.
+`switch` has three states, picked from its chip's menu like a dropdown: Any applies nothing, a check
+mark applies the second of its two `conditions` and a cross the first. Without conditions, the check
+keeps the records whose column of the same name is true and the cross those where it is false. The
+chip shows the check or cross beside its label, and screen readers announce it as yes or no.
 
 <<< @/../resources/ui/reference/filters/scopes/switch.yaml
 
 ## Dropdown {#dropdown}
 
-`dropdown` picks one value for the column of the same name. Its options come from `options` in the
+`dropdown` picks one value for the column of the same name, applied as soon as an option is picked
+from its chip. Its options come from `options` in the
 YAML, or from `optionsMethod`, given here as a static method, `Class::method`, whose options carry
 colors. An option is written as `value: label`, or as `value: [label, icon]` or `value: [label, color]`
 like the options of a [dropdown field](/forms/fields#option-styles). A color is a value starting with
@@ -53,10 +57,12 @@ called on the filter's model with the scope.
 
 ## Group {#group}
 
-`group` opens a popover with a searchable list of options, to pick several, and the bar shows how many
-are picked. When the scope is named after a relation of the model, like `category`, the options are the
+`group` opens a popover with a searchable list of options, to pick several, and the chip shows how many
+are picked, after a cross while it [excludes them](/filters/options#group-options). When the scope is named after a relation of the model, like `category`, the options are the
 related records, labelled by their `nameFrom` attribute, and the filter keeps the records related to
 any picked one. The popover lists the first 200 related records, and its search box looks up the rest.
+The search box takes the focus when the popover opens, so typing starts a search, except on touch
+devices, where the on-screen keyboard would cover the options.
 
 With `options` or `optionsMethod` in place of a relation, the filter keeps the records whose column
 holds any picked value, or, for a column the model stores as JSON, contains one.
@@ -151,6 +157,10 @@ Option | Description
 **scopes** | the scope definitions, as a YAML file path or an array.
 **context** | the filter's context, which shows only the scopes for that context.
 **alias** | the widget's name, unique on the page.
+**search** | a search box after the scopes, as a [search widget](/lists/search) configuration, a partial name or a `Search` widget. See [search and list setup](/filters/options#search).
+**setupHandler** | the handler that opens the list setup, usually `$list->getEventHandler('onLoadSetup')`, shown as an icon after the scopes.
+**primary** | a row above the scopes: `search` for the search box and list setup, or the name of a dropdown scope, shown as [tabs](/filters/options#primary-tabs). Default: none, one row.
 
 `bindToListWidget($list)` applies the active scopes to the list query, refreshes the list when a scope
-changes, and shares the list's page parameter, so the list goes back to its first page.
+changes, and shares the list's page parameter, so the list goes back to its first page. With `search`,
+it also searches the list and keeps the search term for the session, as a toolbar search does.
