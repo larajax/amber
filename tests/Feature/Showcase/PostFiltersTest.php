@@ -96,6 +96,17 @@ class PostFiltersTest extends TestCase
         $this->assertSame(['Ada Writer'], $names);
     }
 
+    public function test_the_status_filter_searches_options_given_as_a_label_and_an_icon(): void
+    {
+        $names = fn (string $search) => collect($this->ajax('filterStatus::onGetGroupOptions', ['search' => $search])->assertOk()->json('options.available'))
+            ->pluck('name')
+            ->all();
+
+        $this->assertSame(['In Review'], $names('rev'));
+        $this->assertSame(['Approved'], $names('approved'));
+        $this->assertSame([], $names('icon'));
+    }
+
     public function test_the_category_filter_shows_the_posts_of_the_picked_categories(): void
     {
         $guides = Category::factory()->create(['name' => 'Guides', 'slug' => 'guides']);
