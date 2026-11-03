@@ -48,7 +48,6 @@ const sharedSidebar = [
         text: 'Form Widgets',
         collapsed: false,
         items: [
-            { text: 'Code Editor', link: '/form-widgets/code-editor' },
             { text: 'Color Picker', link: '/form-widgets/color-picker' },
             { text: 'Data Table', link: '/form-widgets/data-table' },
             { text: 'Date Picker', link: '/form-widgets/date-picker' },

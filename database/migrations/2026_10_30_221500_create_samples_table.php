@@ -54,8 +54,6 @@ return new class extends Migration
             $table->string('overlay_color')->nullable();
 
             // Editors
-            $table->text('css_code')->nullable();
-            $table->text('html_code')->nullable();
             $table->text('template')->nullable();
             $table->text('readme')->nullable();
             $table->string('api_key')->nullable();

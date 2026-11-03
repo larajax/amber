@@ -12,14 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('samples', function (Blueprint $table) {
-            // Code editor
-            $table->text('php_code')->nullable();
-            $table->text('config_code')->nullable();
-            $table->text('script_code')->nullable();
-            $table->text('scss_code')->nullable();
-            $table->text('generated_code')->nullable();
-            $table->text('embed_code')->nullable();
-
             // Color picker
             $table->string('text_color')->nullable();
             $table->string('brand_color')->nullable();
@@ -86,7 +78,6 @@ return new class extends Migration
     {
         Schema::table('samples', function (Blueprint $table) {
             $table->dropColumn([
-                'php_code', 'config_code', 'script_code', 'scss_code', 'generated_code', 'embed_code',
                 'text_color', 'brand_color', 'border_color',
                 'deliveries', 'variants', 'stockists', 'parts', 'price_breaks', 'bundle_items', 'suppliers',
                 'components', 'stock_levels', 'reviews', 'spec_sheet', 'certifications', 'awards',

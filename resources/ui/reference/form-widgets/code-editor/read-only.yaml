@@ -1,7 +1,0 @@
-fields:
-    generated_code:
-        label: Generated JSON
-        type: codeeditor
-        language: json
-        readOnly: true
-        comment: The code can be selected, searched and copied, but not changed.

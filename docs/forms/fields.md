@@ -114,7 +114,7 @@ validation colours and read-only and disabled styles cover the whole field.
 ## Textarea sizes {#textarea-sizes}
 
 `size` sets the height of a textarea: `tiny`, `small`, `large` (the default), `huge` or `giant`. The
-same sizes apply to the editor widgets, such as the [code editor](/form-widgets/code-editor).
+same sizes apply to the editor widgets, such as the [markdown editor](/form-widgets/markdown-editor).
 
 <<< @/../resources/ui/reference/forms/fields/textarea-sizes.yaml
 

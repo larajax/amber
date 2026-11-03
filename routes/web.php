@@ -116,7 +116,6 @@ Route::match(['get', 'post'], '/reference/forms/behaviour', [FormsController::cl
 | Reference: Form Widgets
 |--------------------------------------------------------------------------
 */
-Route::match(['get', 'post'], '/reference/form-widgets/code-editor', [FormWidgetsController::class, 'codeEditor'])->name('reference.form-widgets.code-editor');
 Route::match(['get', 'post'], '/reference/form-widgets/color-picker', [FormWidgetsController::class, 'colorPicker'])->name('reference.form-widgets.color-picker');
 Route::match(['get', 'post'], '/reference/form-widgets/data-table', [FormWidgetsController::class, 'dataTable'])->name('reference.form-widgets.data-table');
 Route::match(['get', 'post'], '/reference/form-widgets/date-picker', [FormWidgetsController::class, 'datePicker'])->name('reference.form-widgets.date-picker');

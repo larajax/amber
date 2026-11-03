@@ -88,8 +88,6 @@ class SampleSeeder extends Seeder
                 'color' => '#f39c12',
                 'accent_color' => '#6a6cf7',
                 'overlay_color' => '#34495e80',
-                'css_code' => ".lamp {\n    color: #f39c12;\n}\n",
-                'html_code' => "<article class=\"lamp\">\n    <h2>Aurora</h2>\n    <p>A warm reading light that bends to any angle, holds its place wherever you point it, and dims to a soft glow for late nights.</p>\n</article>\n",
                 'template' => "<section>\n    <h1>{{ name }}</h1>\n    <p>{{ summary }}</p>\n</section>\n",
                 'readme' => "# Aurora Desk Lamp\n\nA **warm** reading light with:\n\n- three colour temperatures\n- a dimmer\n- a weighted base\n",
                 'api_key' => 'sk_live_aurora_51f0c2',
@@ -299,14 +297,6 @@ class SampleSeeder extends Seeder
     public function editorWidgetValues(): array
     {
         return [
-            // Code editor
-            'php_code' => "<?php\n\nreturn [\n    'name' => 'Aurora Desk Lamp',\n    'price' => 89.50,\n    'temperatures' => [2700, 4000, 6500],\n];\n",
-            'config_code' => "lamp:\n  name: Aurora\n  finishes:\n    - brass\n    - chrome\n  light:\n    temperatures: [2700, 4000, 6500]\n    dimmable: true\n",
-            'script_code' => "const lamp = document.querySelector('.lamp');\n\nlamp.addEventListener('click', () => {\n    lamp.classList.toggle('is-on');\n});\n",
-            'scss_code' => ".lamp {\n    \$glow: #f39c12;\n\n    color: \$glow;\n\n    &:hover {\n        color: darken(\$glow, 10%);\n    }\n}\n",
-            'generated_code' => "{\n    \"sku\": \"AUR-001\",\n    \"stock\": 24,\n    \"finishes\": [\"brass\", \"chrome\"]\n}\n",
-            'embed_code' => "<iframe src=\"https://example.com/aurora/viewer\" title=\"Aurora in 3D\"></iframe>\n",
-
             // Color picker
             'text_color' => '#2c3e50',
             'brand_color' => '#0f766e',

@@ -204,25 +204,25 @@ class LayoutTest extends TestCase
     public function test_a_form_widget_in_a_lazy_tab_renders_when_the_tab_opens(): void
     {
         $form = $this->makeForm([
-            'model' => Sample::factory()->create(['css_code' => '.lamp { color: red; }']),
+            'model' => Sample::factory()->create(['readme' => '# Aurora lamp']),
             'tabs' => [
-                'lazy' => ['Code'],
+                'lazy' => ['Docs'],
                 'fields' => [
                     'name' => ['label' => 'Name', 'tab' => 'General'],
-                    'css_code' => ['label' => 'Stylesheet', 'type' => 'codeeditor', 'language' => 'css', 'tab' => 'Code'],
+                    'readme' => ['label' => 'Readme', 'type' => 'markdown', 'tab' => 'Docs'],
                 ],
             ],
         ]);
 
-        $this->assertStringNotContainsString('data-control="codeeditor"', (string) $form->render());
+        $this->assertStringNotContainsString('data-control="markdowneditor"', (string) $form->render());
 
         // The handler reads the tab from the posted data, as the tab's AJAX request sends it
         request()->server->set('REQUEST_METHOD', 'POST');
-        request()->request->add(['target' => '#code-pane', 'name' => 'Code']);
-        $html = (string) $form->onLazyLoadTab()['#code-pane'];
+        request()->request->add(['target' => '#docs-pane', 'name' => 'Docs']);
+        $html = (string) $form->onLazyLoadTab()['#docs-pane'];
 
-        $this->assertStringContainsString('data-control="codeeditor"', $html);
-        $this->assertStringContainsString('.lamp { color: red; }', $html);
+        $this->assertStringContainsString('data-control="markdowneditor"', $html);
+        $this->assertStringContainsString('# Aurora lamp', $html);
     }
 
     public function test_a_tab_name_with_an_ampersand_is_escaped_and_keeps_its_icon(): void

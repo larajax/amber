@@ -64,7 +64,7 @@ Keys | Used by
 `checkboxlist.*`, `datepicker.*`, `sensitive.*` | the checkbox list field, the date picker and the sensitive field.
 `fileupload.*`, `file.type.*` | the file upload widget, with an icon per file type.
 `recordfinder.*`, `repeater.*`, `datatable.*` | the record finder, repeater and data table widgets.
-`codeeditor.*`, `markdowneditor.*`, `richeditor.*` | the editor toolbars.
+`markdowneditor.*`, `richeditor.*` | the editor toolbars.
 
 ## Configuration {#configuration}
 

@@ -122,11 +122,6 @@ return [
             'icon' => 'ph-puzzle-piece',
             'description' => 'One page per form widget, showing its options side by side with the YAML that configures them.',
             'pages' => [
-                'code-editor' => [
-                    'label' => 'Code Editor',
-                    'icon' => 'ph-code',
-                    'covers' => ['formwidget:CodeEditor'],
-                ],
                 'color-picker' => [
                     'label' => 'Color Picker',
                     'icon' => 'ph-palette',

@@ -11,20 +11,6 @@ use Illuminate\Contracts\View\View;
 class FormWidgetsController extends ReferenceControllerBase
 {
     /**
-     * codeEditor displays the Code Editor page.
-     */
-    public function codeEditor(): View
-    {
-        $forms = $this->makeExampleForms('form-widgets/code-editor', [
-            'default', 'language', 'size', 'word-wrap', 'indentation', 'appearance', 'typing', 'read-only', 'preview',
-        ]);
-
-        $forms['preview']->previewMode = true;
-
-        return view('reference.form-widgets.code-editor', $this->exampleVars());
-    }
-
-    /**
      * colorPicker displays the Color Picker page.
      */
     public function colorPicker(): View
