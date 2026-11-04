@@ -52,26 +52,6 @@ JavaScript scrolls the row to it.
 
 <<< @/../resources/views/reference/ui/examples/tabs-overflow.blade.php{blade}
 
-## Closable tabs {#tabs-closable}
-
-`data-closable` adds a close button to each tab, and a middle click closes a tab too. When the open tab
-closes, the tab before it opens.
-
-The control's `addTab()` method opens a new tab, given a title and the pane content as HTML. Fetch the
-control with `jax.fetchControl(element, 'tab')`, as the Add a tab button does. Scripts inside the
-content run when the pane is added.
-
-<<< @/../resources/views/reference/ui/examples/tabs-closable.blade.php{blade}
-
-## Modified tabs {#tabs-modified}
-
-A `tab:modified` event dispatched from inside a pane marks its tab as modified, which swaps the close
-button for a dot. With `data-close-confirmation`, closing a modified tab asks first, with that text,
-and stays open when the visitor cancels. A `tab:unmodified` event clears the mark. Both events must
-bubble, as in the example.
-
-<<< @/../resources/views/reference/ui/examples/tabs-modified.blade.php{blade}
-
 ## Data attributes {#data-attributes}
 
 Set these on the `control-tabs` element.
@@ -80,11 +60,6 @@ Attribute | Description
 ------------- | -------------
 **data-control="tab"** | enables the control.
 **data-linkable** | keeps the open tab in the address hash, and opens the tab matching the hash on page load.
-**data-closable** | adds a close button to each tab.
-**data-close-confirmation** | the question to ask before a modified tab closes.
-**data-pane-classes** | classes added to the panes that `addTab()` creates.
-**data-title-as-file-names** | shows only the file name part of the titles that `addTab()` and `updateTab()` set.
-**data-max-title-symbols** | shortens those titles to this many characters, keeping the end.
 
 On a tab, `data-tab-id` gives it an identifier for `goTo()`, and `data-tab-url` on its anchor sets the
 address shown when it opens.
@@ -98,18 +73,11 @@ Fetch the control with `jax.fetchControl(element, 'tab')`, then call:
 
 Method | Description
 ------------- | -------------
-**addTab(title, content, identifier, tabClass)** | adds a tab and opens it. `content` is HTML or an element, and the optional `identifier` sets its `data-tab-id`.
-**updateTab(tab, title, content)** | replaces a tab's title and content.
-**closeTab(tab, force)** | closes a tab. `force` skips the close confirmation.
-**modifyTab(tab)** | marks a tab as modified.
-**unmodifyTab(tab)** | clears the modified mark.
 **goTo(identifier)** | opens the tab with this `data-tab-id`.
 **goToIndex(index)** | opens the tab at this position, from `0`.
-**goToPane(pane)** | opens the tab of this pane.
+**goToPane(pane)** | opens the tab of this pane, given as an element or a selector inside the control.
 **goToElement(element)** | opens the tab that contains the element.
 **prev()** / **next()** | opens the tab before or after the open one.
-
-A `tab` argument is a tab's `li`, its pane, or a selector of either inside the control.
 
 ## Events {#events}
 
@@ -118,14 +86,3 @@ Event | Description
 **tab:shown** | dispatched on a tab's anchor after its tab opens.
 **tab:shown-linkable** | dispatched on the anchor of the tab opened from the address hash.
 **tab:init-tab** | dispatched on the control after a tab is set up, with `detail.tab` and `detail.pane`.
-**tab:before-close** | dispatched on the control before a tab closes, with the pane as `detail.relatedTarget`. `preventDefault()` keeps it open.
-**tab:closed** | dispatched on the control after a tab closes, with `detail.tab` and `detail.pane`.
-**tab:after-all-closed** | dispatched on the control when its last tab closes.
-
-Dispatch these, with `bubbles: true`, on a tab, a pane or any element inside them:
-
-Event | Description
-------------- | -------------
-**tab:close** | closes the tab. `detail: { force: true }` skips the close confirmation.
-**tab:modified** | marks the tab as modified.
-**tab:unmodified** | clears the modified mark.

@@ -31,14 +31,4 @@
     @include('reference._example', ['view' => 'reference.ui.examples.tabs-overflow', 'stacked' => true])
 </section>
 
-<section class="ui-section" id="tabs-closable">
-    @include('reference._heading', ['id' => 'tabs-closable', 'title' => 'Closable tabs', 'caption' => '<code>data-closable</code> and the control\'s <code>addTab()</code>.'])
-    @include('reference._example', ['view' => 'reference.ui.examples.tabs-closable', 'stacked' => true])
-</section>
-
-<section class="ui-section" id="tabs-modified">
-    @include('reference._heading', ['id' => 'tabs-modified', 'title' => 'Modified tabs', 'caption' => '<code>tab:modified</code> events with <code>data-close-confirmation</code>.'])
-    @include('reference._example', ['view' => 'reference.ui.examples.tabs-modified', 'stacked' => true])
-</section>
-
 @endsection
