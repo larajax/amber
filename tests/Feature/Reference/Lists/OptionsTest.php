@@ -146,7 +146,7 @@ class OptionsTest extends TestCase
     {
         $content = $this->ajax('setupList::onLoadSetup')->assertOk()->json('result');
 
-        $this->assertStringContainsString('data-control="simplelist"', $content);
+        $this->assertStringContainsString('data-control="list-setup-columns"', $content);
         $this->assertStringContainsString('name="column_order[]"', $content);
         $this->assertMatchesRegularExpression('/value="excerpt"\s+type="checkbox"/', $content);
         $this->assertMatchesRegularExpression('/value="title"\s+checked="checked"/', $content);

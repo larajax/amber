@@ -50,6 +50,16 @@ out, so the text starts at the left edge.
 
 <<< @/../resources/views/reference/ui/examples/callout-icons.blade.php{blade}
 
+## Dismissing a callout {#callout-dismiss}
+
+A button with `data-dismiss="callout"` closes the callout it sits in, fading it out, and removes it.
+Placed first in the callout, a `btn-close` button sits in its top corner. Elsewhere on the page, the
+button closes the callout its `data-target` (or `href`) selects. The callout receives `callout:close`
+first, which `preventDefault()` cancels to keep it open, and `callout:closed` just before it is
+removed. `Ui::callout()` has no close button of its own, so a dismissable callout is written as markup.
+
+<<< @/../resources/views/reference/ui/examples/callout-dismiss.blade.php{blade}
+
 ## Callout arguments {#callout-arguments}
 
 Argument | Description

@@ -15,17 +15,18 @@ arguments of a static method, so your editor can suggest them as you type.
 
 ## Variants {#variants}
 
-A styling flag picks the look: `primary`, `secondary` or `danger` render Bootstrap's solid button
-(`btn-solid`) in that theme. Without a flag, the button renders Bootstrap's plain `btn` class. When you
-pass more than one flag, the first in that order wins.
+A styling flag picks the look: `primary`, `secondary`, `danger`, `success`, `warning` or `info` render
+Bootstrap's solid button (`btn-solid`) in that theme. Without a flag, the button renders Bootstrap's
+plain `btn` class. When you pass more than one flag, the first in that order wins.
 
 <<< @/../resources/views/reference/ui/examples/button-variants.blade.php{blade}
 
 ## Outline, subtle and link {#outline}
 
-The `class` argument merges extra classes into the button's own, so any Bootstrap variant and theme
-works. Leave the styling flag out and pass the variant and theme classes yourself, such as
-`btn-outline theme-primary`, `btn-subtle theme-primary` or `btn-link`.
+`outline` renders Bootstrap's outline button (`btn-outline`) in the theme of the styling flag beside
+it, or the secondary theme without one. Subtle and link buttons have no flag: the `class` argument
+merges extra classes into the button's own, so leave the flags out and pass the variant and theme
+classes yourself, such as `btn-subtle theme-primary` or `btn-link`.
 
 <<< @/../resources/views/reference/ui/examples/button-outline.blade.php{blade}
 
@@ -143,6 +144,10 @@ Argument | Description
 **primary** | primary styling, `btn-solid theme-primary`. Default: `false`.
 **secondary** | secondary styling, `btn-solid theme-secondary`. Default: `false`.
 **danger** | danger styling, `btn-solid theme-danger`. Default: `false`.
+**success** | success styling, `btn-solid theme-success`. Default: `false`.
+**warning** | warning styling, `btn-solid theme-warning`. Default: `false`.
+**info** | info styling, `btn-solid theme-info`. Default: `false`.
+**outline** | the outline variant, `btn-outline`, in the theme of the flag beside it, or `theme-secondary` without one. Default: `false`.
 **hotkey** | a keyboard shortcut, or an array of them, that clicks the button and shows in a tooltip.
 
 Any other argument becomes an attribute, as described in [Attributes](#attributes).

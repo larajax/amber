@@ -52,7 +52,7 @@ class FeedbackTest extends TestCase
         $html = $this->get(route('reference.ui.feedback'))->assertOk()->getContent();
 
         $examples = [
-            'callout-types', 'callout-body', 'callout-action', 'callout-icons', 'scoreboard',
+            'callout-types', 'callout-body', 'callout-action', 'callout-icons', 'callout-dismiss', 'scoreboard',
             'loader-container', 'load-indicator-markup', 'load-indicator-api', 'change-monitor',
         ];
 
@@ -61,7 +61,7 @@ class FeedbackTest extends TestCase
             $this->assertStringContainsString('<pre><code>'.$source.'</code></pre>', $html, "{$example} is not shown.");
         }
 
-        foreach (['callouts', 'callout-body', 'callout-action', 'callout-icons', 'scoreboard', 'loader-container', 'load-indicator', 'load-indicator-api', 'change-monitor'] as $section) {
+        foreach (['callouts', 'callout-body', 'callout-action', 'callout-icons', 'callout-dismiss', 'scoreboard', 'loader-container', 'load-indicator', 'load-indicator-api', 'change-monitor'] as $section) {
             $this->assertStringContainsString('id="'.$section.'"', $html);
         }
 
@@ -186,6 +186,15 @@ class FeedbackTest extends TestCase
 
         $this->assertMatchesRegularExpression('/<h3>\s*Heads up\s*<\/h3>/', $html);
         $this->assertStringNotContainsString('class="content"', $html);
+    }
+
+    public function test_the_dismiss_example_closes_its_own_callout_and_another_by_target(): void
+    {
+        $html = $this->get(route('reference.ui.feedback'))->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/<div class="callout fade show callout-success no-icon no-subheader">\s*<button type="button" class="btn-close" data-dismiss="callout" aria-label="Close"><\/button>/', $html);
+        $this->assertStringContainsString('<div id="calloutTip" class="callout fade show callout-info no-icon no-subheader">', $html);
+        $this->assertMatchesRegularExpression('/class="btn-solid theme-secondary"[^>]*data-dismiss="callout"[^>]*data-target="#calloutTip"/', $html);
     }
 
     public function test_each_type_shows_its_icon_from_the_pack(): void

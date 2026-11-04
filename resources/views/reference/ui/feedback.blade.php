@@ -30,6 +30,11 @@
     @include('reference._example', ['view' => 'reference.ui.examples.callout-icons', 'stacked' => true])
 </section>
 
+<section class="ui-section" id="callout-dismiss">
+    @include('reference._heading', ['id' => 'callout-dismiss', 'title' => 'Dismissing a callout', 'caption' => 'A <code>data-dismiss="callout"</code> button inside the callout, and one aimed at another with <code>data-target</code>.'])
+    @include('reference._example', ['view' => 'reference.ui.examples.callout-dismiss', 'stacked' => true])
+</section>
+
 <section class="ui-section" id="scoreboard">
     @include('reference._heading', ['id' => 'scoreboard', 'title' => 'Scoreboard', 'caption' => 'Four figures, with <code>positive</code> and <code>negative</code> trends.'])
     @include('reference._example', ['view' => 'reference.ui.examples.scoreboard', 'stacked' => true])

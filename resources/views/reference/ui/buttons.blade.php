@@ -7,12 +7,12 @@
 ])
 
 <section class="ui-section" id="variants">
-    @include('reference._heading', ['id' => 'variants', 'title' => 'Variants', 'caption' => '<code>primary</code>, <code>secondary</code>, <code>danger</code> and no flag.'])
+    @include('reference._heading', ['id' => 'variants', 'title' => 'Variants', 'caption' => '<code>primary</code>, <code>secondary</code>, <code>danger</code>, <code>success</code>, <code>warning</code>, <code>info</code> and no flag.'])
     @include('reference._example', ['view' => 'reference.ui.examples.button-variants'])
 </section>
 
 <section class="ui-section" id="outline">
-    @include('reference._heading', ['id' => 'outline', 'title' => 'Outline, subtle and link', 'caption' => 'Bootstrap variants and themes through <code>class</code>.'])
+    @include('reference._heading', ['id' => 'outline', 'title' => 'Outline, subtle and link', 'caption' => '<code>outline</code> with or without a theme, and subtle and link through <code>class</code>.'])
     @include('reference._example', ['view' => 'reference.ui.examples.button-outline'])
 </section>
 

@@ -189,7 +189,7 @@ Option | Description
 ------------- | -------------
 **label** | the button text, passed through the translator.
 **icon** | an [icon](/extending/icons) name or CSS classes, such as `ph ph-plus`.
-**type** | the style: `default`, `primary`, `secondary` or `danger`. Default: `default`.
+**type** | the style: `default`, `primary`, `secondary`, `danger`, `success`, `warning` or `info`. Default: `default`.
 **url** | makes the button a link to this address.
 **handler** | makes the button run this AJAX handler.
 **popup** | with `handler`, opens the handler's response in a popup. Default: `false`.

@@ -2,9 +2,11 @@
 
 namespace Tests\Feature\Reference\Ui;
 
+use App\Controllers\Reference\UiController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use Larajax\Ui\Facades\Ui;
+use Larajax\Ui\Widgets\Toolbar;
 use Tests\TestCase;
 
 class ButtonsTest extends TestCase
@@ -67,7 +69,12 @@ class ButtonsTest extends TestCase
         $html = $this->get(route('reference.ui.buttons'))->assertOk()->getContent();
 
         $this->assertStringContainsString('class="btn-solid theme-primary"', $html);
-        $this->assertStringContainsString('class="btn btn-outline theme-primary"', $html);
+        $this->assertStringContainsString('class="btn-solid theme-success"', $html);
+        $this->assertStringContainsString('class="btn-solid theme-warning"', $html);
+        $this->assertStringContainsString('class="btn-solid theme-info"', $html);
+        $this->assertStringContainsString('class="btn-outline theme-secondary"', $html);
+        $this->assertStringContainsString('class="btn-outline theme-primary"', $html);
+        $this->assertStringContainsString('class="btn btn-subtle theme-primary"', $html);
         $this->assertStringContainsString('class="btn-solid theme-primary btn-lg"', $html);
         $this->assertStringContainsString('<i class="ph ph-trash" aria-hidden="true"></i>', $html);
         $this->assertStringContainsString('href="'.route('reference.index').'"', $html);
@@ -105,6 +112,21 @@ class ButtonsTest extends TestCase
         $this->assertStringContainsString('class="btn-solid theme-primary"', (string) Ui::button(label: 'Save', primary: true));
         $this->assertStringContainsString('class="btn-solid theme-secondary"', (string) Ui::button(label: 'Back', secondary: true));
         $this->assertStringContainsString('class="btn-solid theme-danger"', (string) Ui::button(label: 'Delete', danger: true));
+        $this->assertStringContainsString('class="btn-solid theme-success"', (string) Ui::button(label: 'Approve', success: true));
+        $this->assertStringContainsString('class="btn-solid theme-warning"', (string) Ui::button(label: 'Pause', warning: true));
+        $this->assertStringContainsString('class="btn-solid theme-info"', (string) Ui::button(label: 'Details', info: true));
+
+        // The first flag in the order primary, secondary, danger, success, warning, info wins
+        $this->assertStringContainsString('class="btn-solid theme-danger"', (string) Ui::button(label: 'Both', danger: true, info: true));
+    }
+
+    public function test_the_outline_flag_takes_the_theme_beside_it_or_the_secondary_theme(): void
+    {
+        $this->assertStringContainsString('class="btn-outline theme-secondary"', (string) Ui::button(label: 'Back', outline: true));
+        $this->assertStringContainsString('class="btn-outline theme-danger"', (string) Ui::button(label: 'Remove', outline: true, danger: true));
+        $this->assertStringContainsString('class="btn-outline theme-success"', (string) Ui::ajaxButton(label: 'Approve', handler: 'onApprove', outline: true, success: true));
+        $this->assertStringContainsString('class="btn-outline theme-info"', (string) Ui::popupButton(label: 'Details', handler: 'onOpen', outline: true, info: true));
+        $this->assertStringContainsString('class="btn-outline theme-warning"', (string) Ui::dropdownButton(label: 'Actions', outline: true, warning: true));
     }
 
     public function test_a_button_without_a_flag_renders_the_base_class(): void
@@ -118,6 +140,23 @@ class ButtonsTest extends TestCase
         $this->assertStringContainsString('class="btn-solid theme-danger"', (string) Ui::ajaxButton(label: 'Delete', handler: 'onDelete', danger: true));
         $this->assertStringContainsString('class="btn-solid theme-primary"', (string) Ui::popupButton(label: 'Open', handler: 'onOpen', primary: true));
         $this->assertStringContainsString('class="btn-solid theme-secondary"', (string) Ui::dropdownButton(label: 'Actions', secondary: true));
+        $this->assertStringContainsString('class="btn-solid theme-danger"', (string) Ui::dropdownButton(label: 'Actions', danger: true));
+    }
+
+    public function test_toolbar_buttons_take_the_success_warning_and_info_types(): void
+    {
+        $toolbar = Toolbar::createIn(new UiController, [
+            'buttons' => [
+                'approve' => ['label' => 'Approve', 'type' => 'success'],
+                'pause' => ['label' => 'Pause', 'type' => 'warning'],
+                'details' => ['label' => 'Details', 'type' => 'info'],
+            ],
+        ]);
+
+        $html = (string) $toolbar->render();
+        $this->assertMatchesRegularExpression('/class="btn-solid theme-success"[^>]*>\s*Approve/', $html);
+        $this->assertMatchesRegularExpression('/class="btn-solid theme-warning"[^>]*>\s*Pause/', $html);
+        $this->assertMatchesRegularExpression('/class="btn-solid theme-info"[^>]*>\s*Details/', $html);
     }
 
     public function test_the_icon_button_renders_the_icon_link_class_not_the_square_icon_button(): void

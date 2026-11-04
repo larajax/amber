@@ -46,7 +46,7 @@ return [
                 'options' => [
                     'label' => 'List Options',
                     'icon' => 'ph-sliders',
-                    'covers' => ['control:rowlink', 'control:simplelist'],
+                    'covers' => ['control:rowlink'],
                 ],
                 'list-structure' => [
                     'label' => 'List Structure',

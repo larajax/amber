@@ -91,6 +91,11 @@ Argument | Description
 **icon** | icon classes, rendered before the label.
 **primary** | primary styling, `btn-solid theme-primary`. Default: `false`.
 **secondary** | secondary styling, `btn-solid theme-secondary`. Default: `false`.
+**danger** | danger styling, `btn-solid theme-danger`. Default: `false`.
+**success** | success styling, `btn-solid theme-success`. Default: `false`.
+**warning** | warning styling, `btn-solid theme-warning`. Default: `false`.
+**info** | info styling, `btn-solid theme-info`. Default: `false`.
+**outline** | the outline variant, `btn-outline`, in the theme of the flag beside it, or `theme-secondary` without one. Default: `false`.
 **caret** | shows the caret after the label. Default: `true`.
 
 Any other argument becomes an attribute on the toggle button, as on [buttons](/ui/buttons#attributes).
