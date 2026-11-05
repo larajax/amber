@@ -6,9 +6,9 @@ use Database\Factories\SampleFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Larajax\Ui\Classes\FormField;
+use Larajax\Ui\Element\ElementHolder;
 use October\Rain\Database\Model;
 use October\Rain\Database\Traits\Validation;
-use October\Rain\Element\ElementHolder;
 
 /**
  * Sample is the record the reference pages edit, holding a value for every field type, form widget and form option they demonstrate.
