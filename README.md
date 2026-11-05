@@ -52,17 +52,17 @@ php artisan serve
   the YAML or Blade that renders it, where you can change it and save it. The pages are listed in
   [`config/reference.php`](config/reference.php), and each one links to its page on
   [ui.larajax.org](https://ui.larajax.org).
-- **Showcase** is a small blog that puts the pieces together, with October Rain models (posts,
-  categories, tags, groups) and a plain Eloquent model (the authors) side by side. Each screen has a
-  guide that walks through its code:
+- **Showcase** is a small blog that puts the pieces together on plain Eloquent models: the posts,
+  categories, tags and groups, and Laravel's stock `User` model as the authors. Each screen has a guide
+  that walks through its code:
 
 | Screen | URL | What it shows | Guide |
 | --- | --- | --- | --- |
 | Posts | `/posts` | Toolbar with a quick post popup and bulk actions, Filter, List with a setup popup | [Building a List Page](https://ui.larajax.org/guides/lists) |
-| Create / edit post | `/posts/create`, `/posts/{id}/edit` | Form with tabs, relations to the category, author and tags, an image upload committed with the session key | [Building a Form Page](https://ui.larajax.org/guides/forms) |
-| Categories | `/categories` | ListStructure as a nested tree, reordered by dragging | [A tree of records](https://ui.larajax.org/guides/lists#list-structure) |
-| Authors | `/authors` | Filter, List with a post count, bulk delete, on a plain Eloquent model | [Models](https://ui.larajax.org/guides/models) |
-| Create / edit author | `/authors/create`, `/authors/{id}/edit` | Form on an Eloquent model, validated in the controller | [Validation in the controller](https://ui.larajax.org/guides/forms#validation-in-the-controller) |
+| Create / edit post | `/posts/create`, `/posts/{id}/edit` | Form with tabs, relations to the category, author and tags, an image upload held until the post saves | [Building a Form Page](https://ui.larajax.org/guides/forms) |
+| Categories | `/categories` | ListStructure as a tree, nested and reordered by dragging | [A tree of records](https://ui.larajax.org/guides/lists#list-structure) |
+| Authors | `/authors` | Filter, List with a post count, bulk delete, on Laravel's stock `User` model | [Models](https://ui.larajax.org/guides/models) |
+| Create / edit author | `/authors/create`, `/authors/{id}/edit` | Form with relations to the groups, validated in the controller | [Validation](https://ui.larajax.org/guides/forms#validation) |
 | Groups | `/groups` | List whose rows edit the group in a popup | [Editing rows in a popup](https://ui.larajax.org/guides/lists#popup-editing) |
 
 The widget definitions live in [`resources/ui`](resources/ui) and the controllers that build them in

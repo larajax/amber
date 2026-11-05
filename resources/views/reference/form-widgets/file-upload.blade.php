@@ -3,17 +3,17 @@
 @section('content')
 
 @include('reference._header', [
-    'intro' => 'The <code>fileupload</code> field uploads images and files to an attachOne or attachMany relation.',
+    'intro' => 'The <code>fileupload</code> field uploads images and files to a morphOne or morphMany relation on a file model.',
 ])
 
 <form data-request="onSaveExamples" data-request-flash>
     <section class="ui-section" id="image-single">
-        @include('reference._heading', ['id' => 'image-single', 'title' => 'Single image', 'caption' => '<code>mode: image</code> on an attachOne relation, with <code>imageWidth</code> and <code>imageHeight</code>.'])
+        @include('reference._heading', ['id' => 'image-single', 'title' => 'Single image', 'caption' => '<code>mode: image</code> on a morphOne relation, with <code>imageWidth</code> and <code>imageHeight</code>.'])
         @include('reference._form_example', ['name' => 'image-single'])
     </section>
 
     <section class="ui-section" id="image-multi">
-        @include('reference._heading', ['id' => 'image-multi', 'title' => 'Multiple images', 'caption' => 'An attachMany gallery with <code>maxFiles</code>, <code>fileTypes</code> and <code>thumbOptions</code>.'])
+        @include('reference._heading', ['id' => 'image-multi', 'title' => 'Multiple images', 'caption' => 'A morphMany gallery with <code>maxFiles</code>, <code>fileTypes</code> and <code>thumbOptions</code>.'])
         @include('reference._form_example', ['name' => 'image-multi'])
     </section>
 
@@ -23,7 +23,7 @@
     </section>
 
     <section class="ui-section" id="file-multi">
-        @include('reference._heading', ['id' => 'file-multi', 'title' => 'Multiple files', 'caption' => 'An attachMany file list with <code>maxFiles</code> and <code>size</code>.'])
+        @include('reference._heading', ['id' => 'file-multi', 'title' => 'Multiple files', 'caption' => 'A morphMany file list with <code>maxFiles</code> and <code>size</code>.'])
         @include('reference._form_example', ['name' => 'file-multi'])
     </section>
 

@@ -195,7 +195,7 @@ class BehaviourTest extends TestCase
         $this->assertSame('lighting@example.com', $sample->fresh()->email);
     }
 
-    public function test_required_markers_come_from_the_rules_or_the_required_property(): void
+    public function test_required_markers_come_from_the_required_property(): void
     {
         $validation = $this->exampleHtml($this->pageHtml(), 'validation');
 

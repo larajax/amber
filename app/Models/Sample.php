@@ -5,10 +5,14 @@ namespace App\Models;
 use Database\Factories\SampleFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Larajax\Ui\Classes\FormField;
 use Larajax\Ui\Element\ElementHolder;
-use October\Rain\Database\Model;
-use October\Rain\Database\Traits\Validation;
 
 /**
  * Sample is the record the reference pages edit, holding a value for every field type, form widget and form option they demonstrate.
@@ -17,134 +21,181 @@ class Sample extends Model
 {
     /** @use HasFactory<SampleFactory> */
     use HasFactory;
-    use Validation;
 
     /**
-     * @var array<int, string> guarded attributes, since the form saver sets each defined field explicitly.
+     * @var array<int, string> guarded attributes, so the reference pages fill every column their forms post, while a name that is no column is left out.
      */
     protected $guarded = ['id'];
 
-    // #region docs-validation-rules
+    // #region docs-casts
     /**
-     * @var array<string, mixed> rules for validation, which also mark the matching form fields as required.
-     */
-    public $rules = [
-        'name' => 'required',
-        'slug' => 'nullable|alpha_dash',
-        'email' => 'nullable|email',
-        'price' => 'nullable|numeric|min:0',
-        'quantity' => 'nullable|integer|between:0,999',
-        'discount_percent' => 'nullable|integer|between:1,90',
-    ];
-    // #endregion docs-validation-rules
-
-    // #region docs-jsonable
-    /**
-     * @var array<int, string> jsonable attributes stored as JSON for the structured fields.
-     */
-    protected $jsonable = [
-        'features',
-        'permissions',
-        'interests',
-        'tags',
-        'topics',
-        'content',
-        'steps',
-        'address',
-        'line_items',
-        'meta',
-        'shipping',
-        'contact',
-        'faqs',
-        'highlights',
-        'milestones',
-        'dimensions',
-        'sections',
-        'specs',
-        'itinerary',
-        'languages',
-        'deliveries',
-        'variants',
-        'stockists',
-        'parts',
-        'price_breaks',
-        'bundle_items',
-        'suppliers',
-        'components',
-        'stock_levels',
-        'reviews',
-        'spec_sheet',
-        'certifications',
-        'awards',
-        'seo',
-        'packaging',
-    ];
-    // #endregion docs-jsonable
-
-    // #region docs-belongs-to
-    /**
-     * @var array<string, mixed> belongsTo relations, the owner, reviewer, group and category picked by the relation widgets.
-     */
-    public $belongsTo = [
-        'user' => User::class,
-        'reviewer' => User::class,
-        'primary_group' => UserGroup::class,
-        'primary_category' => Category::class,
-    ];
-    // #endregion docs-belongs-to
-
-    // #region docs-belongs-to-many
-    /**
-     * @var array<string, mixed> belongsToMany relations, the groups, categories and labels picked by checkbox and tag lists.
-     */
-    public $belongsToMany = [
-        'groups' => [UserGroup::class, 'table' => 'sample_user_group'],
-        'categories' => [Category::class, 'table' => 'category_sample'],
-        'labels' => [Tag::class, 'table' => 'sample_tag'],
-    ];
-    // #endregion docs-belongs-to-many
-
-    // #region docs-has-many
-    /**
-     * @var array<string, mixed> hasMany relations, the links the repeater edits as records.
-     */
-    public $hasMany = [
-        'links' => [SampleLink::class, 'delete' => true],
-    ];
-    // #endregion docs-has-many
-
-    // #region docs-attachments
-    /**
-     * @var array<string, mixed> attachOne relations, where the contract is stored privately.
-     */
-    public $attachOne = [
-        'cover' => File::class,
-        'brochure' => File::class,
-        'contract' => [File::class, 'public' => false],
-    ];
-
-    /**
-     * @var array<string, mixed> attachMany relations
-     */
-    public $attachMany = [
-        'gallery' => File::class,
-        'attachments' => File::class,
-        'documents' => File::class,
-    ];
-    // #endregion docs-attachments
-
-    /**
-     * casts returns the attribute casts for the switch and checkbox columns.
+     * casts stores the structured fields as JSON through array casts, and reads the switch and checkbox columns as booleans.
      *
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
+            'features' => 'array',
+            'permissions' => 'array',
+            'interests' => 'array',
+            'tags' => 'array',
+            'topics' => 'array',
+            'content' => 'array',
+            'steps' => 'array',
+            'address' => 'array',
+            'line_items' => 'array',
+            'meta' => 'array',
+            'shipping' => 'array',
+            'contact' => 'array',
+            'faqs' => 'array',
+            'highlights' => 'array',
+            'milestones' => 'array',
+            'dimensions' => 'array',
+            'sections' => 'array',
+            'specs' => 'array',
+            'itinerary' => 'array',
+            'languages' => 'array',
+            'deliveries' => 'array',
+            'variants' => 'array',
+            'stockists' => 'array',
+            'parts' => 'array',
+            'price_breaks' => 'array',
+            'bundle_items' => 'array',
+            'suppliers' => 'array',
+            'components' => 'array',
+            'stock_levels' => 'array',
+            'reviews' => 'array',
+            'spec_sheet' => 'array',
+            'certifications' => 'array',
+            'awards' => 'array',
+            'seo' => 'array',
+            'packaging' => 'array',
             'is_featured' => 'boolean',
             'has_discount' => 'boolean',
         ];
     }
+    // #endregion docs-casts
+
+    // #region docs-belongs-to
+    /**
+     * user is the owner, picked by the relation dropdown and the record finder.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * reviewer is a second user, picked by the record finder.
+     */
+    public function reviewer(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * primary_group is the group picked by the relation dropdown and edited in place by the nested form.
+     */
+    public function primary_group(): BelongsTo
+    {
+        return $this->belongsTo(UserGroup::class);
+    }
+
+    /**
+     * primary_category is a category of the tree, picked by the tree dropdown and the record finder.
+     */
+    public function primary_category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+    // #endregion docs-belongs-to
+
+    // #region docs-belongs-to-many
+    /**
+     * groups are the groups picked by the checkbox list and the tag list.
+     */
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(UserGroup::class, 'sample_user_group');
+    }
+
+    /**
+     * categories are the categories picked by the tree checkbox list.
+     */
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'category_sample');
+    }
+
+    /**
+     * labels are the tags picked or created by the tag list.
+     */
+    public function labels(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'sample_tag');
+    }
+    // #endregion docs-belongs-to-many
+
+    // #region docs-has-many
+    /**
+     * links are the link records the repeater edits, in the order it saves them.
+     */
+    public function links(): HasMany
+    {
+        return $this->hasMany(SampleLink::class)->orderBy('sort_order');
+    }
+    // #endregion docs-has-many
+
+    // #region docs-attachments
+    /**
+     * cover is a single image, a file record named by its field.
+     */
+    public function cover(): MorphOne
+    {
+        return $this->morphOne(File::class, 'attachment')->withAttributes(['field' => 'cover']);
+    }
+
+    /**
+     * brochure is a single file.
+     */
+    public function brochure(): MorphOne
+    {
+        return $this->morphOne(File::class, 'attachment')->withAttributes(['field' => 'brochure']);
+    }
+
+    /**
+     * contract is a single file stored privately, since the relation makes its files with is_public turned off.
+     */
+    public function contract(): MorphOne
+    {
+        return $this->morphOne(File::class, 'attachment')->withAttributes(['field' => 'contract', 'is_public' => false]);
+    }
+
+    /**
+     * gallery holds many images, in their sort order.
+     */
+    public function gallery(): MorphMany
+    {
+        return $this->morphMany(File::class, 'attachment')->withAttributes(['field' => 'gallery'])->orderBy('sort_order');
+    }
+
+    /**
+     * attachments holds many files, in their sort order.
+     */
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(File::class, 'attachment')->withAttributes(['field' => 'attachments'])->orderBy('sort_order');
+    }
+
+    /**
+     * documents holds many files, in their sort order.
+     */
+    public function documents(): MorphMany
+    {
+        return $this->morphMany(File::class, 'attachment')->withAttributes(['field' => 'documents'])->orderBy('sort_order');
+    }
+    // #endregion docs-attachments
 
     // #region docs-filter-fields
     /**

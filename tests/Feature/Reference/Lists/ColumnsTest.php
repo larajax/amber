@@ -9,8 +9,10 @@ use App\Models\File;
 use App\Models\Post;
 use App\Models\Sample;
 use App\Models\Tag;
+use Illuminate\Database\Eloquent\Relations\MorphOneOrMany;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Larajax\Ui\Widgets\Lists;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -21,13 +23,24 @@ class ColumnsTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * tearDown removes the stored attachment files.
+     * setUp stores the attachment files on a fake public disk.
      */
-    protected function tearDown(): void
+    protected function setUp(): void
     {
-        File::all()->each->delete();
+        parent::setUp();
 
-        parent::tearDown();
+        Storage::fake('public');
+    }
+
+    /**
+     * attachFile stores an uploaded file on a file relation of a record.
+     */
+    protected function attachFile(MorphOneOrMany $relation, UploadedFile $upload): File
+    {
+        $file = $relation->make()->fromPost($upload);
+        $file->save();
+
+        return $file;
     }
 
     /**
@@ -195,12 +208,13 @@ class ColumnsTest extends TestCase
     public function test_image_columns_render_a_sized_thumbnail(): void
     {
         $post = Post::factory()->create();
-        $post->featured_image()->create(['data' => UploadedFile::fake()->image('cover.png', 200, 120)]);
+        $cover = $this->attachFile($post->featured_image(), UploadedFile::fake()->image('cover.png', 200, 120));
 
         $html = $this->listHtml('image');
 
+        // The demo file model has no resizer, so the thumbnail shows the image itself at the column size
         $this->assertStringContainsString('list-image-thumb', $html);
-        $this->assertStringContainsString('thumb_', $html);
+        $this->assertStringContainsString($cover->getThumb(96, 54), $html);
         $this->assertStringContainsString('width="96" height="54"', $html);
         $this->assertStringNotContainsString('is-default-size', $html);
     }
@@ -208,11 +222,11 @@ class ColumnsTest extends TestCase
     public function test_file_columns_show_icons_and_link_them_when_not_clickable(): void
     {
         $sample = Sample::factory()->create();
-        $sample->gallery()->create(['data' => UploadedFile::fake()->image('one.png', 80, 80)]);
-        $sample->brochure()->create(['data' => UploadedFile::fake()->create('brochure.pdf', 4, 'application/pdf')]);
-        $sample->attachments()->create(['data' => UploadedFile::fake()->create('notes.txt', 1, 'text/plain')]);
-        $sample->attachments()->create(['data' => UploadedFile::fake()->create('specs.csv', 1, 'text/csv')]);
-        $sample->attachments()->create(['data' => UploadedFile::fake()->create('extra.json', 1, 'application/json')]);
+        $this->attachFile($sample->gallery(), UploadedFile::fake()->image('one.png', 80, 80));
+        $this->attachFile($sample->brochure(), UploadedFile::fake()->create('brochure.pdf', 4, 'application/pdf'));
+        $this->attachFile($sample->attachments(), UploadedFile::fake()->create('notes.txt', 1, 'text/plain'));
+        $this->attachFile($sample->attachments(), UploadedFile::fake()->create('specs.csv', 1, 'text/csv'));
+        $this->attachFile($sample->attachments(), UploadedFile::fake()->create('extra.json', 1, 'application/json'));
 
         $html = $this->listHtml('files');
 

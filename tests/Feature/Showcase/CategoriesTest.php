@@ -104,7 +104,6 @@ class CategoriesTest extends TestCase
         $category = Category::where('slug', 'lists')->firstOrFail();
         $this->assertSame(route('categories.index'), $response->json('__ajax.redirect'));
         $this->assertSame($root->id, $category->parent_id);
-        $this->assertSame(1, $category->nest_depth);
     }
 
     public function test_on_store_validates_a_unique_slug(): void
@@ -131,7 +130,6 @@ class CategoriesTest extends TestCase
 
         $child->refresh();
         $this->assertNull($child->parent_id);
-        $this->assertSame(0, $child->nest_depth);
         $this->assertSame(1, $child->getChildCount());
     }
 

@@ -10,7 +10,6 @@
         "php": "^8.3",
         "larajax/larajax": "^3.0",
         "larajax/ui": "dev-main",
-        "october/rain": "5.x-dev",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0"
     },
@@ -74,6 +73,22 @@
         {
             "type": "vcs",
             "url": "https://github.com/larajax/larajax"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/octoberrain/contracts"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/octoberrain/exception"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/octoberrain/extension"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/octoberrain/html"
         }
     ],
     "extra": {

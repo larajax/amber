@@ -30,7 +30,7 @@ trait CategoryList
     }
 
     /**
-     * makeListWidget builds the nested set tree, where dragging a row nests or reorders it three levels deep at most.
+     * makeListWidget builds the category tree, where dragging a row nests or reorders it three levels deep at most.
      */
     protected function makeListWidget(): ListStructure
     {

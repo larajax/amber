@@ -21,8 +21,8 @@ posts the record's key, and saving the record sets the relation.
 `searchable` feed the search box. `nameFrom` and `descriptionFrom` name the columns that describe the
 picked record. `title` heads the popup, and `recordsPerPage` sets how many rows each page lists.
 
-On a plain Eloquent model the posted key needs mapping onto the relation when you save, as the
-[relation field](/form-widgets/relation#eloquent) shows.
+The posted key needs mapping onto the relation when you save, as the
+[relation field](/form-widgets/relation#saving) shows.
 
 ## Scopes {#scopes}
 
@@ -53,13 +53,13 @@ or `adaptive`.
 
 ## Trees and the stacked layout {#tree}
 
-When the related model is a tree, using the `NestedTree` or `SimpleTree` trait, the popup lists the
-records as a tree, with children under their parent and no reordering. `structure: false` turns the
+When the related model is a tree, implementing `TreeInterface`, the popup lists the records as a tree,
+with children under their parent and no reordering. `structure: false` turns the
 tree off, and `structure` also takes [list structure](/lists/list-structure) options.
 
 <<< @/../resources/ui/reference/form-widgets/record-finder/tree.yaml
 
-<<< @/../app/Models/Category.php#docs-nested-tree{php}
+<<< @/../app/Models/Category.php#docs-tree{php}
 
 `inlineOptions: false` stacks the picked record above the Replace and Clear buttons, instead of beside
 them, which leaves room for a longer description or a narrow column.

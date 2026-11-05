@@ -11,8 +11,9 @@ example.
 
 - PHP 8.2 or higher
 - Laravel 12 or higher
-- [october/rain](https://github.com/octobercms/library), which provides the database, validation and
-  HTML helpers the library builds on. Composer installs it with the library.
+- Four small October packages, `octoberrain/contracts`, `octoberrain/exception`,
+  `octoberrain/extension` and `octoberrain/html`, which provide the model contracts, exceptions,
+  extensible classes and HTML helpers the library builds on. Composer installs them with the library.
 - [Larajax](https://larajax.org), which provides the view component interface the widgets implement and
   the `window.jax` browser API their controls register with. Composer installs it with the library;
   follow its [installation guide](https://larajax.org/guide/installation.html) for its own assets and
@@ -21,8 +22,8 @@ example.
   use Bootstrap's data API. Load Bootstrap's stylesheet and JavaScript module in your layout before the
   library's assets (see [Bootstrap 6](#bootstrap-6) below).
 
-Larajax UI runs against a plain Laravel install, with no CMS. File uploads also need a file model and
-two database tables, described in [file attachments](/guides/models#file-attachments).
+Larajax UI runs against a plain Laravel install and plain Eloquent models, with no CMS. File uploads
+also need a file model and its database table, described in [file attachments](/guides/models#file-attachments).
 
 ### Bootstrap 6 {#bootstrap-6}
 
@@ -212,4 +213,4 @@ fields and scopes that convert, and the `useTimezone` option that turns it off, 
 
 - [Building a Form Page](/guides/forms): render, save and validate a form
 - [Building a List Page](/guides/lists): a list with a toolbar and a filter
-- [Models](/guides/models): drive the widgets from Rain or plain Eloquent models
+- [Models](/guides/models): the Eloquent relations, casts and contracts the widgets read

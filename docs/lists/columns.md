@@ -101,16 +101,16 @@ value, and a value short enough to show in full gets nothing added.
 
 ## Image {#image}
 
-`image` shows a thumbnail of an attached image, from an `attachOne` or `attachMany` relation, or of an
-image path or address held in the column. `width` and `height` size the thumbnail, 68 by 68 pixels by
-default, and `options` passes resize options to it, such as `mode: crop`. An attachment has no
-database column to sort by, so the column sets `sortable: false`.
+`image` shows a thumbnail of an image file, from a relation to a [file model](/guides/models#file-attachments),
+or of an image path or address held in the column. `width` and `height` size the thumbnail, 68 by 68
+pixels by default, and `options` passes options to the file model's `getThumb()`, such as `mode: crop`.
+A file relation has no database column to sort by, so the column sets `sortable: false`.
 
 <<< @/../resources/ui/reference/lists/columns/image.yaml
 
 ## Files {#files}
 
-On an `attachMany` relation, an `image` column shows up to `limit` thumbnails, 3 by default, as small
+On a relation to many files, an `image` column shows up to `limit` thumbnails, 3 by default, as small
 squares when no size is set. `file` shows an icon for the type of each attached file, with the file
 name as its tip, also up to `limit`.
 

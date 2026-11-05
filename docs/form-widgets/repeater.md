@@ -22,10 +22,10 @@ items save as a JSON array of objects, in their order on the page, and saving wi
 `null`. The fields of a new item render in the `create` context and those of a saved item in `update`,
 so `context` works on item fields as it does on any form.
 
-The attribute must hold JSON. On an October Rain model, list it in `$jsonable`, and on a plain Eloquent
-model give it an `array` cast. See [Models](/guides/models) for both.
+The attribute must hold JSON, so give it an `array` cast. See
+[JSON attributes](/guides/models#json-attributes).
 
-<<< @/../app/Models/Sample.php#docs-jsonable{php}
+<<< @/../app/Models/Sample.php#docs-casts{php}
 
 ## Item limits {#limits}
 
@@ -99,16 +99,14 @@ attributes. Here `links` is a `hasMany` relation to `SampleLink`.
 
 <<< @/../app/Models/Sample.php#docs-has-many{php}
 
-Adding an item creates an empty record at once, so its columns must accept empty values, and attaches
-it against the form's session key. Removing an item detaches it the same way. Save commits both and
-writes each item's fields, and when the related model uses the `Sortable` trait it also stores the item
-order. Pass the session key when you save, as [Building a Form Page](/guides/forms) shows. With
-`groups`, the group code is stored in the related model's `groupKeyFrom` column.
+Adding an item creates an empty record and saves it to the relation straight away, so its columns
+must accept empty values, and removing an item deletes its record straight away. Save writes each
+item's fields, and when the related model implements `SortableInterface` it also stores the item order,
+in the column its `getSortOrderColumn()` method names. The field saves the records itself and posts no
+value of its own, so the save code has nothing to map for it. With `groups`, the group code is stored in
+the related model's `groupKeyFrom` column.
 
 <<< @/../app/Models/SampleLink.php{php}
-
-A plain Eloquent model has no deferred binding, so there adding and removing items writes to the
-database straight away.
 
 ## Preview {#preview}
 

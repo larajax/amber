@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Comment;
-use App\Models\File;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
@@ -101,9 +100,6 @@ class PostsSeeder extends Seeder
 
         $categories = $this->seedCategories($this->categories);
 
-        // The database seeder mutes model events, so the nested set values are rebuilt from the parent ids
-        (new Category)->resetTreeNesting();
-
         $tags = collect($this->tags)->mapWithKeys(
             fn (string $name) => [$name => Tag::create(['name' => $name])]
         );
@@ -126,11 +122,13 @@ class PostsSeeder extends Seeder
         $created = [];
 
         foreach ($tree as $name => $children) {
-            $category = Category::create([
+            // The database seeder mutes model events, so each category takes the next sort order here
+            $category = Category::forceCreate([
                 'name' => $name,
                 'slug' => Str::slug($name),
                 'description' => fake()->sentence(),
-                'parent' => $parent?->id,
+                'parent_id' => $parent?->id,
+                'sort_order' => (int) Category::query()->max('sort_order') + 1,
             ]);
 
             $created[$name] = $category;
@@ -160,8 +158,8 @@ class PostsSeeder extends Seeder
         $post = Post::create([
             'title' => $title,
             'slug' => Str::slug($title),
-            'category' => $category->id,
-            'author' => $authors->isEmpty() ? null : $authors[$index % $authors->count()]->id,
+            'category_id' => $category->id,
+            'author_id' => $authors->isEmpty() ? null : $authors[$index % $authors->count()]->id,
             'excerpt' => fake()->sentence(18),
             'content' => '<h2>'.e($title).'</h2>'.PHP_EOL.'<p>'.fake()->paragraph(5).'</p>'.PHP_EOL.'<p>'.fake()->paragraph(4).'</p>',
             'notes' => $index % 3 === 0 ? '**To do:** '.fake()->sentence().PHP_EOL.PHP_EOL.'- '.fake()->sentence().PHP_EOL.'- '.fake()->sentence() : null,
@@ -219,7 +217,7 @@ class PostsSeeder extends Seeder
         imagedestroy($image);
 
         try {
-            $post->featured_image()->add((new File)->fromFile($tempPath, $post->slug.'.png'));
+            $post->featured_image()->make()->fromFile($tempPath, $post->slug.'.png')->save();
         }
         finally {
             @unlink($tempPath);

@@ -24,7 +24,7 @@ trait QuickPostForm
     }
 
     /**
-     * onCreateQuickPost creates a post from the popup form and refreshes the list.
+     * onCreateQuickPost creates a post from the popup form and refreshes the list, saving it the same way as the full post form.
      */
     public function onCreateQuickPost(): AjaxResponse
     {
@@ -32,7 +32,7 @@ trait QuickPostForm
 
         $this->formWidget = $this->makeQuickPostFormWidget($post);
 
-        $post->fill($this->formWidget->getSaveData())->save();
+        $this->saveForm($post);
 
         return ajax()
             ->flash('success', 'Post created.')

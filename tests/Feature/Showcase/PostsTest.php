@@ -10,6 +10,7 @@ use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
@@ -18,13 +19,13 @@ class PostsTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * tearDown removes the stored image files, which the rollback alone would leave behind.
+     * setUp stores the uploaded images on a fake public disk.
      */
-    protected function tearDown(): void
+    protected function setUp(): void
     {
-        File::all()->each->delete();
+        parent::setUp();
 
-        parent::tearDown();
+        Storage::fake('public');
     }
 
     /**
@@ -34,6 +35,11 @@ class PostsTest extends TestCase
      */
     protected function ajax(string $handler, array $data = [], string $url = 'posts'): TestResponse
     {
+        // Laravel keeps each route's controller across a test's requests, and the controller keeps its first AJAX handler
+        foreach (app('router')->getRoutes() as $route) {
+            $route->flushController();
+        }
+
         return $this->withHeaders([
             'X-AJAX-HANDLER' => $handler,
             'X-Requested-With' => 'XMLHttpRequest',
@@ -273,10 +279,12 @@ class PostsTest extends TestCase
         $category = Category::factory()->create();
 
         // The upload field holds the image against the form's session key until the post is saved
-        $image = new File;
-        $image->data = UploadedFile::fake()->image('cover.png', 40, 40);
-        $image->save();
-        (new Post)->featured_image()->add($image, 'session-1');
+        $this->ajax('formFeaturedImage::onUpload', [
+            'file_data' => UploadedFile::fake()->image('cover.png', 40, 40),
+            '_session_key' => 'session-1',
+        ], 'posts/create')->assertOk();
+
+        $this->assertNull(File::sole()->attachment_id);
 
         $this->ajax('onStore', [
             'title' => 'Illustrated Article',

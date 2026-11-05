@@ -3,9 +3,9 @@
 namespace App\Controllers\GroupsController;
 
 use App\Models\UserGroup;
+use Illuminate\Validation\ValidationException;
 use Larajax\Classes\AjaxResponse;
 use Larajax\Ui\Widgets\Form;
-use ValidationException;
 
 /**
  * GroupForm builds the group form and handles the popup, saving and deleting a group.
@@ -23,7 +23,7 @@ trait GroupForm
      */
     public function onLoadPopupForm(): string
     {
-        $group = UserGroup::findOrFail(input('form_record_id'));
+        $group = UserGroup::findOrFail(request()->input('form_record_id'));
 
         $this->formWidget = $this->makeFormWidget($group, 'update');
 
@@ -38,7 +38,7 @@ trait GroupForm
      */
     public function onSavePopupForm(): AjaxResponse
     {
-        $group = UserGroup::findOrFail(input('form_record_id'));
+        $group = UserGroup::findOrFail(request()->input('form_record_id'));
 
         $this->formWidget = $this->makeFormWidget($group, 'update');
 
@@ -110,7 +110,7 @@ trait GroupForm
         $data = $this->formWidget->getSaveData();
 
         if (empty($data['name'])) {
-            throw new ValidationException(['name' => 'The name field is required.']);
+            throw ValidationException::withMessages(['name' => 'The name field is required.']);
         }
 
         // The members field posts related user ids, synced once the group exists

@@ -3,12 +3,12 @@
 @section('content')
 
 @include('reference._header', [
-    'intro' => 'Fields react to each other in the browser and on the server, while the model validates them and supplies defaults.',
+    'intro' => 'Fields react to each other in the browser and on the server, while the controller validates them and the model supplies defaults.',
 ])
 
 <form data-request="onSaveExamples" data-request-flash>
     <section class="ui-section" id="validation">
-        @include('reference._heading', ['id' => 'validation', 'title' => 'Validation', 'caption' => 'The model\'s <code>$rules</code>, the <code>required</code> property and <code>autoFocus</code>.'])
+        @include('reference._heading', ['id' => 'validation', 'title' => 'Validation', 'caption' => 'Rules the controller checks on save, the <code>required</code> property and <code>autoFocus</code>.'])
         @include('reference._form_example', ['name' => 'validation'])
     </section>
 

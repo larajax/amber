@@ -5,9 +5,9 @@ namespace App\Controllers\AuthorsController;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Larajax\Classes\AjaxResponse;
 use Larajax\Ui\Widgets\Form;
-use ValidationException;
 
 /**
  * AuthorForm builds the author form and handles saving and deleting an author.

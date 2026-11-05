@@ -55,13 +55,14 @@ the relation's own constraints filter the options.
 
 ## Tree dropdown {#tree}
 
-When the related model is a tree, using the `NestedTree` or `SimpleTree` trait, the options follow the
-tree, and each child is indented under its parent. When `scope` or `conditions` leaves out a parent, its
-children still show.
+When the related model is a tree, implementing `TreeInterface`, the options follow the tree the model's
+`getNested()` scope returns, and each child is indented under its parent. The categories leave out a
+category whose parent the options query skipped, such as the categories below the one being edited.
+[Trees](/guides/models#trees) covers the interface.
 
 <<< @/../resources/ui/reference/form-widgets/relation/tree.yaml
 
-<<< @/../app/Models/Category.php#docs-nested-tree{php}
+<<< @/../app/Models/Category.php#docs-tree{php}
 
 ## Tree checkbox list {#tree-checkbox-list}
 
@@ -112,25 +113,23 @@ saved data.
 
 <<< @/../resources/ui/reference/form-widgets/relation/disabled.yaml
 
-## Saving on a plain Eloquent model {#eloquent}
+## Saving the relation {#saving}
 
-The field reads its options and the current selection from Eloquent relation methods as well as from
-Rain's relation arrays, so the Showcase's `User` model, a stock Eloquent model, declares its relations
-the usual Laravel way:
+The field reads its options and the current selection from the model's relation methods, declared the
+usual Laravel way, like the Showcase's `User` model:
 
 <<< @/../app/Models/User.php#docs-eloquent-relations{php}
 
-Saving is where the two differ. An October Rain model takes the posted keys as attribute values and sets
-its relations when it saves. A plain Eloquent model needs the relations set in your save handler, as the
-Showcase author form does: it maps the dropdown onto the foreign key, and syncs the checkbox list once
-the record is saved.
+The field posts the picked key, or the checked keys, under the relation's name, which Eloquent does not
+take as an attribute. Set the relation in your save handler, as the Showcase author form does: it maps
+the dropdown onto the foreign key, and syncs the checkbox list once the record is saved.
 
 <<< @/../app/Controllers/AuthorsController/AuthorForm.php#docs-eloquent-relation-save{php}
 
 An empty selection posts an empty string, while a missing key means the field was not on the form, so
 sync only when the key is present. The same goes for a [tag list](/form-widgets/tag-list#relation) or a
-[record finder](/form-widgets/record-finder) on a relation. [Models](/guides/models) covers the rest of
-what plain Eloquent supports.
+[record finder](/form-widgets/record-finder) on a relation. [Saving relations](/guides/models#saving-relations)
+shows the loop the Reference pages use to save every relation of the sample.
 
 ## Options
 

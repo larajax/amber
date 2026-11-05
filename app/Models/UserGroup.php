@@ -5,10 +5,11 @@ namespace App\Models;
 use Database\Factories\UserGroupFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use October\Rain\Database\Model;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * UserGroup is a group the authors belong to, an October Rain model with its relations declared in the array style.
+ * UserGroup is a group the authors belong to, picked by the relation fields of the author form and the reference pages.
  */
 #[Fillable(['name', 'code', 'description'])]
 class UserGroup extends Model
@@ -17,11 +18,12 @@ class UserGroup extends Model
     use HasFactory;
 
     /**
-     * @var array belongsToMany relations, the users belonging to this group (secondary members)
+     * users are the members holding this group as one of their secondary groups.
      */
-    public $belongsToMany = [
-        'users' => [User::class, 'table' => 'user_user_group'],
-    ];
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_user_group');
+    }
 
     // #region docs-without-guest
     /**

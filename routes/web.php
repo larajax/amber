@@ -20,10 +20,10 @@ Route::get('/', fn () => redirect('reference'));
 | Posts
 |--------------------------------------------------------------------------
 |
-| The blog posts on October Rain models: a filtered list with bulk actions
-| and a quick post popup, and a form that links each post to its category,
-| tags and author. These routes are declared with match(['get','post']) so
-| the same URL serves the page (GET) and the widget AJAX handlers (POST).
+| The blog posts: a filtered list with bulk actions and a quick post
+| popup, and a form that links each post to its category, tags and
+| author. These routes are declared with match(['get','post']) so the
+| same URL serves the page (GET) and the widget AJAX handlers (POST).
 |
 */
 // #region docs-post-routes
@@ -37,8 +37,8 @@ Route::match(['get', 'post'], '/posts/{post}/edit', [PostsController::class, 'ed
 | Categories
 |--------------------------------------------------------------------------
 |
-| Post categories on a nested set tree, shown by the ListStructure widget as
-| an expandable tree that can be nested and reordered by dragging.
+| Post categories as a tree, where each category names its parent, shown by
+| the ListStructure widget so it can be nested and reordered by dragging.
 |
 */
 Route::match(['get', 'post'], '/categories', [CategoriesController::class, 'index'])->name('categories.index');

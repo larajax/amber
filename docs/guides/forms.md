@@ -55,7 +55,7 @@ The view wraps the widget in a `<form>` element:
   `data-request-flash` shows the message the handler returns.
 - `{{ $formWidget }}` renders the fields. Widgets are `Htmlable`, so Blade prints their markup as it is.
 - The hidden `_session_key` input posts the form's session key back with the save, which attaches the
-  uploaded image, see [Deferred uploads](#deferred-uploads).
+  uploaded image, see [Held uploads](#held-uploads).
 - [`Ui::ajaxButton()`](/ui/buttons#ajax-button) renders the submit button, with Ctrl+S (or Cmd+S) as
   its [hotkey](/ui/buttons#hotkeys).
 
@@ -81,71 +81,64 @@ the way the page did and calls `saveForm()`.
 - form widgets turn their input into the value to save, such as a tag list into an array, and a number
   field returns a number or `null`.
 
-`fill($data)` then sets the values on the post. The post is a Rain model whose fillable attributes
-include its relation names, so `category` and `author` associate their records and `tags` syncs its
-list as part of the save. A plain Eloquent model maps those values itself, as the
-[Authors form below](#validation-in-the-controller) and the [models guide](/guides/models) show.
+`saveForm()` then checks the values, see [Validation](#validation), and saves them onto the post. The
+relation fields post under their relation names, which Eloquent does not take as attributes, so the
+handler maps them first: `category` and `author` onto their foreign keys, and `tags` into a list of keys
+it syncs once the post exists. `fill($data)` sets the rest, and the post's fillable attributes keep
+anything else out, such as the read-only `_permalink`. The [models guide](/guides/models#saving-relations)
+covers each relation type.
 
-### Deferred uploads and the session key {#deferred-uploads}
+### Held uploads and the session key {#held-uploads}
 
-The featured image is a [file upload](/form-widgets/file-upload) field. On a new post there is no record
-to attach the image to yet, so the upload is held as a deferred binding against the form's session key.
-The view posts that key back in `_session_key`, `getSessionKey()` reads it, and the second argument of a
-Rain model's `save(null, $sessionKey)` commits the bindings held against it, which attaches the image.
-Without the key, the image stays pending and the post saves without it.
+The featured image is a [file upload](/form-widgets/file-upload) field. An upload is held until the post
+saves: the field stores the image with no post to belong to, and keeps it in the session against the
+form's session key. The view posts that key back in `_session_key`, so the form built to save has the
+same key, and when the post's Eloquent `saved` event fires the field attaches the image. Without the
+key, the image stays unattached and the post saves without it.
+
+The field listens for the record the form was built with, so build the form and save the record with
+the same instance, as `onStore()` does with its new `Post`.
 
 To share one session key between several forms on a page, pass it to each with the `sessionKey`
 option.
 
 ### Saving related records {#perform-save-on-model}
 
-`fill()` and `save()` are enough while the form's values are attributes and relation names. When a form
-edits a related record in place, such as a [nested form](/form-widgets/nested-form) bound to a singular
-relation, or `pivot` data, save it with `performSaveOnModel($model, $data, $sessionKey)` from the
-`Larajax\Ui\Traits\FormModelSaver` trait. It fills the model, and every singular relation that the data
-holds an array for, then saves them all in one database transaction. A validation error from a related
-record is prefixed with the relation's name, so it belongs to the right field.
+A field can edit a related record in place, through a name such as `primary_group[name]` that reaches
+into a singular relation. The `Larajax\Ui\Traits\FormModelSaver` trait saves such data:
+`performSaveOnModel($model, $data)` fills the model, associates each `belongsTo` posted as a key, fills
+the related record of every singular relation the data holds an array for, then saves them all in one
+database transaction. Other relations are only held in memory, so sync a `belongsToMany` yourself once
+it returns. The method is protected: add `use \Larajax\Ui\Traits\FormModelSaver;` to your controller, or
+to its base class, and call `$this->performSaveOnModel(...)`.
 
-Fields whose names start with an underscore, like the post form's read-only `_permalink`, hold values
-for the form only. `performSaveOnModel()` sets them on the model for the save and drops them before
-the record is written, so they never reach the database. `getSaveData()` and a plain `fill()` keep them:
-the post saves with `fill()`, and `_permalink` stays out of the database only because it is not one of
-the post's fillable attributes. When you save with `fill()`, leave such fields out of the fillable list
-or remove them from the data first.
-
-The method is protected: add `use \Larajax\Ui\Traits\FormModelSaver;` to your controller, or to its
-base class, and call `$this->performSaveOnModel(...)`. The demo app's Reference pages save their
-examples this way, in `onSaveExamples()` of
-[`ReferenceControllerBase`](https://github.com/larajax/amber/blob/main/app/Classes/ReferenceControllerBase.php).
+Fields whose names start with an underscore, like the post form's `_permalink`, hold values for the
+form only. `getSaveData()` keeps them, and `fill()` leaves them out only while they are not fillable
+attributes, so keep such fields out of the fillable list or remove them from the data first.
 
 ## Validation {#validation}
 
 Fields do not validate anything themselves: the `required` property only marks the label. Check the
-values on the model or in the controller, and throw a `ValidationException` when they fail.
+values in the controller before saving them, and throw a `ValidationException` when they fail. Larajax
+returns its messages to the browser by field name and marks those fields as invalid.
 
-### On a Rain model {#validation-on-the-model}
+The post form validates in `saveForm()` with Laravel's validator, where the slug must be unique apart
+from the post being edited:
 
-The post is an October Rain model with the `Validation` trait, so its rules sit on the model and run on
-every save:
+<<< @/../app/Controllers/PostsController/PostForm.php#docs-rules{php}
 
-<<< @/../app/Models/Post.php#docs-rules{php}
+`validate()` throws the `ValidationException` when a rule fails, which stops the save. The form cannot
+read these rules, so the YAML sets `required: true` on the title, slug and category to show the marker.
+The [validation example](/forms/behaviour#validation) shows it live.
 
-A failed rule throws a `ValidationException` from `save()`, which stops the save and comes back to the
-browser as the error message. A field whose rule includes `required` also gets the required marker
-without setting `required` in the YAML. The [validation example](/forms/behaviour#validation) shows it
-live.
-
-### In the controller {#validation-in-the-controller}
-
-The authors are a stock Eloquent `User` model, which has no rules of its own, so the Authors form
-validates in its `saveForm()` with Laravel's validator before it saves:
+The Authors form validates the same way, with a unique email that ignores the author being edited and a
+password only required for a new author:
 
 <<< @/../app/Controllers/AuthorsController/AuthorForm.php#docs-save-form{php}
 
-The rules can depend on the record, here a unique email that ignores the author being edited and a
-password only required for a new author. Passing the failed validator to `ValidationException` returns
-its messages by field name. For a single check, throw it with an array of messages instead, as the
-group form does with `new ValidationException(['name' => 'The name field is required.'])`.
+Passing the failed validator to `ValidationException` returns its messages by field name. For a single
+check, throw it with an array of messages instead, as the group form does with
+`ValidationException::withMessages(['name' => 'The name field is required.'])`.
 
 ## Contexts {#contexts}
 
@@ -173,7 +166,7 @@ Option | Description
 **secondaryTabs** | the secondary tabs and their fields.
 **context** | the form context, such as `create` or `update`. Fields that belong to another context are left out.
 **data** | an object or array to read the field values from instead of the model.
-**sessionKey** | the session key for deferred bindings, such as uploads on a record that is not saved yet. Default: the posted `_session_key`, or a new key.
+**sessionKey** | the session key that uploads are held against until the record saves. Default: the posted `_session_key`, or a new key.
 **arrayName** | wraps the input names in an array, such as `Post[title]`, and reads the posted values from it.
 **isNested** | marks a form rendered inside a field of another form. Default: `false`.
 **previewMode** | renders the values as read-only text, with no inputs. Default: `false`.
@@ -220,5 +213,5 @@ field's options on, such as `->displayAs('textarea')->span('left')`.
 ## Next steps
 
 - [Building a List Page](/guides/lists): the posts list that links to this form, and the quick post popup
-- [Models](/guides/models): Rain and Eloquent models side by side
+- [Models](/guides/models): the relations, casts and contracts the widgets read
 - [Field Types](/forms/fields): every field a form can hold

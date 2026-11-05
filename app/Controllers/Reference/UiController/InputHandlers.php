@@ -14,7 +14,7 @@ trait InputHandlers
      */
     public function onGetCountryOptions(): array
     {
-        $term = mb_strtolower(trim((string) input('term')));
+        $term = mb_strtolower(trim((string) request()->input('term')));
 
         $results = collect($this->getCountryNames())
             ->filter(fn (string $name) => $term === '' || str_contains(mb_strtolower($name), $term))

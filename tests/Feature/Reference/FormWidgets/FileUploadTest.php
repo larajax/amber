@@ -17,16 +17,13 @@ class FileUploadTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * setUp stores uploads on a fake default disk, since Rain writes through the default disk only when it is not named local, and binds the temp folder Rain makes those thumbnails in.
+     * setUp stores the uploads on a fake public disk.
      */
     protected function setUp(): void
     {
         parent::setUp();
 
-        config(['filesystems.default' => 'uploads']);
-        Storage::fake('uploads');
-
-        $this->app->instance('path.temp', storage_path('framework/testing/temp'));
+        Storage::fake('public');
     }
 
     /**
@@ -34,6 +31,12 @@ class FileUploadTest extends TestCase
      */
     protected function ajax(string $handler, array $data = []): TestResponse
     {
+        // Laravel keeps the route's controller across a test's requests, and the controller keeps its first AJAX handler
+        app('router')->getRoutes()->getByName('reference.form-widgets.file-upload')->flushController();
+
+        // Upload fields register with the request's held uploads, which a test's requests would otherwise share
+        app()->forgetInstance(\Larajax\Ui\Classes\HeldUploads::class);
+
         return $this->withHeaders([
             'X-AJAX-HANDLER' => $handler,
             'X-Requested-With' => 'XMLHttpRequest',
@@ -41,20 +44,20 @@ class FileUploadTest extends TestCase
     }
 
     /**
-     * attachFiles stores files on a sample relation directly, as images when the name ends in png, held against a session key when one is given.
+     * attachFiles stores files on a sample relation directly, as images when the name ends in png.
      *
      * @param  array<int, string>  $names
      * @return array<int, int>
      */
-    protected function attachFiles(Sample $sample, string $relation, array $names, ?string $sessionKey = null): array
+    protected function attachFiles(Sample $sample, string $relation, array $names): array
     {
-        return array_map(function (string $name) use ($sample, $relation, $sessionKey) {
-            $file = new File;
-            $file->data = str_ends_with($name, '.png')
+        return array_map(function (string $name) use ($sample, $relation) {
+            $upload = str_ends_with($name, '.png')
                 ? UploadedFile::fake()->image($name, 40, 40)
                 : UploadedFile::fake()->create($name, 1);
+
+            $file = $sample->{$relation}()->make()->fromPost($upload);
             $file->save();
-            $sample->{$relation}()->add($file, $sessionKey);
 
             return $file->id;
         }, $names);
@@ -124,23 +127,45 @@ class FileUploadTest extends TestCase
 
         $this->assertSame(0, $sample->gallery()->count());
 
-        $photo = $sample->gallery()->withDeferred('session-1')->first();
+        // The upload is stored for the gallery field, without a record to belong to until the page saves
+        $photo = File::sole();
         $this->assertSame('photo.png', $photo->file_name);
+        $this->assertSame('gallery', $photo->field);
+        $this->assertNull($photo->attachment_id);
+        $this->assertTrue($photo->is_public);
         $this->assertSame($photo->id, $response->json('id'));
         $this->assertStringContainsString('/storage/uploads/public/', $response->json('path'));
-        $this->assertStringEndsWith("/thumb_{$photo->id}_120_120_crop.png", $response->json('thumb'));
-        Storage::disk('uploads')->assertExists($photo->getDiskPath());
-        Storage::disk('uploads')->assertExists($photo->getDiskPath("thumb_{$photo->id}_120_120_crop.png"));
+        $this->assertSame($response->json('path'), $response->json('thumb'));
+        Storage::disk('public')->assertExists($photo->getDiskPath());
     }
 
     public function test_saving_the_page_commits_the_uploads_held_against_the_session_key(): void
     {
         $sample = Sample::factory()->create();
-        $this->attachFiles($sample, 'gallery', ['photo.png'], 'session-1');
+
+        $this->ajax('exampleImageMultiGallery::onUpload', [
+            'file_data' => UploadedFile::fake()->image('photo.png', 40, 40),
+            '_session_key' => 'session-1',
+        ])->assertOk();
 
         $this->ajax('onSaveExamples', ['_session_key' => 'session-1'])->assertOk();
 
         $this->assertSame(['photo.png'], $sample->fresh()->gallery->pluck('file_name')->all());
+    }
+
+    public function test_uploads_held_against_another_session_key_stay_unattached(): void
+    {
+        $sample = Sample::factory()->create();
+
+        $this->ajax('exampleImageMultiGallery::onUpload', [
+            'file_data' => UploadedFile::fake()->image('photo.png', 40, 40),
+            '_session_key' => 'session-1',
+        ])->assertOk();
+
+        $this->ajax('onSaveExamples', ['_session_key' => 'session-2'])->assertOk();
+
+        $this->assertSame(0, $sample->gallery()->count());
+        $this->assertNull(File::sole()->attachment_id);
     }
 
     public function test_attach_on_upload_attaches_the_file_straight_away(): void
@@ -158,7 +183,7 @@ class FileUploadTest extends TestCase
 
     public function test_a_private_upload_is_stored_in_the_protected_folder(): void
     {
-        $sample = Sample::factory()->create();
+        Sample::factory()->create();
 
         $response = $this->ajax('examplePrivateContract::onUpload', [
             'file_data' => UploadedFile::fake()->create('contract.pdf', 1, 'application/pdf'),
@@ -166,12 +191,12 @@ class FileUploadTest extends TestCase
         ]);
         $this->assertSame(200, $response->status(), $response->getContent());
 
-        $contract = $sample->contract()->withDeferred('session-1')->first();
+        $contract = File::sole();
         $this->assertSame('contract.pdf', $contract->file_name);
-        $this->assertFalse((bool) $contract->is_public);
+        $this->assertFalse($contract->is_public);
         $this->assertStringContainsString('/storage/uploads/protected/', $response->json('path'));
-        $this->assertStringStartsWith('protected/', $contract->getDiskPath());
-        Storage::disk('uploads')->assertExists($contract->getDiskPath());
+        $this->assertStringStartsWith('uploads/protected/', $contract->getDiskPath());
+        Storage::disk('public')->assertExists($contract->getDiskPath());
     }
 
     public function test_images_refuse_other_file_types(): void
@@ -216,19 +241,38 @@ class FileUploadTest extends TestCase
 
         $this->ajax('exampleFileMultiAttachments::onRemoveAttachment', ['file_id' => $first, '_session_key' => 'session-1'])->assertOk();
 
-        $this->assertSame(['notes.txt'], $sample->attachments()->withDeferred('session-1')->pluck('file_name')->all());
         $this->assertSame(['agenda.txt', 'notes.txt'], $sample->fresh()->attachments->pluck('file_name')->all());
+        $this->assertNotNull(File::find($first));
     }
 
     public function test_saving_the_page_commits_a_removed_attachment(): void
     {
         $sample = Sample::factory()->create();
         [$first] = $this->attachFiles($sample, 'attachments', ['agenda.txt', 'notes.txt']);
-        $sample->attachments()->remove(File::find($first), 'session-1');
+        $agenda = File::find($first);
 
+        $this->ajax('exampleFileMultiAttachments::onRemoveAttachment', ['file_id' => $first, '_session_key' => 'session-1'])->assertOk();
         $this->ajax('onSaveExamples', ['_session_key' => 'session-1'])->assertOk();
 
         $this->assertSame(['notes.txt'], $sample->fresh()->attachments->pluck('file_name')->all());
+        $this->assertNull(File::find($first));
+        Storage::disk('public')->assertMissing($agenda->getDiskPath());
+    }
+
+    public function test_removing_a_held_upload_deletes_it_straight_away(): void
+    {
+        Sample::factory()->create();
+
+        $fileId = $this->ajax('exampleImageMultiGallery::onUpload', [
+            'file_data' => UploadedFile::fake()->image('photo.png', 40, 40),
+            '_session_key' => 'session-1',
+        ])->assertOk()->json('id');
+        $diskPath = File::findOrFail($fileId)->getDiskPath();
+
+        $this->ajax('exampleImageMultiGallery::onRemoveAttachment', ['file_id' => $fileId, '_session_key' => 'session-1'])->assertOk();
+
+        $this->assertSame(0, File::count());
+        Storage::disk('public')->assertMissing($diskPath);
     }
 
     public function test_preview_mode_refuses_uploads(): void

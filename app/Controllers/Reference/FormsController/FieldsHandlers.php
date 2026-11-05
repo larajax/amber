@@ -14,7 +14,7 @@ trait FieldsHandlers
      */
     public function onSearchTimezones(): array
     {
-        $term = strtolower(trim((string) input('term')));
+        $term = strtolower(trim((string) request()->input('term')));
 
         $results = collect(timezone_identifiers_list())
             ->filter(fn (string $zone) => $term === '' || str_contains(strtolower($zone), $term))

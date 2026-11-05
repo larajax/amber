@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\File;
 use App\Models\Sample;
 use Illuminate\Database\Seeder;
 
@@ -75,7 +74,7 @@ class ReferenceListsSeeder extends Seeder
         file_put_contents($tempPath, $contents);
 
         try {
-            $sample->{$relation}()->add((new File)->fromFile($tempPath, $fileName));
+            $sample->{$relation}()->make()->fromFile($tempPath, $fileName)->save();
         }
         finally {
             @unlink($tempPath);

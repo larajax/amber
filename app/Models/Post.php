@@ -5,11 +5,14 @@ namespace App\Models;
 use Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use October\Rain\Database\Model;
-use October\Rain\Database\Traits\Validation;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
- * Post is a blog post that drives the posts list, filter, toolbar and form demos, with its relations declared in the array style the widgets inspect.
+ * Post is a blog post that drives the posts list, filter, toolbar and form demos, with its relations declared as methods the widgets inspect.
  */
 #[Fillable([
     'title',
@@ -25,89 +28,99 @@ use October\Rain\Database\Traits\Validation;
     'views',
     'review_on',
     'share_time',
-    'category',
-    'author',
-    'tags',
+    'category_id',
+    'author_id',
 ])]
 class Post extends Model
 {
     /** @use HasFactory<PostFactory> */
     use HasFactory;
-    use Validation;
-
-    // #region docs-rules
-    /**
-     * @var array<string, mixed> rules for validation, where the category rule reads the relation value.
-     */
-    public $rules = [
-        'title' => 'required',
-        'slug' => ['required', 'regex:/^[a-z0-9-]+$/', 'unique:posts'],
-        'category' => 'required',
-        'status' => 'in:draft,review,approved,archived',
-        'views' => 'nullable|integer|min:0',
-    ];
-    // #endregion docs-rules
 
     /**
      * @var array<string, mixed> attributes holds the defaults of a new post.
      */
-    public $attributes = [
+    protected $attributes = [
         'status' => 'draft',
         'published' => false,
         'views' => 0,
     ];
 
-    // #region docs-jsonable
+    // #region docs-relations
     /**
-     * @var array<int, string> jsonable attributes stored as JSON, filled by the keywords tag list in array mode.
+     * category is the category the post is filed in.
      */
-    protected $jsonable = ['keywords'];
-    // #endregion docs-jsonable
-
-    // #region docs-rain-relations
-    /**
-     * @var array<string, mixed> belongsTo relations, where the author is a plain Eloquent model.
-     */
-    public $belongsTo = [
-        'category' => Category::class,
-        'author' => User::class,
-    ];
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
 
     /**
-     * @var array<string, mixed> belongsToMany relations
+     * author is the user who wrote the post.
      */
-    public $belongsToMany = [
-        'tags' => [Tag::class, 'table' => 'post_tag'],
-    ];
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'author_id');
+    }
 
     /**
-     * @var array<string, mixed> hasMany relations, counted by the comments list column.
+     * tags label the post, picked or created by the tag list.
      */
-    public $hasMany = [
-        'comments' => [Comment::class, 'delete' => true],
-    ];
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'post_tag');
+    }
 
     /**
-     * @var array<string, mixed> attachOne relations
+     * comments are the reader comments, counted by the comments list column.
      */
-    public $attachOne = [
-        'featured_image' => File::class,
-    ];
-    // #endregion docs-rain-relations
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
 
     /**
-     * casts returns the attributes that should be cast.
+     * featured_image is the image uploaded for the post, a file record named by its field.
+     */
+    public function featured_image(): MorphOne
+    {
+        return $this->morphOne(File::class, 'attachment')->withAttributes(['field' => 'featured_image']);
+    }
+    // #endregion docs-relations
+
+    // #region docs-casts
+    /**
+     * casts returns the attributes that should be cast, where the array cast stores the keywords tag list as JSON.
      *
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
+            'keywords' => 'array',
             'published' => 'boolean',
             'published_at' => 'datetime',
             'review_on' => 'date',
             'views' => 'integer',
         ];
+    }
+    // #endregion docs-casts
+
+    /**
+     * booted stamps the publish date of a post published without one, keeps an emptied view count at zero and deletes the featured image with the post.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (Post $post) {
+            if ($post->published && !$post->published_at) {
+                $post->published_at = $post->freshTimestamp();
+            }
+
+            $post->views ??= 0;
+        });
+
+        static::deleting(function (Post $post) {
+            $post->featured_image?->delete();
+        });
     }
 
     /**
@@ -150,20 +163,6 @@ class Post extends Model
     public function getStatusOptions(): array
     {
         return static::listStatusOptions();
-    }
-
-    /**
-     * beforeSave stamps the publish date of a post published without one and keeps an emptied view count at zero.
-     */
-    public function beforeSave(): void
-    {
-        if ($this->published && !$this->published_at) {
-            $this->published_at = $this->freshTimestamp();
-        }
-
-        if ($this->views === null) {
-            $this->views = 0;
-        }
     }
 
     /**

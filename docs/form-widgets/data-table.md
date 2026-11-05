@@ -6,8 +6,7 @@ demo: /reference/form-widgets/data-table
 
 The `datatable` field edits a list of rows in a spreadsheet grid, built on Hotsheet (the library's own
 data grid). It saves the rows as a JSON list of objects keyed by column name, so cast the attribute with
-`'array'` or `'json'` (or list it in `$jsonable` on an October Rain model). Rows with no values are left
-out when saving.
+`'array'` or `'json'`. Rows with no values are left out when saving.
 
 ## Columns {#default}
 

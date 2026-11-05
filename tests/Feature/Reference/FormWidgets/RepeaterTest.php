@@ -210,25 +210,25 @@ class RepeaterTest extends TestCase
         $this->assertStringContainsString('data-repeater-index="'.$link->id.'"', $html);
     }
 
-    public function test_adding_a_related_item_creates_a_record_held_against_the_session_key(): void
+    public function test_adding_a_related_item_creates_a_record_on_the_sample(): void
     {
         $sample = Sample::factory()->create();
 
         $response = $this->ajax('exampleRelationLinks::onAddItem', ['_session_key' => 'session-1']);
 
+        // A plain Eloquent hasMany relation saves the new item to the sample straight away
         $response->assertOk();
         $link = SampleLink::sole();
-        $this->assertNull($link->sample_id);
-        $this->assertSame([$link->id], $sample->links()->withDeferred('session-1')->pluck('id')->all());
+        $this->assertSame($sample->id, $link->sample_id);
+        $this->assertSame([$link->id], $sample->links()->pluck('id')->all());
         $this->assertStringContainsString("links[{$link->id}][title]", $response->getContent());
     }
 
-    public function test_saving_commits_the_related_items_with_their_order(): void
+    public function test_saving_stores_the_related_items_with_their_order(): void
     {
         $sample = Sample::factory()->create();
         $first = SampleLink::factory()->for($sample)->create(['title' => 'First']);
-        $second = SampleLink::factory()->create(['sample_id' => null, 'title' => 'Second']);
-        $sample->links()->add($second, 'session-1');
+        $second = SampleLink::factory()->for($sample)->create(['title' => 'Second']);
 
         $this->ajax('onSaveExamples', [
             '_session_key' => 'session-1',

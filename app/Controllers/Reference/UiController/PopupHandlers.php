@@ -15,7 +15,7 @@ trait PopupHandlers
      */
     public function onLoadDialog(): string
     {
-        $size = (string) input('size');
+        $size = (string) request()->input('size');
 
         if (ctype_digit($size)) {
             $title = "{$size}px dialog";

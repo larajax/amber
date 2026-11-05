@@ -15,11 +15,10 @@ and the field saves them together as one object, such as `{"recipient": "...", "
 
 <<< @/../resources/ui/reference/form-widgets/nested-form/default.yaml
 
-The attribute must hold JSON. On an October Rain model, list it in `$jsonable`, as the `Sample` model
-does for every structured field on these pages. On a plain Eloquent model, give it an `array` cast. See
-[Models](/guides/models) for both.
+The attribute must hold JSON, so give it an `array` cast, as the `Sample` model does for every
+structured field on these pages. See [JSON attributes](/guides/models#json-attributes).
 
-<<< @/../app/Models/Sample.php#docs-jsonable{php}
+<<< @/../app/Models/Sample.php#docs-casts{php}
 
 ## Tabs {#tabs}
 
@@ -39,17 +38,17 @@ panel, so the inner fields line up with the rest of the form while still saving 
 
 When the field name is a relation on the model, the inner form edits the related record instead of a
 JSON value. Here `primary_group` is a `belongsTo` relation, so the inner fields are the group's own
-`name` and `code`. Saving the form saves the group as well, and a validation error on the group shows
-on its inner field.
+`name` and `code`. Saving the form saves the group as well: the field saves the related record itself
+and posts no value of its own, so the save code has nothing to map for it.
 
 <<< @/../resources/ui/reference/form-widgets/nested-form/relation.yaml
 
 <<< @/../app/Models/Sample.php#docs-belongs-to{php}
 
 The field suits a singular relation, such as `belongsTo` or `hasOne`. While the relation is empty, the
-inner fields start blank. `defaultCreate: true` instead creates a record and attaches it as the form
-loads (against the session key on a Rain model), so the inner form always edits a record the relation
-holds.
+inner fields start blank. `defaultCreate: true` instead creates a record as the form loads and links it
+to the relation, so the inner form always edits a record the relation holds. A `hasOne` stores the link
+straight away, and a `belongsTo` stores it when the record saves.
 
 ## Preview {#preview}
 

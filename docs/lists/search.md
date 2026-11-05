@@ -27,8 +27,8 @@ looks in its columns marked `searchable`, including columns read from a relation
 the term must match, each in any of those columns. A new term takes the list back to its first page.
 The box grows while it has focus, and its clear button empties it.
 
-Searching works on plain Eloquent models as well as October Rain models, since Larajax UI adds the
-`searchWhere()` query methods it uses to Eloquent as builder macros.
+Searching works on any Eloquent model, since Larajax UI adds the `searchWhere()` query methods it uses
+to Eloquent as builder macros.
 
 <<< @/../app/Controllers/Reference/ListsController/SearchExamples.php#docs-bound{php}
 

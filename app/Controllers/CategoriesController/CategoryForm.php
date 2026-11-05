@@ -3,9 +3,11 @@
 namespace App\Controllers\CategoriesController;
 
 use App\Models\Category;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Larajax\Classes\AjaxResponse;
 use Larajax\Ui\Widgets\Form;
-use ValidationException;
 
 /**
  * CategoryForm builds the category form and handles saving and deleting a category.
@@ -22,9 +24,11 @@ trait CategoryForm
      */
     public function onStore(): AjaxResponse
     {
-        $this->formWidget = $this->makeFormWidget(new Category, 'create');
+        $category = new Category;
 
-        $this->saveForm(new Category);
+        $this->formWidget = $this->makeFormWidget($category, 'create');
+
+        $this->saveForm($category);
 
         return ajax()
             ->flash('success', 'Category created.')
@@ -49,7 +53,7 @@ trait CategoryForm
     public function onDestroy(Category $category): AjaxResponse
     {
         if ($category->hasPostsInTree()) {
-            throw new ValidationException(['name' => 'Move or delete the posts in this category and the categories below it first.']);
+            throw ValidationException::withMessages(['name' => 'Move or delete the posts in this category and the categories below it first.']);
         }
 
         $category->delete();
@@ -72,17 +76,28 @@ trait CategoryForm
     }
 
     /**
-     * saveForm fills the category from the form data and saves it, where the model rules validate it and a parent change moves it in the tree.
+     * saveForm validates the form data and saves it onto the category, where the parent field posts under its relation name and maps onto the parent_id column.
      */
     protected function saveForm(Category $category): void
     {
         $data = $this->formWidget->getSaveData();
 
+        Validator::make($data, [
+            'name' => 'required',
+            'slug' => ['required', 'regex:/^[a-z0-9-]+$/', Rule::unique('categories')->ignore($category->id)],
+        ])->validate();
+
         // Nesting a category below one of its own descendants would break the tree
-        $parentId = $data['parent'] ?? null;
+        $parentId = ($data['parent'] ?? null) ?: null;
         if ($parentId && $category->exists && $category->getAllChildren()->contains('id', (int) $parentId)) {
-            throw new ValidationException(['parent' => 'A category cannot be nested below one of its own subcategories.']);
+            throw ValidationException::withMessages(['parent' => 'A category cannot be nested below one of its own subcategories.']);
         }
+
+        if (array_key_exists('parent', $data)) {
+            $data['parent_id'] = $parentId;
+        }
+
+        unset($data['parent']);
 
         $category->fill($data)->save();
     }

@@ -8,9 +8,9 @@ a list's columns in YAML, bind a model, and the widget renders working markup wi
 (sorting, pagination, search, validation, uploads) wired up.
 
 There is no JavaScript framework and no build step: the browser assets are plain CSS and ES modules,
-styled on top of Bootstrap 6. The widgets run on plain Eloquent models as well as October Rain models,
-and every widget is a [Larajax](https://larajax.org) view component, so its AJAX handlers reach the
-controller that built it without any routing of your own.
+styled on top of Bootstrap 6. The widgets run on plain Eloquent models, and every widget is a
+[Larajax](https://larajax.org) view component, so its AJAX handlers reach the controller that built it
+without any routing of your own.
 
 ## Run the demo app {#run-the-demo-app}
 
@@ -71,8 +71,7 @@ The widgets are [Larajax](https://larajax.org) view components: see
 documentation for Larajax itself.
 
 Configuration is declarative but never a cage: each widget also takes plain PHP arrays, can be extended
-by subclassing or by binding to its events, and reads any model, including plain Eloquent models (see
-[Models](/guides/models)).
+by subclassing or by binding to its events, and reads any Eloquent model (see [Models](/guides/models)).
 
 ## The docs {#the-docs}
 

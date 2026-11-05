@@ -2,6 +2,7 @@ fields:
     name:
         label: Name
         span: left
+        required: true
 
     email:
         label: Email

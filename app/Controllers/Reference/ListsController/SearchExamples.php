@@ -171,7 +171,7 @@ trait SearchExamples
      */
     public function onSearchCities(): AjaxResponse
     {
-        $term = trim((string) input('city_search'));
+        $term = trim((string) request()->input('city_search'));
 
         $cities = collect($this->getCityNames())
             ->filter(fn (string $city) => $term === '' || str_contains(mb_strtolower($city), mb_strtolower($term)))

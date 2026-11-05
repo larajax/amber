@@ -2,14 +2,15 @@ fields:
     name:
         label: Name
         span: left
+        required: true
         autoFocus: true
-        comment: Required by the model's rules. Clear it and save to see the error.
+        comment: Required by the rules the controller checks on save. Clear it and save to see the error.
 
     email:
         label: Email
         type: email
         span: right
-        comment: Checked by the model's email rule.
+        comment: Checked by the controller's email rule.
 
     code:
         label: Code

@@ -10,4 +10,4 @@ fields:
         thumbOptions:
             mode: crop
             extension: auto
-        comment: Up to six images, cropped into square thumbnails.
+        comment: Up to six images, shown as square thumbnails.

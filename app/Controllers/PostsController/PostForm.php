@@ -3,6 +3,8 @@
 namespace App\Controllers\PostsController;
 
 use App\Models\Post;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Larajax\Classes\AjaxResponse;
 use Larajax\Ui\Widgets\Form;
 
@@ -21,9 +23,9 @@ trait PostForm
      */
     public function onStore(): AjaxResponse
     {
-        $this->formWidget = $this->makeFormWidget(new Post, 'create');
-
         $post = new Post;
+
+        $this->formWidget = $this->makeFormWidget($post, 'create');
 
         $this->saveForm($post);
 
@@ -69,13 +71,40 @@ trait PostForm
     }
 
     /**
-     * saveForm fills the post from the form data and saves it, where the model rules validate it and the session key attaches the uploaded image.
+     * saveForm validates the form data and saves it onto the post, which also attaches an image the upload field holds until the post saves.
      */
     protected function saveForm(Post $post): void
     {
         $data = $this->formWidget->getSaveData();
 
-        // The relation names fill through the model, so the category and author associate and the tags sync on save
-        $post->fill($data)->save(null, $this->formWidget->getSessionKey());
+        // #region docs-rules
+        Validator::make($data, [
+            'title' => 'required',
+            'slug' => ['required', 'regex:/^[a-z0-9-]+$/', Rule::unique('posts')->ignore($post->id)],
+            'category' => 'required',
+            'status' => 'in:draft,review,approved,archived',
+            'views' => 'nullable|integer|min:0',
+        ])->validate();
+        // #endregion docs-rules
+
+        // #region docs-relation-save
+        // The belongs-to fields post under their relation names, so they map onto the foreign keys
+        foreach (['category' => 'category_id', 'author' => 'author_id'] as $relationName => $foreignKey) {
+            if (array_key_exists($relationName, $data)) {
+                $data[$foreignKey] = $data[$relationName] ?: null;
+            }
+        }
+
+        // The tag ids sync once the post exists, and an empty selection clears them
+        $hasTags = array_key_exists('tags', $data);
+        $tags = ($data['tags'] ?? null) ?: [];
+        unset($data['category'], $data['author'], $data['tags']);
+
+        $post->fill($data)->save();
+
+        if ($hasTags) {
+            $post->tags()->sync($tags);
+        }
+        // #endregion docs-relation-save
     }
 }

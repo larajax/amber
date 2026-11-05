@@ -257,7 +257,7 @@ trait OptionsExamples
      */
     public function onShowCheckedPosts(): AjaxResponse
     {
-        $titles = Post::whereIn('id', (array) input('checked'))->orderBy('title')->pluck('title');
+        $titles = Post::whereIn('id', (array) request()->input('checked'))->orderBy('title')->pluck('title');
 
         return ajax()->flash('info', $titles->count().' '.Str::plural('post', $titles->count()).' checked: '.$titles->implode(', ').'.');
     }
@@ -270,7 +270,7 @@ trait OptionsExamples
     public function onLoadPopupForm(): string
     {
         return view('reference.lists.options._category_popup', [
-            'category' => Category::with('posts')->findOrFail(input('form_record_id')),
+            'category' => Category::with('posts')->findOrFail(request()->input('form_record_id')),
         ])->render();
     }
     // #endregion docs-popup-form

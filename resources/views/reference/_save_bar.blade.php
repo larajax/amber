@@ -1,4 +1,4 @@
-{{-- Ends a form page: the shared session key commits deferred uploads, and Save posts every example form on the page --}}
+{{-- Ends a form page: the shared session key attaches the uploads held until the save, and Save posts every example form on the page --}}
 <input type="hidden" name="_session_key" value="{{ $sessionKey }}" />
 
 <div class="reference-save-bar">

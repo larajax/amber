@@ -22,7 +22,7 @@ class SampleSeeder extends Seeder
     {
         $users = User::query()->orderBy('id')->limit(5)->pluck('id')->all();
         $groups = UserGroup::query()->where('code', '<>', 'guest')->orderBy('id')->pluck('id')->all();
-        $categories = Category::query()->orderBy('nest_left')->pluck('id')->all();
+        $categories = Category::query()->orderBy('sort_order')->pluck('id')->all();
         $tags = Tag::query()->orderBy('id')->pluck('id')->all();
 
         foreach ($this->samples() as $index => $attributes) {
@@ -43,8 +43,9 @@ class SampleSeeder extends Seeder
             $sample->categories()->sync(array_slice($categories, $index * 3 + 1, 2));
             $sample->labels()->sync(array_slice($tags, $index * 2, 2));
 
-            foreach ($links as $link) {
-                $sample->links()->create($link);
+            // The database seeder mutes model events, so each link takes its sort order here
+            foreach (array_values($links) as $position => $link) {
+                $sample->links()->forceCreate([...$link, 'sort_order' => $position + 1]);
             }
         }
     }

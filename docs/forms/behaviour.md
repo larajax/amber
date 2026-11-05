@@ -6,24 +6,24 @@ demo: /reference/forms/behaviour
 
 Fields can react to each other in two places. In the browser, triggers show, hide or fill a field as
 another one changes, and presets copy text from one field to another. On the server, the form refreshes
-fields from the posted values, calls change handlers and lets the model adjust its fields. The model also
+fields from the posted values, calls change handlers and lets the model adjust its fields. The controller
 validates the saved values, and the form context and defaults decide what a new record starts with.
 
 ## Validation {#validation}
 
-The model's `$rules` check the values on save, and a failed rule stops the save and shows its message.
-The form passes each field's label to the model as the attribute name, so a message reads "The Name field
-is required" rather than using the column name. A field the rules require gets the required marker
-beside its label. The `required` property sets the marker yourself, without checking anything, and
-`required: false` removes a marker the rules would add. `autoFocus` puts the cursor in the name field
-when the page loads.
+The Reference pages check the sample against these rules every time they save, and a failed rule stops
+the save and shows its message beside the field. Each page posts only the fields of its own examples, so
+the rules run against the stored values with the posted ones on top.
+
+<<< @/../app/Classes/ReferenceControllerBase.php#docs-validation-rules{php}
+
+The rules live in the controller, so the form cannot read them, and the `required` property sets the
+marker beside a label without checking anything. Here the name has both, while the code only shows the
+marker, so an empty code still saves. `autoFocus` puts the cursor in the name field when the page loads.
 
 <<< @/../resources/ui/reference/forms/behaviour/validation.yaml
 
-<<< @/../app/Models/Sample.php#docs-validation-rules{php}
-
-The required marker is read from models that use the `Validation` trait. [Models](/guides/models) covers
-validating other models.
+[Validation](/guides/forms#validation) shows how a form page validates in its save handler.
 
 ## Dependent fields {#dependent-fields}
 
@@ -39,8 +39,9 @@ change, so a chain of dependent fields updates in turn, as the city does here.
 
 The model's `filterFields` method runs on every render and refresh, with the form's fields and its
 context (`refresh` during a refresh), and can change any property of any field. Here it hides the
-postcode until a country is picked, and relabels it for the United States. A model can do the same from a
-`model.form.filterFields` event listener.
+postcode until a country is picked, and relabels it for the United States. A model that uses the
+`October\Rain\Extension\Emitter` trait can do the same from a `model.form.filterFields` listener bound
+with `bindEvent()`.
 
 <<< @/../app/Models/Sample.php#docs-filter-fields{php}
 
@@ -116,8 +117,9 @@ redraws just those fields, as the Recalculate button in this partial does for it
 ## Nested names {#nested-names}
 
 A name like `seo[title]` reads and saves a key inside an array attribute, here the `seo` column, which
-the model lists in `$jsonable` so it is stored as JSON. When the first part names a singular relation,
-such as `user[name]`, the value is saved on the related record instead.
+has an `array` cast so it is stored as JSON. When the first part names a singular relation, such as
+`user[name]`, the value belongs to the related record instead, which
+[`performSaveOnModel()`](/guides/forms#perform-save-on-model) fills and saves.
 
 <<< @/../resources/ui/reference/forms/behaviour/nested-names.yaml
 

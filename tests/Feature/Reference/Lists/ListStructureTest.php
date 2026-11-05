@@ -150,7 +150,6 @@ class ListStructureTest extends TestCase
         ])->assertOk();
 
         $this->assertSame($other->id, $grandchild->refresh()->parent_id);
-        $this->assertSame(1, $grandchild->nest_depth);
         $this->assertSame(0, $child->refresh()->getChildCount());
     }
 
@@ -159,12 +158,14 @@ class ListStructureTest extends TestCase
         $first = Category::factory()->create(['name' => 'First', 'slug' => 'first']);
         $second = Category::factory()->create(['name' => 'Second', 'slug' => 'second']);
 
+        // A sortable model gets the ids of every row in their new order
         $this->ajax('treeList::onReorder', [
             'record_id' => $first->id,
             'previous_id' => $second->id,
+            'sort_orders' => [$second->id, $first->id],
         ])->assertOk();
 
-        $this->assertSame(['Second', 'First'], Category::pluck('name')->all());
+        $this->assertSame(['Second', 'First'], Category::orderBy('sort_order')->pluck('name')->all());
     }
 
     public function test_on_toggle_tree_node_collapses_a_branch(): void

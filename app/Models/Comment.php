@@ -5,8 +5,9 @@ namespace App\Models;
 use Database\Factories\CommentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use October\Rain\Database\Model;
-use October\Rain\Database\Traits\SoftDelete;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Comment is a reader comment on a post, counted by the posts list and soft deleted for the trashed filter.
@@ -16,12 +17,13 @@ class Comment extends Model
 {
     /** @use HasFactory<CommentFactory> */
     use HasFactory;
-    use SoftDelete;
+    use SoftDeletes;
 
     /**
-     * @var array<string, mixed> belongsTo relations
+     * post is the post the comment was left on.
      */
-    public $belongsTo = [
-        'post' => Post::class,
-    ];
+    public function post(): BelongsTo
+    {
+        return $this->belongsTo(Post::class);
+    }
 }

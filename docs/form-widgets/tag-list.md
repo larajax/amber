@@ -15,15 +15,14 @@ them as a JSON array, as one joined string, or as related records.
 - a JSON attribute uses `array` mode, which saves a JSON array;
 - anything else uses `string` mode, which saves one string with the tags joined by `separator`.
 
-A JSON attribute is listed in `$jsonable` on an October Rain model, or has an `array` cast on a plain
-Eloquent model. See [Models](/guides/models) for both.
+A JSON attribute has an `array` cast. See [JSON attributes](/guides/models#json-attributes).
 
-<<< @/../app/Models/Sample.php#docs-jsonable{php}
+<<< @/../app/Models/Sample.php#docs-casts{php}
 
 ## Array mode {#array}
 
-`mode: array` saves the tags as a JSON array, such as `["red", "blue"]`. `tags` is already in
-`$jsonable`, so the mode would follow anyway, and setting it makes the choice explicit. `customTags`
+`mode: array` saves the tags as a JSON array, such as `["red", "blue"]`. `tags` already has an
+`array` cast, so the mode would follow anyway, and setting it makes the choice explicit. `customTags`
 lets the user type new tags, each ended with Enter or the separator, a comma by default. `placeholder`
 fills the field while it is empty.
 
@@ -61,14 +60,14 @@ the related model, named by its `nameFrom` column, and saving syncs the relation
 
 <<< @/../app/Models/Sample.php#docs-belongs-to-many{php}
 
-On a plain Eloquent model, sync the relation in your save handler, as the
-[relation field](/form-widgets/relation#eloquent) shows.
+The field posts the keys of the picked records under the relation's name, so sync the relation in your
+save handler, as the [relation field](/form-widgets/relation#saving) shows.
 
 ## Creating related records {#relation-custom}
 
 With `customTags` in relation mode, the field matches tags to records by their `nameFrom` column, and a
-typed tag that matches no record creates one, setting only that column. The new record is saved
-without validation, so the related model's other columns must accept empty values. When the field also
+typed tag that matches no record creates one, setting only that column, so the related model's other
+columns must accept empty values. When the field also
 sets `options`, it cannot create records, and saving a tag that matches none of the options throws an
 error.
 

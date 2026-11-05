@@ -59,7 +59,7 @@
 </section>
 
 <section class="ui-section" id="files">
-    @include('reference._heading', ['id' => 'files', 'title' => 'Files', 'caption' => '<code>image</code> and <code>file</code> on attachMany relations, with <code>limit</code>.'])
+    @include('reference._heading', ['id' => 'files', 'title' => 'Files', 'caption' => '<code>image</code> and <code>file</code> on file relations, with <code>limit</code>.'])
     @include('reference._widget_example', ['widgets' => [$lists['files']], 'sources' => ['resources/ui/reference/lists/columns/files.yaml']])
 </section>
 

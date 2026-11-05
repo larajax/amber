@@ -7,7 +7,7 @@
 </h1>
 <p class="fg-3 mb-7">
     The people who write the posts. Click an author to edit their account and groups, or check rows to delete them; their posts stay, without an author.
-    <a href="{{ config('reference.docs_url') }}/guides/models#what-works-on-eloquent" target="_blank" rel="noopener">
+    <a href="{{ config('reference.docs_url') }}/guides/models#saving-relations" target="_blank" rel="noopener">
         How this page is built
     </a>
 </p>

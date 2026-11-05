@@ -30,7 +30,7 @@ trait ButtonHandlers
      */
     public function onArchiveItem(): AjaxResponse
     {
-        $itemNumber = (int) input('item');
+        $itemNumber = (int) request()->input('item');
 
         return ajax()->flash('success', "Item {$itemNumber} archived.");
     }

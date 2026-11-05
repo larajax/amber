@@ -14,7 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use October\Contracts\Database\SortableInterface;
 
 /**
- * User is a stock Eloquent model, shown in the showcase as the blog's authors beside the Rain models of the posts, whose SortableInterface contract lets a reorderable list store a manual order.
+ * User is a stock Eloquent model, shown in the showcase as the blog's authors, whose SortableInterface contract lets a reorderable list store a manual order.
  */
 #[Fillable([
     'name',
@@ -108,7 +108,7 @@ class User extends Authenticatable implements SortableInterface
     // #endregion docs-name-group-options
 
     /**
-     * The posts this user wrote, a has-many relation to a Rain model counted by the authors list.
+     * The posts this user wrote, a has-many relation counted by the authors list.
      */
     public function posts(): HasMany
     {

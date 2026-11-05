@@ -146,7 +146,7 @@ trait PostList
      */
     protected function getCheckedPostIds(): array
     {
-        return array_map('intval', array_filter((array) input('checked'), 'is_numeric'));
+        return array_map('intval', array_filter((array) request()->input('checked'), 'is_numeric'));
     }
     // #endregion docs-bulk-actions
 }

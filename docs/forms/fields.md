@@ -59,10 +59,9 @@ without it only for English locales.
 
 ## Password {#password}
 
-`password` always renders empty, so a stored password is never sent back to the browser. When the form
-saves through the `FormModelSaver` trait (see [Building a Form Page](/guides/forms)), a field name that
-starts with an underscore is set on the model but removed before the record is written. This example
-uses one, so its value is never stored.
+`password` always renders empty, so a stored password is never sent back to the browser. A field name
+that starts with an underscore holds a value for the form only, and the Reference pages' save leaves it
+out, since it is no column of the sample. This example uses one, so its value is never stored.
 
 <<< @/../resources/ui/reference/forms/fields/password.yaml
 
@@ -195,8 +194,8 @@ the model to read it as `true` or `false`.
 ## Checkbox list {#checkboxlist}
 
 `checkboxlist` ticks any number of options and saves the ticked keys as an array, so the attribute needs
-a JSON column with an `array` cast, or a place in `$jsonable`. An empty value is posted when nothing is
-ticked, so clearing the list is saved too. `quickselect` adds Select All and Select None buttons, and a
+a JSON column with an `array` cast. An empty value is posted when nothing is ticked, so clearing the
+list is saved too. `quickselect` adds Select All and Select None buttons, and a
 click with Shift held sets every box between it and the previous click to the same state.
 `inlineOptions` puts the options on one line.
 

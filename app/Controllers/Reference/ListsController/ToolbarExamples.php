@@ -150,7 +150,7 @@ trait ToolbarExamples
      */
     public function onCountCheckedPosts(): AjaxResponse
     {
-        $posts = Post::whereIn('id', (array) input('checked'))->get();
+        $posts = Post::whereIn('id', (array) request()->input('checked'))->get();
 
         return ajax()->flash('info', $posts->count().' '.Str::plural('post', $posts->count()).' checked, with '.number_format($posts->sum('views')).' views.');
     }
@@ -160,7 +160,7 @@ trait ToolbarExamples
      */
     public function onDeleteCheckedPosts(): AjaxResponse
     {
-        $count = Post::whereIn('id', (array) input('checked'))->count();
+        $count = Post::whereIn('id', (array) request()->input('checked'))->count();
 
         return ajax()->flash('warning', $count.' '.Str::plural('post', $count).' would be deleted. The reference pages leave the posts in place.');
     }
@@ -172,7 +172,7 @@ trait ToolbarExamples
      */
     public function onToolbarButton(): AjaxResponse
     {
-        return ajax()->flash('info', 'The '.Str::headline((string) input('button')).' button was clicked.');
+        return ajax()->flash('info', 'The '.Str::headline((string) request()->input('button')).' button was clicked.');
     }
     // #endregion docs-toolbar-button
 }

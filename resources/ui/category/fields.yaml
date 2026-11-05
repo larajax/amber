@@ -7,10 +7,12 @@ fields:
     name:
         label: Name
         span: left
+        required: true
 
     slug:
         label: Slug
         span: right
+        required: true
         comment: Filled in from the name while you type.
         preset:
             field: name

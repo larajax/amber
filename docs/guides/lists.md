@@ -162,12 +162,12 @@ and its own popup markup, posting to `onCreateQuickPost`:
 
 The form is built with the alias `quickPostForm`, so its inputs and handlers stay apart from those of
 the main post form, which uses the default alias `form`. Creating the post returns the refreshed list,
-so the new post appears behind the closing popup. The post model's rules validate the quick form the
-same way as the full one, see [validation](/guides/forms#validation).
+so the new post appears behind the closing popup. The handler saves through the same `saveForm()` as
+the full post form, so the quick form is validated the same way, see [validation](/guides/forms#validation).
 
 ## A tree of records {#list-structure}
 
-The Categories page shows the categories as a nested tree. `ListStructure` is a list that adds the tree
+The Categories page shows the categories as a tree. `ListStructure` is a list that adds the tree
 and drag-and-drop reordering, and it takes every list option as well as its own:
 
 <<< @/../app/Controllers/CategoriesController/CategoryList.php
@@ -175,8 +175,8 @@ and drag-and-drop reordering, and it takes every list option as well as its own:
 `showTree` draws the tree with arrows to open and close each branch, `treeExpanded` starts with every
 branch open, and `maxDepth` stops a category from nesting more than three levels deep. With
 `dragRow: false`, a row moves by its handle only, so a click on the row still opens the category. The
-category is an October Rain model with the `NestedTree` trait, which stores the tree and the order, and
-dragging a row moves the category in place. Searching shows the matches as a flat list until the search
+category model implements `TreeInterface` and `SortableInterface`, keeping its parent in `parent_id` and
+its place in `sort_order`, and dragging a row stores both, see [trees](/guides/models#trees). Searching shows the matches as a flat list until the search
 is cleared, and so does sorting by a column. The [list structure](/lists/list-structure) page shows a
 browsing tree and a flat reorderable list as well.
 

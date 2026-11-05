@@ -81,7 +81,7 @@ trait AuthorList
      */
     public function onDelete(): AjaxResponse
     {
-        $authors = User::whereIn('id', (array) input('checked'))->get();
+        $authors = User::whereIn('id', (array) request()->input('checked'))->get();
 
         $authors->each->delete();
 

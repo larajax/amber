@@ -21,6 +21,6 @@ trait DropdownHandlers
             'delete' => 'Deleted the project.',
         ];
 
-        return ajax()->flash('success', $actions[input('action')] ?? 'Nothing to do.');
+        return ajax()->flash('success', $actions[request()->input('action')] ?? 'Nothing to do.');
     }
 }
