@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use Larajax\Ui\Widgets\Filter;
-use SystemException;
+use October\Rain\Exception\SystemException;
 use Tests\TestCase;
 
 class ScopesTest extends TestCase
