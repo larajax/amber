@@ -119,11 +119,25 @@ class MarkdownEditorTest extends TestCase
         $this->assertStringContainsString('data-safe-mode="true"', $html);
         $this->assertStringContainsString('placeholder="Describe the group"', $html);
         $this->assertStringContainsString('data-size="large"', $html);
-        $this->assertStringContainsString('data-toolbar-buttons="[{&quot;name&quot;:&quot;bold&quot;,&quot;title&quot;:&quot;Bold&quot;', $html);
+        $this->assertStringContainsString('data-toolbar-buttons="[{&quot;name&quot;:&quot;bold&quot;,&quot;icon&quot;:', $html);
         $this->assertStringContainsString('&lt;i class=\&quot;ph ph-text-b\&quot;', $html);
+        $this->assertStringContainsString('&quot;iconClass&quot;:&quot;ph ph-text-b&quot;', $html);
         $this->assertStringContainsString('&quot;name&quot;:&quot;code&quot;', $html);
         $this->assertStringContainsString('&quot;|&quot;', $html);
         $this->assertStringContainsString('>**Bold** &amp; &lt;b&gt;tag&lt;/b&gt;</textarea>', $html);
+        $this->assertStringNotContainsString('data-external-toolbar', $html);
+        $this->assertStringNotContainsString('data-language', $html);
+    }
+
+    public function test_the_field_names_its_language_and_can_leave_the_toolbar_to_the_page(): void
+    {
+        $sample = Sample::factory()->create();
+
+        app()->setLocale('fr');
+        $this->assertStringContainsString('data-language="fr"', (string) $this->makeMarkdownForm($sample)->render());
+
+        $external = (string) $this->makeMarkdownForm($sample, ['externalToolbar' => true])->render();
+        $this->assertStringContainsString('data-external-toolbar="true"', $external);
     }
 
     public function test_side_by_side_starts_in_split_mode(): void

@@ -68,6 +68,33 @@ is made with `previewMode` on.
 
 <<< @/../resources/ui/reference/form-widgets/markdown-editor/preview.yaml
 
+## Page hooks and a toolbar of your own {#page-hooks}
+
+The shared `markdownEditor` object holds hooks for every Markdown editor on the page. A page script
+imports it with `import { markdownEditor } from '/vendor/larajax/ui/index.js'` and sets its hooks at the
+top level, before the editors load.
+
+Hook | Description
+------------- | -------------
+**preparePreview** | `(markdown, control)` returns the Markdown to render in the preview, or `null` to leave the preview as it is.
+
+With `externalToolbar: true` the field draws no toolbar or status bar, so the page can draw the toolbar
+itself, such as in a document header, and handle fullscreen. The field fires `markdowneditor:ready` once
+its editor is mounted, with the control as `event.detail.markdownEditor`, and the page draws its buttons
+from the control.
+
+Method | Description
+------------- | -------------
+**getToolbarItems()** | the toolbar in order, as `{ type: 'button', code }` and `{ type: 'separator' }`. Fullscreen is left out with an external toolbar.
+**getButtonState(code)** | a button's `label`, `icon` class, and whether it is `active` or `disabled`.
+**activateButton(code)** | runs a button.
+**on('update', listener)** | calls the listener after the button states may have changed. `off()` removes it.
+
+The control also has `getEditorObject()` (the EasyMDE editor), `getContent()`, `setContent(value)`,
+`togglePreview()`, `toggleSideBySide()` and `toggleFullscreen()`. The button icons come from the
+configured [icon pack](/extending/icons) (the `markdowneditor.*` keys), and the button labels follow the
+app locale, from the library's translations.
+
 ## Options
 
 Option | Description
@@ -76,6 +103,7 @@ Option | Description
 **mode** | `tab` keeps the preview behind its button, `split` opens it side by side. Default: `tab`.
 **safeMode** | cleans the preview HTML with DOMPurify. Default: `true`.
 **size** | the starting height: `tiny`, `small`, `large`, `huge` or `giant`. Default: `large`.
+**externalToolbar** | draws no toolbar, leaving it to the page, see [page hooks](#page-hooks). Default: `false`.
 
 The field also takes the common [field properties](/forms/fields#field-properties), such as
 `placeholder`, `readOnly` and `disabled`.

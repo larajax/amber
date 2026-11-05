@@ -131,7 +131,7 @@ Key | Description
 **undo** | records an undo step after `onClick`. Default: `false`.
 
 The toolbar and menu icons come from the configured [icon pack](/extending/icons) (the `richeditor.*`
-keys), and the editor's labels and messages pass through `__()`, so they follow the app locale.
+keys), and the editor's labels and messages follow the app locale, from the editor's translations.
 
 ## Showing the saved HTML {#displaying-content}
 
@@ -187,6 +187,11 @@ Option | Description
 **colors** | the hex colors the `color` button offers. Default: a palette of 27 colors.
 **emoticons** | the emoji the `emoticons` button offers. Default: 60 emoji.
 **linkProtocols** | extra URL schemes allowed in links, beyond the usual web, mail and phone ones. Default: none.
+**allowTags** | tags kept as written in HTML the editor has no tools for, such as `div`, `span` or `svg`, as a list or comma separated text. The next three options apply only when it is set. Default: none, so such HTML is dropped.
+**allowAttrs** | attributes kept on any element, names ending in `*` match a prefix such as `data-*`. Default: all, once `allowTags` is set.
+**allowEmptyTags** | tags or `.class` names kept when empty, such as icon font elements.
+**noWrapTags** | tags whose text is kept without a paragraph around it.
+**removeTags** | tags removed together with what they hold before the content loads.
 
 Other keys, and those the field sets itself (`readOnly`, `useLineBreaks`, `toolbarButtons`), are
 ignored.

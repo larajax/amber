@@ -19,9 +19,16 @@ class CoverageTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * @var array<int, string> internalUnits are Ui methods the library calls itself to draw its icons, which apps override through icon packs instead of calling, so no page shows them.
+     * @var array<int, string> internalUnits are Ui methods no page shows: the icon lookups apps override through icon packs, and the seams October sets to keep Rain's behaviour.
      */
-    protected array $internalUnits = ['ui:icon', 'ui:iconClass'];
+    protected array $internalUnits = [
+        'ui:icon',
+        'ui:iconClass',
+        'ui:checkBaseDirUsing',
+        'ui:registerPathSymbol',
+        'ui:resolveMarkdownUsing',
+        'ui:resolveSqlUsing',
+    ];
 
     public function test_every_library_unit_is_covered_by_a_reference_page(): void
     {

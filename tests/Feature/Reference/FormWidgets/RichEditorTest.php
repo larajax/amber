@@ -175,14 +175,17 @@ class RichEditorTest extends TestCase
         $this->assertSame('<p>Hello <strong>there</strong></p>', $widget->getSaveValue('<p>Hello <strong>there</strong></p>'));
     }
 
-    public function test_the_field_passes_icon_pack_classes_and_translated_strings(): void
+    public function test_the_field_passes_icon_pack_classes_and_its_language(): void
     {
-        $html = (string) $this->makeEditorForm(Sample::factory()->create())->render();
+        $sample = Sample::factory()->create();
+        $html = (string) $this->makeEditorForm($sample)->render();
 
         $this->assertStringContainsString('data-icons="{&quot;bold&quot;:&quot;ph ph-text-b&quot;,', $html);
         $this->assertStringContainsString('&quot;snippet&quot;:&quot;ph ph-newspaper&quot;}"', $html);
-        $this->assertStringContainsString('data-lang="{&quot;toolbar&quot;:&quot;Editor toolbar&quot;,', $html);
-        $this->assertStringContainsString('&quot;formatHeading1&quot;:&quot;Heading 1&quot;', $html);
+        $this->assertStringNotContainsString('data-language', $html);
+
+        app()->setLocale('de_AT');
+        $this->assertStringContainsString('data-language="de"', (string) $this->makeEditorForm($sample)->render());
     }
 
     public function test_the_built_in_upload_is_offered_only_with_an_upload_disk(): void

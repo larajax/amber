@@ -125,7 +125,7 @@ class DataTableTest extends TestCase
         $this->assertMatchesRegularExpression('/data-table-add>\s*<i class="ph ph-list-plus" aria-hidden="true"><\/i>\s*<span class="button-label">Insert Row<\/span>/', $html);
         $this->assertStringContainsString('<span class="button-label">Delete Row</span>', $html);
         $this->assertStringNotContainsString('data-table-export', $html);
-        $this->assertSame('Remove row', $this->attributeJson($html, 'data-lang')['removeRow']);
+        $this->assertStringNotContainsString('data-language', $html);
 
         $columns = $this->columns($html);
         $this->assertSame(['item', 'quantity', 'price', 'taxable'], array_keys($columns));
@@ -571,14 +571,18 @@ class DataTableTest extends TestCase
         $this->assertStringNotContainsString('data-table-toolbar', $bare);
     }
 
-    public function test_the_validation_messages_pass_through_the_translator(): void
+    public function test_the_grid_names_the_translation_of_the_app_locale(): void
     {
-        $html = (string) $this->makeTableForm(Sample::factory()->create())->render();
-        $lang = $this->attributeJson($html, 'data-lang');
+        $sample = Sample::factory()->create();
 
-        $this->assertSame('The value should not be empty.', $lang['ruleRequired']);
-        $this->assertSame('The value should not be more than :max', $lang['ruleMax']);
-        $this->assertSame('Invalid value format.', $lang['ruleRegex']);
+        app()->setLocale('de');
+        $this->assertStringContainsString('data-language="de"', (string) $this->makeTableForm($sample)->render());
+
+        app()->setLocale('pt_BR');
+        $this->assertStringContainsString('data-language="pt-br"', (string) $this->makeTableForm($sample)->render());
+
+        app()->setLocale('xx');
+        $this->assertStringNotContainsString('data-language', (string) $this->makeTableForm($sample)->render());
     }
 
     public function test_csv_import_without_a_header_uses_the_column_order(): void
