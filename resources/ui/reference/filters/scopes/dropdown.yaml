@@ -4,3 +4,10 @@ scopes:
         type: dropdown
         emptyOption: Any status
         optionsMethod: App\Models\Post::listStatusColorOptions
+
+    category:
+        label: Category
+        type: dropdown
+        emptyOption: Any category
+        optionsMethod: App\Models\Post::listCategoryOptions
+        conditions: category_id = :value

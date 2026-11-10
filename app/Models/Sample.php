@@ -41,6 +41,7 @@ class Sample extends Model
             'interests' => 'array',
             'tags' => 'array',
             'topics' => 'array',
+            'hashtags' => 'array',
             'content' => 'array',
             'steps' => 'array',
             'address' => 'array',

@@ -7,7 +7,7 @@
 ])
 
 <section class="ui-section" id="extend">
-    @include('reference._heading', ['id' => 'extend', 'title' => 'Overriding keys', 'caption' => '<code>Ui::extendIcons()</code> swaps <code>callout.info</code> and <code>search.icon</code>, and the widgets follow.'])
+    @include('reference._heading', ['id' => 'extend', 'title' => 'Overriding keys', 'caption' => '<code>extend()</code> swaps <code>callout.info</code> and <code>search.icon</code>, and the widgets follow.'])
     <div class="ui-example is-stacked">
         <div class="ui-example-preview">
             @include('reference.extending.examples.icon-extend')
@@ -21,7 +21,7 @@
 </section>
 
 <section class="ui-section" id="packs">
-    @include('reference._heading', ['id' => 'packs', 'title' => 'Icon packs', 'caption' => 'The shipped packs, and an <code>amber</code> pack from <code>Ui::registerIconPack()</code>.'])
+    @include('reference._heading', ['id' => 'packs', 'title' => 'Icon packs', 'caption' => 'The shipped packs, and an <code>amber</code> pack from <code>registerPack()</code>.'])
     @include('reference._example', ['view' => 'reference.extending.examples.icon-packs', 'stacked' => true])
 </section>
 

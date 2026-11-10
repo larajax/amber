@@ -75,7 +75,7 @@ An array value, like the features of a sample, shows the label of every picked o
 [PHP date format](https://www.php.net/manual/en/datetime.format.php) in place of the default.
 
 A `datetime` converts the value to the viewer's timezone, set with
-[`Ui::resolveTimezoneUsing()`](/extending/seams#timezone), while `date` and `time` show the value as
+[`app('larajax.ui')->resolveTimezoneUsing()`](/extending/seams#timezone), while `date` and `time` show the value as
 stored. `useTimezone` changes either one: `true` converts a `date` or `time`, and `false` keeps a
 `datetime` as stored.
 
@@ -123,7 +123,7 @@ belongs to the row link, so the icons are not links.
 
 `linkage` shows the value as a link to `linkUrl`, where `:name` takes that attribute of the record,
 such as `:category_id`. A path becomes an address through
-[`Ui::url()`](/extending/seams#widget-paths), while a full address is left alone, and a
+the [URL resolver](/extending/seams#widget-paths), while a full address is left alone, and a
 [scheme link](/extending/seams#scheme-links) that points nowhere shows as plain text. `linkText`
 replaces the link text, so a
 column with no value of its own, like Edit here, still shows a link. `attributes` adds HTML attributes

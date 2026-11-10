@@ -2,11 +2,13 @@
 
 namespace Tests\Feature\Reference\Lists;
 
+use App\Controllers\Reference\ListsController;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
+use Larajax\Ui\Widgets\Search;
 use Tests\TestCase;
 
 class SearchTest extends TestCase
@@ -47,7 +49,7 @@ class SearchTest extends TestCase
     {
         $html = $this->get(route('reference.lists.search'))->assertOk()->getContent();
 
-        $this->assertMatchesRegularExpression('/<div\s+id="Search-boundToolbarSearch"\s+data-control="search-input"\s*>\s*<label class="form-control form-adorn is-searchable is-growable">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-magnifying-glass" aria-hidden="true"><\/i>\s*<\/span>\s*<input[^>]*name="boundToolbarSearch\[term\]"[^>]*aria-label="Search posts..."[^>]*class="form-ghost"[^>]*data-search-input \/>\s*<button\s+class="clear-input-text"[^>]*style="display:none"\s+aria-label="Clear"\s+data-search-clear\s*>\s*<i class="ph ph-x" aria-hidden="true"><\/i>\s*<\/button>\s*<\/label>/', $html);
+        $this->assertMatchesRegularExpression('/<div\s+id="Search-boundToolbarSearch"\s+data-control="search-input"\s*>\s*<label class="form-control form-adorn is-searchable is-growable" style="--search-prompt-length: 15">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-magnifying-glass" aria-hidden="true"><\/i>\s*<\/span>\s*<span class="search-short-prompt" aria-hidden="true">\s*Search\.\.\.\s*<\/span>\s*<input[^>]*name="boundToolbarSearch\[term\]"[^>]*aria-label="Search posts..."[^>]*class="form-ghost"[^>]*data-search-input \/>\s*<button\s+class="clear-input-text"[^>]*style="display:none"\s+aria-label="Clear"\s+data-search-clear\s*>\s*<i class="ph ph-x" aria-hidden="true"><\/i>\s*<\/button>\s*<\/label>/', $html);
         $this->assertStringNotContainsString('search-input-container', $html);
         $this->assertStringNotContainsString('search-icon', $html);
     }
@@ -60,6 +62,32 @@ class SearchTest extends TestCase
         $this->assertMatchesRegularExpression('/name="tagSearch\[term\]"[^>]*data-request="tagSearch::onSubmit"\s+data-track-input/', $html);
         $this->assertMatchesRegularExpression('/name="enterToolbarSearch\[term\]"[^>]*data-request="enterToolbarSearch::onSubmit"\s+data-load-indicator/', $html);
         $this->assertMatchesRegularExpression('/id="Search-enterToolbarSearch"\s+data-control="search-input"\s*>\s*<label class="form-control form-adorn is-searchable ">/', $html);
+    }
+
+    public function test_a_growable_search_takes_a_short_prompt_of_its_own_and_measures_its_full_prompt(): void
+    {
+        $html = $this->get(route('reference.lists.search'))->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/id="Search-scopeToolbarSearch"\s+data-control="search-input"\s*>\s*<label class="form-control form-adorn is-searchable is-growable" style="--search-prompt-length: 36">\s*<span class="form-adorn-icon"[^>]*>.*?<\/span>\s*<span class="search-short-prompt" aria-hidden="true">\s*Find\.\.\.\s*<\/span>/s', $html);
+        $this->assertMatchesRegularExpression('/name="scopeToolbarSearch\[term\]"[^>]*aria-label="Search posts, categories and tags..."/', $html);
+    }
+
+    public function test_a_search_that_does_not_grow_has_no_short_prompt(): void
+    {
+        $html = $this->get(route('reference.lists.search'))->assertOk()->getContent();
+
+        preg_match('/id="Search-tagSearch".*?<\/label>/s', $html, $match);
+
+        $this->assertStringNotContainsString('search-short-prompt', $match[0]);
+        $this->assertStringNotContainsString('--search-prompt-length', $match[0]);
+    }
+
+    public function test_a_growable_search_without_a_prompt_shows_its_short_prompt_as_the_placeholder(): void
+    {
+        $html = Search::createIn(new ListsController, ['alias' => 'bareSearch', 'shortPrompt' => 'Look up'])->render();
+
+        $this->assertStringContainsString('placeholder="Look up"', $html);
+        $this->assertStringContainsString('style="--search-prompt-length: 7"', $html);
     }
 
     public function test_the_prompt_is_escaped(): void

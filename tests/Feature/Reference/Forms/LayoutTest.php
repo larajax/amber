@@ -304,8 +304,10 @@ class LayoutTest extends TestCase
         $this->assertMatchesRegularExpression('/<label for="Form-exampleHorizontal-field-plan" class="col-form-label">\s*Plan/', $horizontal);
 
         $survey = $this->exampleHtml($html, 'survey');
-        $this->assertMatchesRegularExpression('/<h4 class="my-5 fw-normal">\s*Who it is for\s*<\/h4>/', $survey);
-        $this->assertMatchesRegularExpression('/<h4 class="my-5 fw-normal">\s*How it is sold\s*<\/h4>/', $survey);
+        $this->assertStringContainsString('<div class="form-survey row gy-3">', $survey);
+        $this->assertSame(2, substr_count($survey, '<div class="card-body d-block">'));
+        $this->assertMatchesRegularExpression('/<div class="card[^"]*">\s*<h4 class="card-header[^"]*">\s*<span class="ph ph-users-three" aria-hidden="true"><\/span>\s*Who it is for\s*<\/h4>/', $survey);
+        $this->assertMatchesRegularExpression('/<h4 class="card-header[^"]*">\s*<span class="ph ph-storefront" aria-hidden="true"><\/span>\s*How it is sold\s*<\/h4>/', $survey);
         $this->assertStringNotContainsString('nav-tabs', $survey);
     }
 

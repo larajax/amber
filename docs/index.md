@@ -34,10 +34,11 @@ The app has two halves:
   are: list columns and options, filter scopes, form fields and layout, each form widget, the UI
   elements, and the extension points. Every example runs beside the YAML or Blade that renders it, and
   you can change it and save it. Each example's heading links to its section in these docs.
-- **Showcase** is a small blog that puts the pieces together: posts with a filtered list, bulk actions
-  and a quick post popup (`/posts`), a category tree you reorder by dragging (`/categories`), authors on
-  a plain Eloquent model (`/authors`), and groups edited in a popup (`/groups`). Each page links to the
-  guide that builds it.
+- **Showcase** is a small blog that puts the pieces together: a dashboard of scoreboards and charts
+  (`/dashboard`), posts with a filtered list, bulk actions and a quick post popup (`/posts`), a category
+  tree with checkboxes that you reorder by dragging (`/categories`), authors on a plain Eloquent model,
+  each with a scoreboard of their figures (`/authors`), and groups edited in a popup (`/groups`). Each
+  page links to the guide that builds it.
 
 ## The sixty second version {#sixty-second-version}
 

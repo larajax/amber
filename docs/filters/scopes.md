@@ -6,10 +6,11 @@ demo: /reference/filters/scopes
 
 The `Filter` widget is a bar of scopes above a list, each shown as a chip that narrows the list. A chip
 toggles, opens a list of options, or opens a popover with a small form. An active chip shows its value
-and a button that clears it, and active chips move to the front of the bar. `bindToListWidget()`
+and a button that clears it, and keeps its place in the bar. `bindToListWidget()`
 applies the active scopes to the list query and refreshes the list when one changes. Each scope
-remembers its value for the session, and the menu at the start of the bar clears them all or
-[saves them](/filters/options#saved-filters) as a named set to apply again. Adding a filter to a page
+remembers its value for the session, and the menu at the start of the bar, whose icon counts the
+active chips, clears them all or [saves them](/filters/options#saved-filters) as a named set to apply
+again. Adding a filter to a page
 is covered in [Building a List Page](/guides/lists).
 
 ## The filters on this page {#building}
@@ -52,9 +53,16 @@ option that applies no filter.
 A static options method is called with the filter's model and the scope, and a plain method name is
 called on the filter's model with the scope.
 
+A long list gets a search box at the top of its options, which filters them as you type, ignoring case
+and accents. Enter picks the first option that matches. `search: true` always shows the box,
+`search: false` never does, and without the setting it shows once there are more than ten options, as
+for the categories here.
+
 <<< @/../resources/ui/reference/filters/scopes/dropdown.yaml
 
 <<< @/../app/Models/Post.php#docs-list-status-color-options{php}
+
+<<< @/../app/Models/Post.php#docs-list-category-options{php}
 
 ## Group {#group}
 
@@ -133,6 +141,7 @@ Property | Description
 **options** | the options of a dropdown or a group.
 **optionsMethod** | a model method, or a static `Class::method`, that returns the options.
 **emptyOption** | the label of an extra option: on a dropdown it applies no filter, and on a group it matches the records with no value.
+**search** | on a dropdown, `true` shows a search box above the options and `false` hides it. Default: shown for more than ten options.
 **nameFrom** | the attribute that labels a group's options from a relation. Default: `name`.
 **modelClass** | the model that supplies a group's options and answers its options method, in place of the relation named by the scope.
 **dependsOn** | a scope name, or an array of them. When one of them changes, this scope is cleared and rendered again.
@@ -149,7 +158,7 @@ Type | Shows | Options
 ------------- | ------------- | -------------
 **checkbox** | a checkbox, on or off. | `conditions`, `modelScope`
 **switch** | a checkbox with three states: off, the first condition and the second. | `conditions`, `modelScope`
-**dropdown** | a select of options, one picked. | `options`, `optionsMethod`, `emptyOption`, `conditions`, `modelScope`
+**dropdown** | a select of options, one picked. | `options`, `optionsMethod`, `emptyOption`, `search`, `conditions`, `modelScope`
 **group** | a popover with a searchable list, several picked. | `options`, `optionsMethod`, `nameFrom`, `modelClass`, `optionsScope`, `emptyOption`, `matchMode`, `conditions`, `modelScope`
 **date** | a popover comparing with a period or a picked date. | `conditions`, `minDate`, `maxDate`, `yearRange`, `firstDay`, `showWeekNumber`, `useTimezone`, `modelScope`
 **daterange** | a `date` scope offering only between. | as `date`

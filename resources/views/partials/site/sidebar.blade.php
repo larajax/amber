@@ -19,6 +19,12 @@
 
     $showcaseItems = [
         [
+            'label' => 'Dashboard',
+            'icon' => 'ph-gauge',
+            'href' => route('dashboard.index'),
+            'active' => request()->routeIs('dashboard.*'),
+        ],
+        [
             'label' => 'Posts',
             'icon' => 'ph-article',
             'href' => route('posts.index'),

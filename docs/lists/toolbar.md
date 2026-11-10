@@ -16,7 +16,7 @@ report what they would do.
 renders through the [`Ui` factory](/ui/buttons):
 
 - A button with a `url` is a link, and the path becomes an address through
-  [`Ui::url()`](/extending/seams#widget-paths).
+  the [URL resolver](/extending/seams#widget-paths).
 - A button with a `handler` runs that AJAX handler, or with `popup: true` opens what the handler
   returns in a popup.
 - `type` picks the style, `confirm` asks before the request runs, and `hotkey` binds a key, here

@@ -4,7 +4,9 @@ namespace Tests\Feature\Reference;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
+use Larajax\Ui\Classes\IconManager;
 use Larajax\Ui\Classes\UiFactory;
+use Larajax\Ui\Classes\UiManager;
 use Larajax\Ui\UiServiceProvider;
 use Larajax\Ui\Widgets\Lists\HasValueProcessor;
 use ReflectionClass;
@@ -19,15 +21,24 @@ class CoverageTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * @var array<int, string> internalUnits are Ui methods no page shows: the icon lookups apps override through icon packs, and the seams October sets to keep Rain's behaviour.
+     * @var array<int, string> internalUnits are methods no page shows: the icon lookups apps override through icon packs, the seams October sets to keep Rain's behaviour, and the lookups the library's helpers make.
      */
     protected array $internalUnits = [
         'ui:icon',
         'ui:iconClass',
-        'ui:checkBaseDirUsing',
-        'ui:registerPathSymbol',
-        'ui:resolveMarkdownUsing',
-        'ui:resolveSqlUsing',
+        'larajax.ui.icons:icon',
+        'larajax.ui.icons:iconClass',
+        'larajax.ui:checkBaseDirUsing',
+        'larajax.ui:registerPathSymbol',
+        'larajax.ui:resolveMarkdownUsing',
+        'larajax.ui:resolveSqlUsing',
+        'larajax.ui:checkBaseDir',
+        'larajax.ui:hasSqlResolver',
+        'larajax.ui:isResolvableLink',
+        'larajax.ui:markdown',
+        'larajax.ui:pathSymbols',
+        'larajax.ui:resolveLink',
+        'larajax.ui:resolveSql',
     ];
 
     public function test_every_library_unit_is_covered_by_a_reference_page(): void
@@ -102,7 +113,7 @@ class CoverageTest extends TestCase
     }
 
     /**
-     * libraryUnits discovers every widget, form and filter widget, field, column and scope type, control, element and Ui factory method in the library.
+     * libraryUnits discovers every widget, form and filter widget, field, column and scope type, control, element, Ui factory method and larajax.ui and larajax.ui.icons service method in the library.
      *
      * @return array<int, string>
      */
@@ -119,7 +130,9 @@ class CoverageTest extends TestCase
             ...$this->prefixed('column', $this->columnTypes()),
             ...$this->prefixed('control', $this->baseNames("{$root}/resources/assets/controls/*", true)),
             ...$this->prefixed('element', $this->baseNames("{$root}/resources/assets/elements/*", true)),
-            ...$this->prefixed('ui', $this->uiMethods()),
+            ...$this->prefixed('ui', $this->publicMethods(UiFactory::class)),
+            ...$this->prefixed('larajax.ui', $this->publicMethods(UiManager::class)),
+            ...$this->prefixed('larajax.ui.icons', $this->publicMethods(IconManager::class)),
         ];
 
         sort($units);
@@ -170,13 +183,13 @@ class CoverageTest extends TestCase
     }
 
     /**
-     * uiMethods returns the public methods of the Ui factory.
+     * publicMethods returns the public methods of a class, leaving out the magic ones.
      *
      * @return array<int, string>
      */
-    protected function uiMethods(): array
+    protected function publicMethods(string $className): array
     {
-        $methods = (new ReflectionClass(UiFactory::class))->getMethods(ReflectionMethod::IS_PUBLIC);
+        $methods = (new ReflectionClass($className))->getMethods(ReflectionMethod::IS_PUBLIC);
 
         return array_values(array_filter(
             array_map(fn (ReflectionMethod $method) => $method->getName(), $methods),

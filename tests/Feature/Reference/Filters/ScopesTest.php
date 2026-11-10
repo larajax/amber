@@ -201,6 +201,28 @@ class ScopesTest extends TestCase
         $this->assertMatchesRegularExpression('/class="menu-item selected"\s+role="option"\s+aria-selected="true"\s+data-bs-value="draft"/', $html);
     }
 
+    public function test_the_funnel_counts_the_active_scopes_and_the_scopes_keep_their_order(): void
+    {
+        Category::factory()->count(2)->create();
+        $categoryId = Category::query()->value('id');
+
+        $html = $this->withSession([
+            'widget.app_controllers-FiltersController-Filter-dropdownFilter' => json_encode([
+                'scope-category' => ['value' => $categoryId],
+                'scope-status' => ['value' => 'draft'],
+            ]),
+        ])->get(route('reference.filters.scopes'))->assertOk()->getContent();
+
+        // The badge sits in the funnel just before the filter's setup menu
+        $this->assertMatchesRegularExpression('/<span class="filter-count" data-filter-count\s*>\s*<span data-filter-count-value>2<\/span>\s*<span class="visually-hidden">active<\/span>\s*<\/span>\s*<\/a>\s*<div class="menu control-dropdown" role="menu" id="Filter-dropdownFilter-setupMenu">/', $html);
+
+        // Status comes before category in the YAML, active or not
+        $this->assertLessThan(strpos($html, 'data-scope-name="category"'), strpos($html, 'data-scope-name="status"'));
+
+        // A filter with nothing active hides its count
+        $this->assertMatchesRegularExpression('/<span class="filter-count" data-filter-count hidden>\s*<span data-filter-count-value>0<\/span>.*?id="Filter-checkboxFilter-setupMenu"/s', $html);
+    }
+
     public function test_a_dropdown_scope_shows_an_option_icon_beside_the_label(): void
     {
         $filter = Filter::createIn(new FiltersController, [
@@ -218,6 +240,68 @@ class ScopesTest extends TestCase
 
         $this->assertStringContainsString('<span aria-hidden="true" data-scope-mark><i class="ph ph-airplane-tilt" aria-hidden="true"></i></span>', $html);
         $this->assertMatchesRegularExpression('/data-bs-value="road"\s*>\s*<i class="ph ph-truck" aria-hidden="true"><\/i>/', $html);
+    }
+
+    public function test_a_long_dropdown_offers_a_search_box_and_a_short_one_does_not(): void
+    {
+        // Twelve categories and the empty option make a list longer than ten, one named like a language file
+        Category::factory()->count(11)->create();
+        Category::factory()->create(['name' => 'Validation']);
+
+        $html = $this->get(route('reference.filters.scopes'))->assertOk()->getContent();
+
+        $category = $this->scopeHtml($html, 'category');
+        $this->assertMatchesRegularExpression('/data-bs-search-normalize="true"/', $category);
+        // The same search field as the group scope's, above the options, which scroll on their own
+        $this->assertMatchesRegularExpression('/<div data-control="search-input" class="filter-search combobox-search">\s*<label class="form-control form-adorn form-control-sm">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-magnifying-glass" aria-hidden="true"><\/i>\s*<\/span>\s*<input[^>]*placeholder="Search..."[^>]*class="form-ghost combobox-search-input"[^>]*\/>\s*<button\s+class="clear-input-text"[^>]*data-search-clear\s*>/', $category);
+        $this->assertMatchesRegularExpression('/<\/label>\s*<\/div>\s*<div class="combobox-options">\s*<button/', $category);
+        $this->assertStringNotContainsString('data-request', $category);
+        $this->assertMatchesRegularExpression('/<div class="combobox-no-results d-none">\s*No results/', $category);
+        $this->assertSame(13, substr_count($category, 'role="option"'));
+        $this->assertMatchesRegularExpression('/<span>\s*Validation\s*<\/span>/', $category);
+
+        $status = $this->scopeHtml($html, 'status');
+        $this->assertStringNotContainsString('combobox-search', $status);
+        $this->assertStringNotContainsString('data-bs-search-normalize', $status);
+    }
+
+    public function test_the_search_setting_shows_or_hides_the_box_whatever_the_length(): void
+    {
+        $options = ['a' => 'A', 'b' => 'B'];
+        $many = array_combine(range(1, 20), range(1, 20));
+
+        $this->assertStringContainsString('combobox-search-input', $this->renderDropdown(['options' => $options, 'search' => true]));
+        $this->assertStringNotContainsString('combobox-search-input', $this->renderDropdown(['options' => $many, 'search' => false]));
+        $this->assertStringContainsString('combobox-search-input', $this->renderDropdown(['options' => $many]));
+        $this->assertStringNotContainsString('combobox-search-input', $this->renderDropdown(['options' => array_slice($many, 0, 10, true)]));
+    }
+
+    /**
+     * scopeHtml returns the markup of one scope on the Scope Types page.
+     */
+    protected function scopeHtml(string $html, string $scopeName): string
+    {
+        $this->assertMatchesRegularExpression('/data-scope-name="'.$scopeName.'">(.*?)<\/div>\s*<\/div>/s', $html);
+        preg_match('/data-scope-name="'.$scopeName.'">(.*?)<\/div>\s*<\/div>/s', $html, $match);
+
+        return $match[1];
+    }
+
+    /**
+     * renderDropdown renders a dropdown scope with the given settings in a filter of posts.
+     *
+     * @param  array<string, mixed>  $config
+     */
+    protected function renderDropdown(array $config): string
+    {
+        $filter = Filter::createIn(new FiltersController, [
+            'model' => new Post,
+            'scopes' => ['pick' => ['label' => 'Pick', 'type' => 'dropdown'] + $config],
+        ]);
+
+        $filter->bindToController();
+
+        return (string) $filter->renderScopeElement('pick');
     }
 
     public function test_the_dropdown_scope_shows_its_empty_option_without_a_mark(): void
@@ -287,11 +371,11 @@ class ScopesTest extends TestCase
         $this->assertSame([['id' => $category->id, 'name' => 'validation']], $available);
     }
 
-    public function test_the_group_search_is_an_adorned_field_with_a_search_icon(): void
+    public function test_the_group_search_is_the_search_field_with_an_icon_and_a_clear_button(): void
     {
         $html = $this->ajax('groupFilter::onLoadFilterForm', ['scopeName' => 'status'])->assertOk()->json('result');
 
-        $this->assertMatchesRegularExpression('/<div class="filter-search loading-indicator-container size-input-text">\s*<label class="form-control form-adorn">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-magnifying-glass" aria-hidden="true"><\/i>\s*<\/span>\s*<input[^>]*aria-label="Search..."[^>]*class="filter-search-input form-ghost popup-allow-focus"[^>]*data-track-input \/>\s*<\/label>/', $html);
+        $this->assertMatchesRegularExpression('/<div data-control="search-input" class="filter-search">\s*<label class="form-control form-adorn form-control-sm">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-magnifying-glass" aria-hidden="true"><\/i>\s*<\/span>\s*<input[^>]*name="search"[^>]*aria-label="Search..."[^>]*class="form-ghost filter-search-input popup-allow-focus"[^>]*data-request="groupFilterStatus::onGetGroupOptions"[^>]*\/>\s*<button\s+class="clear-input-text"[^>]*data-search-clear\s*>/', $html);
         $this->assertStringNotContainsString('search-input-container', $html);
     }
 
@@ -329,7 +413,7 @@ class ScopesTest extends TestCase
     {
         $html = $this->renderScopeForm(['label' => 'Published', 'type' => 'date']);
 
-        $this->assertSame(3, preg_match_all('/<label class="form-control form-adorn form-adorn-end w-120">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-calendar-blank" aria-hidden="true"><\/i>\s*<\/span>\s*<input\s+type="text"\s+name="Filter\[(?:valueRaw|afterRaw|beforeRaw)\]"[^>]*class="form-ghost popup-allow-focus"[^>]*data-datepicker \/>\s*<\/label>/', $html));
+        $this->assertSame(3, preg_match_all('/<label class="form-control form-control-sm form-adorn form-adorn-end w-120">\s*<span class="form-adorn-icon" aria-hidden="true">\s*<i class="ph ph-calendar-blank" aria-hidden="true"><\/i>\s*<\/span>\s*<input\s+type="text"\s+name="Filter\[(?:valueRaw|afterRaw|beforeRaw)\]"[^>]*class="form-ghost popup-allow-focus"[^>]*data-datepicker \/>\s*<\/label>/', $html));
     }
 
     public function test_the_date_filter_applies_an_after_condition(): void

@@ -3,7 +3,6 @@
 namespace App\Controllers\Reference\ExtendingController;
 
 use Larajax\Ui\Classes\Icons\PhosphorIconPack;
-use Larajax\Ui\Facades\Ui;
 
 /**
  * IconRegistrations changes some of the icons the library draws for the Icons page, which an app does once in a service provider instead.
@@ -15,18 +14,20 @@ trait IconRegistrations
      */
     protected function registerExampleIcons(): void
     {
-        Ui::registerIconPack('amber', function (): array {
+        $icons = app('larajax.ui.icons');
+
+        $icons->registerPack('amber', function (): array {
             return array_replace((new PhosphorIconPack)->icons(), [
                 'action.delete' => 'ph ph-trash-simple',
             ]);
         });
 
-        Ui::extendIcons([
+        $icons->extend([
             'callout.info' => 'ph ph-lightbulb',
             'search.icon' => 'ph ph-binoculars',
         ]);
 
-        Ui::extendIcons(function (array $icons, string $pack): array {
+        $icons->extend(function (array $icons, string $pack): array {
             if ($pack !== 'bootstrap') {
                 return $icons;
             }

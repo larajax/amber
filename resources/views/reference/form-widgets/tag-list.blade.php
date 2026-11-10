@@ -22,6 +22,11 @@
         @include('reference._form_example', ['name' => 'options'])
     </section>
 
+    <section class="ui-section" id="sortable">
+        @include('reference._heading', ['id' => 'sortable', 'title' => 'Sorting and checking tags', 'caption' => '<code>sortable</code>, <code>tagPattern</code> and <code>createOnBlur</code>.'])
+        @include('reference._form_example', ['name' => 'sortable'])
+    </section>
+
     <section class="ui-section" id="use-key">
         @include('reference._heading', ['id' => 'use-key', 'title' => 'Saving labels', 'caption' => '<code>useKey: false</code> saves the option labels.'])
         @include('reference._form_example', ['name' => 'use-key'])

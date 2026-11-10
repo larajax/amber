@@ -6,13 +6,19 @@ demo: /reference/extending/seams
 
 Three resolvers adapt the widgets to your application. One turns the paths that widgets link to into
 addresses, one turns links with your own scheme, such as `page://about`, into addresses, and one gives
-the timezone of the person viewing the page. Each is a closure you set once, and the widgets work
-without any of them.
+the timezone of the person viewing the page. Each is a closure you set once on the `larajax.ui`
+service, which `app('larajax.ui')` returns, and the widgets work without any of them.
 
 ## Setting the resolvers {#resolvers}
 
 Set your resolvers in a service provider's `boot()` method, such as your `AppServiceProvider`, so they
-apply to every request. This demo page sets them in its action instead, so they only apply there, and
+apply to every request:
+
+```php
+app('larajax.ui')->resolveUrlUsing(fn (string $path) => url('admin/'.$path));
+```
+
+This demo page sets them in its action instead, so they only apply there, and
 removes them when the request ends by passing `null`, which restores the default.
 
 <<< @/../app/Controllers/Reference/ExtendingController/SeamResolvers.php{php}
@@ -21,9 +27,9 @@ Each resolver here does what the sections below show: widget paths go back to th
 see the path a widget produced, `reference://` links go to the Reference page they name, and the
 viewer timezone comes from the address.
 
-## Ui::url() {#ui-url}
+## Building addresses {#addresses}
 
-`Ui::url()` is what the widgets call for every path they link to, and you can call it in your own
+`url()` on the `larajax.ui` service is what the widgets call for every path they link to, and you can call it in your own
 views for the same result. It goes through these steps:
 
 1. A link whose scheme has a link resolver, such as `reference://ui/tabs`, goes to that resolver, and
@@ -35,7 +41,7 @@ views for the same result. It goes through these steps:
 
 ## Widget paths {#widget-paths}
 
-`Ui::resolveUrlUsing()` receives each path a widget links to, after the widget has filled in its
+`resolveUrlUsing()` receives each path a widget links to, after the widget has filled in its
 parameters, such as `:id`, and returns the address. The paths come from:
 
 - a list's `recordUrl`, for the link on each row;
@@ -57,7 +63,7 @@ The list sets its `recordUrl` where it is built:
 
 ## Scheme links {#scheme-links}
 
-`Ui::resolveLinkUsing()` registers a resolver for one scheme, such as `reference` for
+`resolveLinkUsing()` registers a resolver for one scheme, such as `reference` for
 `reference://` links. The resolver receives the whole link and returns its address, or `null` when it
 points nowhere, such as a page that was deleted. The scheme is matched without regard to case. A link
 whose scheme has no resolver, such as `https://`, is not a scheme link and is handled like any other
@@ -81,12 +87,12 @@ resolver to remove one.
 ## Viewer timezone {#timezone}
 
 Dates are stored in the application timezone, `app.timezone`. To show them in each person's own
-timezone, give `Ui::resolveTimezoneUsing()` a closure that returns the timezone of the person viewing,
+timezone, give `resolveTimezoneUsing()` a closure that returns the timezone of the person viewing,
 usually one saved on their account, as in
-`Ui::resolveTimezoneUsing(fn () => auth()->user()?->timezone)`. The closure can return a timezone name
+`app('larajax.ui')->resolveTimezoneUsing(fn () => auth()->user()?->timezone)`. The closure can return a timezone name
 or a `DateTimeZone`. On the demo page it comes from the address, so pick one.
 
-`Ui::timezone()` returns the viewer timezone, for your own views. When there is no resolver, or it
+`timezone()` returns the viewer timezone, for your own views. When there is no resolver, or it
 returns `null` or a name that is not a timezone, such as `Mars/Olympus`, it returns the application
 timezone.
 
@@ -133,10 +139,12 @@ to the application timezone when the form saves, so the database always holds ap
 
 ## Methods {#methods}
 
+The methods are on the `larajax.ui` service, `app('larajax.ui')`.
+
 Method | Description
 ------------- | -------------
-**Ui::resolveUrlUsing($resolver)** | sets the closure that turns a widget path into an address, or `null` to use `url()`.
-**Ui::resolveLinkUsing($scheme, $resolver)** | sets the closure that turns links with this scheme into addresses, or `null` to remove it.
-**Ui::url($path)** | returns the address for a widget path or a scheme link, empty when a scheme link points nowhere.
-**Ui::resolveTimezoneUsing($resolver)** | sets the closure that returns the viewer timezone, or `null` to use the application timezone.
-**Ui::timezone()** | returns the viewer timezone, or the application timezone when there is none.
+**resolveUrlUsing($resolver)** | sets the closure that turns a widget path into an address, or `null` to use `url()`.
+**resolveLinkUsing($scheme, $resolver)** | sets the closure that turns links with this scheme into addresses, or `null` to remove it.
+**url($path)** | returns the address for a widget path or a scheme link, empty when a scheme link points nowhere.
+**resolveTimezoneUsing($resolver)** | sets the closure that returns the viewer timezone, or `null` to use the application timezone.
+**timezone()** | returns the viewer timezone, or the application timezone when there is none.

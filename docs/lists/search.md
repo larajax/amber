@@ -25,7 +25,11 @@ its full width.
 A toolbar's search box searches the list the toolbar is bound to with `bindToListWidget()`. The list
 looks in its columns marked `searchable`, including columns read from a relation, and every word of
 the term must match, each in any of those columns. A new term takes the list back to its first page.
-The box grows while it has focus, and its clear button empties it.
+
+The box is growable. Closed, it shows its icon and "Search...". Focused, or holding a term, it widens to
+fit its full prompt, and its clear button empties it. In a toolbar narrower than 36rem it closes to an
+icon-only circle, with a dot while it holds a term, and opens across the toolbar row over the buttons.
+Escape closes it again.
 
 Searching works on any Eloquent model, since Larajax UI adds the `searchWhere()` query methods it uses
 to Eloquent as builder macros.
@@ -39,7 +43,8 @@ to Eloquent as builder macros.
 `scope` names a model scope that runs the search in place of the searchable columns. It receives the
 term and the searchable columns, so it can search those and more. The post model's
 `scopeApplySearch()` also matches category and tag names, so "frontend" finds the posts in the Frontend
-category and "javascript" the posts with that tag.
+category and "javascript" the posts with that tag. Its prompt is long, so `shortPrompt` gives the closed
+box a word of its own in place of "Search...".
 
 <<< @/../app/Controllers/Reference/ListsController/SearchExamples.php#docs-scope{php}
 
@@ -64,8 +69,8 @@ its own box.
 
 `Ui::searchInput()` renders the search box on its own, for any page. The `search-input` control gives
 it a clear button, which shows once there is text. `name`, `value` and `placeholder` go on the input,
-along with any other named argument, while `class` goes on the field around the input and
-`outerClass` on the element around that.
+along with any other named argument, while `class` goes on the field around the input,
+`outerClass` on the element around that, and `inputClass` adds classes to the input itself.
 
 <<< @/../resources/views/reference/lists/examples/search-input.blade.php{blade}
 
@@ -92,7 +97,8 @@ Option | Description
 **mode** | how the words match: `all`, `any` or `exact`. Passed to the bound list. Default: `all`.
 **scope** | a model scope that runs the search, receiving the term and the searchable columns. Passed to the bound list.
 **searchOnEnter** | searches when Enter is pressed, in place of as you type. Default: `false`.
-**growable** | widens the box while it has focus. Default: `true`.
+**growable** | shows a short prompt until the box is focused, then widens it to fit the full prompt, and closes it to a circle in a narrow toolbar. Default: `true`.
+**shortPrompt** | the text a growable box shows while closed. Default: `Search...`.
 **partial** | a partial of the controller to render in place of the box.
 **alias** | the widget's name, unique on the page. A toolbar names its search box after itself, such as `searchToolbarSearch`.
 
@@ -106,6 +112,7 @@ Argument | Description
 **handler** | an AJAX handler to run as you type, half a second after typing stops.
 **class** | classes for the field around the input.
 **outerClass** | classes for the outer element.
+**inputClass** | classes for the input, beside its own `form-ghost`.
 
 Any other named argument becomes an attribute of the input, with its name in kebab case, so
 `dataRequestFlash: true` adds `data-request-flash`.

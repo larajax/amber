@@ -1,12 +1,13 @@
 ---
-subtitle: Callouts, scoreboards, loading states and the change monitor.
+subtitle: Callouts, status lists, loading states and the change monitor.
 demo: /reference/ui/feedback
 ---
 # Feedback
 
 Messages and figures for the reader, plus the states that controls add while a request runs or a
-form changes: callouts from `Ui::callout()`, the scoreboard element, the loader container, the load
-indicator and the change monitor.
+form changes: callouts from `Ui::callout()`, status lists from `Ui::statusList()`, the loader
+container, the load indicator and the change monitor. Key figures have their own page,
+[Scoreboards](/ui/scoreboards).
 
 ## Callout types {#callouts}
 
@@ -86,16 +87,15 @@ Call | Description
 
 The form's `hint` field renders the same callout markup, from YAML (see [Field Types](/forms/fields)).
 
-## Scoreboard {#scoreboard}
+## Status list {#status-list}
 
-The scoreboard element lays out key figures in a row. Each `scoreboard-item title-value` holds a
-heading, the figure and a `description` line. A `positive` or `negative` class on the figure adds an
-up or down trend arrow, and the figure can hold an icon.
+`Ui::statusList()` lists statuses, each a line of text from `Ui::statusItem()` with an `icon` in a
+circle before it and a `value` on the right, which becomes a link with `href`. `success`, `warning`,
+`danger`, `primary` and `info` color the icon and the text, and `muted` greys the text. The text and
+value are escaped, and for markup on the right, such as a button, open the item with `->slot()` and
+close it with `Ui::end()`.
 
-<<< @/../resources/views/reference/ui/examples/scoreboard.blade.php{blade}
-
-The items sit inside a `data-control="toolbar"` element, so the row scrolls sideways by dragging when
-it runs out of room, as a [toolbar](/lists/toolbar) does.
+<<< @/../resources/views/reference/ui/examples/status-list.blade.php{blade}
 
 ## Loader container {#loader-container}
 

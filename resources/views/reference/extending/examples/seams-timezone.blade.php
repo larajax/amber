@@ -1,7 +1,7 @@
 <nav class="nav nav-pills mb-4" aria-label="Viewer timezone">
     @foreach (['UTC', 'Australia/Sydney', 'America/New_York', 'Mars/Olympus'] as $timezone)
         <a
-            @class(['nav-link', 'active' => Ui::timezone() === $timezone])
+            @class(['nav-link', 'active' => app('larajax.ui')->timezone() === $timezone])
             href="{{ route('reference.extending.seams', ['timezone' => $timezone]) }}#timezone">
             {{ $timezone }}
         </a>
@@ -10,10 +10,10 @@
 
 <p class="mb-0">
     <code>
-        Ui::timezone()
+        app('larajax.ui')->timezone()
     </code>
     returns
     <strong>
-        {{ Ui::timezone() }}
+        {{ app('larajax.ui')->timezone() }}
     </strong>
 </p>

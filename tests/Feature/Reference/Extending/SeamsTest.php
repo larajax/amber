@@ -7,7 +7,6 @@ use App\Models\Sample;
 use DateTimeZone;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
-use Larajax\Ui\Facades\Ui;
 use Larajax\Ui\Widgets\Form;
 use Larajax\Ui\Widgets\Lists;
 use Larajax\Ui\Widgets\Toolbar;
@@ -16,16 +15,6 @@ use Tests\TestCase;
 class SeamsTest extends TestCase
 {
     use RefreshDatabase;
-
-    protected function tearDown(): void
-    {
-        Ui::resolveUrlUsing(null);
-        Ui::resolveLinkUsing('page', null);
-        Ui::resolveLinkUsing('reference', null);
-        Ui::resolveTimezoneUsing(null);
-
-        parent::tearDown();
-    }
 
     /**
      * ajax posts an AJAX handler request to the seams page, in the given viewer timezone.
@@ -121,7 +110,7 @@ class SeamsTest extends TestCase
             $this->assertStringContainsString('<pre><code>'.e(trim(file_get_contents(base_path($path)))).'</code></pre>', $html, "{$path} is not shown.");
         }
 
-        foreach (['resolvers', 'ui-url', 'widget-paths', 'scheme-links', 'timezone', 'timezone-lists', 'page-link', 'published-at'] as $section) {
+        foreach (['resolvers', 'addresses', 'widget-paths', 'scheme-links', 'timezone', 'timezone-lists', 'page-link', 'published-at'] as $section) {
             $this->assertStringContainsString('id="'.$section.'"', $html);
         }
 
@@ -189,9 +178,9 @@ class SeamsTest extends TestCase
     {
         $this->get(route('reference.extending.seams', ['timezone' => 'Australia/Sydney']))->assertOk();
 
-        $this->assertSame(url('samples/create'), Ui::url('samples/create'));
-        $this->assertSame('reference://ui/buttons', Ui::url('reference://ui/buttons'));
-        $this->assertSame('UTC', Ui::timezone());
+        $this->assertSame(url('samples/create'), app('larajax.ui')->url('samples/create'));
+        $this->assertSame('reference://ui/buttons', app('larajax.ui')->url('reference://ui/buttons'));
+        $this->assertSame('UTC', app('larajax.ui')->timezone());
     }
 
     public function test_the_page_lists_datetimes_in_the_viewer_timezone_but_not_dates(): void
@@ -254,12 +243,12 @@ class SeamsTest extends TestCase
 
         $this->assertSame(url('samples/7/edit'), $list->getRecordUrl($this->makeSample()));
         $this->assertStringContainsString('href="'.url('samples/7').'"', $this->renderColumn($list, 'slug', $this->makeSample(['slug' => 'lamp'])));
-        $this->assertSame(url('samples/create'), Ui::url('samples/create'));
+        $this->assertSame(url('samples/create'), app('larajax.ui')->url('samples/create'));
     }
 
     public function test_the_resolver_builds_record_linkage_and_toolbar_urls(): void
     {
-        Ui::resolveUrlUsing(fn (string $path) => url('admin/'.ltrim($path, '/')));
+        app('larajax.ui')->resolveUrlUsing(fn (string $path) => url('admin/'.ltrim($path, '/')));
         $list = $this->makeList();
 
         $this->assertSame(url('admin/samples/7/edit'), $list->getRecordUrl($this->makeSample()));
@@ -273,7 +262,7 @@ class SeamsTest extends TestCase
 
     public function test_the_resolver_leaves_absolute_linkage_urls_alone(): void
     {
-        Ui::resolveUrlUsing(fn (string $path) => url('admin/'.ltrim($path, '/')));
+        app('larajax.ui')->resolveUrlUsing(fn (string $path) => url('admin/'.ltrim($path, '/')));
         $list = $this->makeList(['columns' => [
             'slug' => ['label' => 'Preview', 'type' => 'linkage', 'linkUrl' => 'https://example.com/:id'],
         ]]);
@@ -283,7 +272,7 @@ class SeamsTest extends TestCase
 
     public function test_links_with_a_registered_scheme_resolve_to_their_address(): void
     {
-        Ui::resolveLinkUsing('page', fn (string $link) => $link === 'page://about' ? url('about-us') : null);
+        app('larajax.ui')->resolveLinkUsing('page', fn (string $link) => $link === 'page://about' ? url('about-us') : null);
         $list = $this->makeList();
 
         $html = $this->renderColumn($list, 'page_link', $this->makeSample(['page_link' => 'page://about']));
@@ -305,8 +294,8 @@ class SeamsTest extends TestCase
 
     public function test_a_scheme_link_in_link_url_resolves_without_the_url_resolver(): void
     {
-        Ui::resolveUrlUsing(fn (string $path) => url('admin/'.ltrim($path, '/')));
-        Ui::resolveLinkUsing('page', fn (string $link) => url(substr($link, strlen('page://'))));
+        app('larajax.ui')->resolveUrlUsing(fn (string $path) => url('admin/'.ltrim($path, '/')));
+        app('larajax.ui')->resolveLinkUsing('page', fn (string $link) => url(substr($link, strlen('page://'))));
 
         $list = $this->makeList(['columns' => [
             'slug' => ['label' => 'Preview', 'type' => 'linkage', 'linkUrl' => 'page://products/:slug'],
@@ -317,14 +306,14 @@ class SeamsTest extends TestCase
         $this->assertStringContainsString('>lamp</a>', $html);
     }
 
-    public function test_toolbar_buttons_and_ui_url_resolve_scheme_links(): void
+    public function test_toolbar_buttons_and_the_url_method_resolve_scheme_links(): void
     {
-        Ui::resolveUrlUsing(fn (string $path) => url('admin/'.ltrim($path, '/')));
-        Ui::resolveLinkUsing('page', fn (string $link) => $link === 'page://about' ? url('about-us') : null);
+        app('larajax.ui')->resolveUrlUsing(fn (string $path) => url('admin/'.ltrim($path, '/')));
+        app('larajax.ui')->resolveLinkUsing('page', fn (string $link) => $link === 'page://about' ? url('about-us') : null);
 
-        $this->assertSame(url('about-us'), Ui::url('page://about'));
-        $this->assertSame('', Ui::url('page://missing'));
-        $this->assertSame(url('admin/about'), Ui::url('about'));
+        $this->assertSame(url('about-us'), app('larajax.ui')->url('page://about'));
+        $this->assertSame('', app('larajax.ui')->url('page://missing'));
+        $this->assertSame(url('admin/about'), app('larajax.ui')->url('about'));
 
         $toolbar = Toolbar::createIn(new ExtendingController, [
             'buttons' => [
@@ -340,7 +329,7 @@ class SeamsTest extends TestCase
 
     public function test_without_a_resolver_the_user_timezone_is_the_app_timezone(): void
     {
-        $this->assertSame('UTC', Ui::timezone());
+        $this->assertSame('UTC', app('larajax.ui')->timezone());
 
         $html = $this->renderDatePicker([]);
         $this->assertStringContainsString('value="2026-10-20 14:30:00"', $html);
@@ -349,19 +338,19 @@ class SeamsTest extends TestCase
 
     public function test_an_invalid_or_empty_timezone_falls_back_to_the_app_timezone(): void
     {
-        Ui::resolveTimezoneUsing(fn () => 'Mars/Olympus');
-        $this->assertSame('UTC', Ui::timezone());
+        app('larajax.ui')->resolveTimezoneUsing(fn () => 'Mars/Olympus');
+        $this->assertSame('UTC', app('larajax.ui')->timezone());
 
-        Ui::resolveTimezoneUsing(fn () => null);
-        $this->assertSame('UTC', Ui::timezone());
+        app('larajax.ui')->resolveTimezoneUsing(fn () => null);
+        $this->assertSame('UTC', app('larajax.ui')->timezone());
 
-        Ui::resolveTimezoneUsing(fn () => new DateTimeZone('Europe/Paris'));
-        $this->assertSame('Europe/Paris', Ui::timezone());
+        app('larajax.ui')->resolveTimezoneUsing(fn () => new DateTimeZone('Europe/Paris'));
+        $this->assertSame('Europe/Paris', app('larajax.ui')->timezone());
     }
 
     public function test_the_datepicker_preview_uses_the_user_timezone(): void
     {
-        Ui::resolveTimezoneUsing(fn () => 'Australia/Sydney');
+        app('larajax.ui')->resolveTimezoneUsing(fn () => 'Australia/Sydney');
 
         $form = Form::createIn(new ExtendingController, [
             'model' => Sample::factory()->create(['published_at' => '2026-10-20 14:30:00']),
@@ -378,7 +367,7 @@ class SeamsTest extends TestCase
 
     public function test_date_and_time_modes_and_use_timezone_false_do_not_convert(): void
     {
-        Ui::resolveTimezoneUsing(fn () => 'Australia/Sydney');
+        app('larajax.ui')->resolveTimezoneUsing(fn () => 'Australia/Sydney');
 
         foreach ([['mode' => 'date'], ['mode' => 'time'], ['useTimezone' => false]] as $config) {
             $html = $this->renderDatePicker($config);
@@ -391,7 +380,7 @@ class SeamsTest extends TestCase
 
     public function test_list_columns_convert_datetime_values_but_not_dates_or_opted_out_columns(): void
     {
-        Ui::resolveTimezoneUsing(fn () => 'Australia/Sydney');
+        app('larajax.ui')->resolveTimezoneUsing(fn () => 'Australia/Sydney');
 
         $list = Lists::createIn(new ExtendingController, [
             'model' => new Sample,

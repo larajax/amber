@@ -1,0 +1,22 @@
+# ===================================
+#  Popular Post List Column Definitions
+# ===================================
+
+columns:
+    title:
+        label: Title
+
+    category:
+        label: Category
+        relation: category
+        select: name
+
+    published_at:
+        label: Published
+        type: timesince
+        width: 140px
+
+    views:
+        label: Views
+        type: number
+        width: 100px

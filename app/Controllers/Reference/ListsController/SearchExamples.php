@@ -106,7 +106,7 @@ trait SearchExamples
 
     // #region docs-scope
     /**
-     * makeScopeToolbar searches the given list through the post model's applySearch scope.
+     * makeScopeToolbar searches the given list through the post model's applySearch scope, and the closed box shows "Find..." in place of "Search...".
      */
     protected function makeScopeToolbar(Lists $list): Toolbar
     {
@@ -114,6 +114,7 @@ trait SearchExamples
             alias: 'scopeToolbar',
             search: [
                 'prompt' => 'Search posts, categories and tags...',
+                'shortPrompt' => 'Find...',
                 'scope' => 'applySearch',
             ],
         );

@@ -72,6 +72,8 @@ const sharedSidebar = [
             { text: 'Popups', link: '/ui/popups' },
             { text: 'Tabs', link: '/ui/tabs' },
             { text: 'Feedback', link: '/ui/feedback' },
+            { text: 'Scoreboards', link: '/ui/scoreboards' },
+            { text: 'Charts', link: '/ui/charts' },
             { text: 'Flags', link: '/ui/flags' },
             { text: 'Inputs', link: '/ui/inputs' }
         ]

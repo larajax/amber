@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Showcase;
 
+use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\UserGroup;
@@ -157,6 +158,34 @@ class AuthorsTest extends TestCase
         $this->assertStringContainsString('Reset Password', $html);
         $this->assertMatchesRegularExpression('/selected="selected"\s+value="'.$editors->id.'"\s*>Editors<\/option>/', $html);
         $this->assertMatchesRegularExpression('/value="'.$support->id.'"\s+checked="checked"/', $html);
+    }
+
+    public function test_the_edit_page_scoreboard_counts_the_author_posts_views_and_comments(): void
+    {
+        $author = User::factory()->create();
+        $latest = Post::factory()->for($author, 'author')->create(['title' => 'Latest Words', 'published' => true, 'published_at' => '2026-11-07 10:00:00', 'views' => 300]);
+        Post::factory()->for($author, 'author')->create(['published' => true, 'published_at' => '2026-10-02 10:00:00', 'views' => 1700]);
+        Post::factory()->for($author, 'author')->create(['published' => false, 'views' => 900]);
+        Comment::factory()->count(3)->for($latest)->create();
+
+        $html = $this->get("authors/{$author->id}/edit")->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/Posts\s*<\/div>\s*<p>\s*3\s*<\/p>\s*<p class="description">\s*2 published/', $html);
+        $this->assertMatchesRegularExpression('/Views\s*<\/div>\s*<p>\s*2,000\s*<\/p>/', $html);
+        $this->assertStringContainsString('1,000 a post on average', $html);
+        $this->assertMatchesRegularExpression('/Comments\s*<\/div>\s*<p>\s*3\s*<\/p>/', $html);
+        $this->assertMatchesRegularExpression('/Latest post\s*<\/div>\s*<p>\s*7 Nov\s*<\/p>\s*<p class="description">\s*Latest Words/', $html);
+        $this->assertStringContainsString('href="'.route('posts.edit', $latest).'"', $html);
+    }
+
+    public function test_the_edit_page_scoreboard_shows_no_data_for_an_author_who_has_published_nothing(): void
+    {
+        $author = User::factory()->create();
+
+        $html = $this->get("authors/{$author->id}/edit")->assertOk()->getContent();
+
+        $this->assertStringContainsString('nothing published yet', $html);
+        $this->assertStringNotContainsString('Latest post', $html);
     }
 
     public function test_on_update_saves_the_author_and_keeps_a_blank_password(): void

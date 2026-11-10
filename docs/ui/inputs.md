@@ -11,9 +11,10 @@ attribute, with no script of your own, and form fields use the same controls.
 ## Custom select {#custom-select}
 
 A `select` with the `custom-select` class becomes a searchable dropdown, built on
-[Select2](https://select2.org). It brings its own copy of jQuery, so the page needs none. The select
-keeps its name and value, and still dispatches `change`, so forms and your own listeners read it as a
-plain select.
+[Tom Select](https://tom-select.js.org), and a multiple select becomes a tag input whose tags are
+Bootstrap chips. The select keeps its name and value, and still dispatches `change`, so forms and your
+own listeners read it as a plain select. Setting its value from a script and dispatching `change`
+updates the field too.
 
 `select-no-search` hides the search box, for a short list. Option groups (`<optgroup>`) carry over as
 headings in the dropdown.
@@ -23,14 +24,39 @@ headings in the dropdown.
 Class | Description
 ------------- | -------------
 **custom-select** | enables the control.
-**select-no-search** | hides the search box.
+**select-no-search** | hides the search box of a single select.
 **select-hide-selected** | hides the options already selected, in a multiple select.
 **select-dropdown-auto-width** | sizes the dropdown to its options, in place of the select's width.
+**select-no-dropdown** | a tag input without a dropdown, where typed text becomes a tag.
 **form-control-sm** / **form-control-lg** | a smaller or larger select, with its dropdown to match.
 
 An `<option>` can carry a `data-status` color, shown as a dot, a `data-icon` with icon classes, or a
 `data-image` address, shown before its text. Inside a popup, the dropdown opens inside the dialog, so it
 shows above the backdrop.
+
+Attribute | Description
+------------- | -------------
+**data-placeholder** | a hint shown while nothing is picked, with a button to clear the choice.
+**data-allow-clear** | the clear button without a placeholder.
+**data-tags** | the select accepts values of its own, typed and confirmed with Enter.
+**data-token-separators** | characters, separated by `\|`, that turn the typed text into a new tag, for a select that accepts its own values.
+**data-maximum-selection-length** | the most options a multiple select takes.
+**data-close-on-select** | `false` keeps the dropdown open after each pick of a multiple select.
+**data-minimum-results-for-search** | fewer options than this hide the search box, `Infinity` for never.
+**data-sortable** | tags reorder by dragging, and post in that order.
+**data-checkboxes** | the options of a multiple select show checkboxes.
+**data-dropdown-header** | a title row with a close button atop the dropdown.
+**data-optgroup-columns** | option groups sit side by side as columns.
+**data-create-filter** | a regular expression that typed tags must match.
+**data-create-on-blur** | typed text becomes a tag when the field loses focus.
+**data-duplicates** | the same tag can be picked more than once.
+**data-search-fields** | the option fields the search matches, comma separated.
+**data-select-on-tab** | Tab picks the highlighted option.
+**data-language** | the language of the messages, such as `de`. Default: the page's `lang`.
+
+`jax.fetchControl(select, 'custom-select')` returns the control, whose `focus()` moves the keyboard
+focus to the field without opening it, `refresh()` reads the select's options and value again without
+a change event, and `tomSelect` is the Tom Select instance, for its own API.
 
 ## Custom select with a handler {#custom-select-ajax}
 
@@ -43,11 +69,11 @@ shows above the backdrop.
 
 <<< @/../app/Controllers/Reference/UiController/InputHandlers.php{php}
 
-Each result can also set `disabled` or `selected`, or `status`, `icon` and `image` as the option data
-attributes do. A result with `text` and a `children` array of results is an option group, and a
-`pagination` key with `more: true` makes the dropdown ask for the next page as the visitor scrolls,
-sending its number as `page`. A plain array of values keyed by id works too, though JavaScript does not
-keep the order of its keys, so prefer the list. The results can also go under a `result` key.
+Each result can also set `disabled`, or `status`, `icon` and `image` as the option data attributes do.
+A result with `text` and a `children` array of results is an option group, and a `pagination` key with
+`more: true` makes the dropdown ask for the next page as the visitor scrolls, sending its number as
+`page`. A plain array of values keyed by id works too, though JavaScript does not keep the order of its
+keys, so prefer the list. The results can also go under a `result` key.
 
 Attribute | Description
 ------------- | -------------
@@ -55,11 +81,7 @@ Attribute | Description
 **data-minimum-input-length** | how many characters to type before the handler runs.
 **data-ajax--delay** | how long to wait after the last key press before asking, in milliseconds.
 **data-request-data** | extra values sent with each request, as `key: value` pairs.
-**data-placeholder** | a hint shown while nothing is picked, with a button to clear the choice.
-**data-token-separators** | characters, separated by `\|`, that turn the typed text into a new tag, for a select that accepts its own values.
-**data-language** | the language of Select2's own messages.
-
-Select2 reads its other options from `data-*` attributes as well, as described in its documentation.
+**data-preload** | asks for the first page when the field takes focus, before anything is typed.
 
 ## Tri-state checkbox {#checkbox}
 

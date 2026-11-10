@@ -2,6 +2,7 @@
 
 use App\Controllers\AuthorsController;
 use App\Controllers\CategoriesController;
+use App\Controllers\DashboardController;
 use App\Controllers\GroupsController;
 use App\Controllers\PostsController;
 use App\Controllers\Reference\ExtendingController;
@@ -14,6 +15,17 @@ use App\Controllers\Reference\UiController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect('reference'));
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard
+|--------------------------------------------------------------------------
+|
+| The blog at a glance: a scoreboard of its figures, charts of its views
+| and sections, the posts that need attention and the most read posts.
+|
+*/
+Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
 /*
 |--------------------------------------------------------------------------
@@ -140,6 +152,8 @@ Route::match(['get', 'post'], '/reference/ui/dropdowns', [UiController::class, '
 Route::match(['get', 'post'], '/reference/ui/popups', [UiController::class, 'popups'])->name('reference.ui.popups');
 Route::match(['get', 'post'], '/reference/ui/tabs', [UiController::class, 'tabs'])->name('reference.ui.tabs');
 Route::match(['get', 'post'], '/reference/ui/feedback', [UiController::class, 'feedback'])->name('reference.ui.feedback');
+Route::match(['get', 'post'], '/reference/ui/scoreboards', [UiController::class, 'scoreboards'])->name('reference.ui.scoreboards');
+Route::match(['get', 'post'], '/reference/ui/charts', [UiController::class, 'charts'])->name('reference.ui.charts');
 Route::match(['get', 'post'], '/reference/ui/flags', [UiController::class, 'flags'])->name('reference.ui.flags');
 Route::match(['get', 'post'], '/reference/ui/inputs', [UiController::class, 'inputs'])->name('reference.ui.inputs');
 

@@ -15,7 +15,7 @@ classes the same way.
 
 ## Overriding keys {#extend}
 
-`Ui::extendIcons()` replaces keys in every pack. It takes an array, which applies to every pack alike,
+`extend()` on the icon manager, `app('larajax.ui.icons')`, replaces keys in every pack. It takes an array, which applies to every pack alike,
 or a closure that receives each pack's icons and name and returns the icons to use. The demo page swaps
 the info callout's icon and the search field's icon with an array, then gives the bootstrap pack its own
 glyphs for them with a closure, and the callout and search field below pick up the new icons:
@@ -37,7 +37,7 @@ A pack only maps keys to classes, so load the icon font itself in your layout.
 To switch the pack every widget uses, set `LARAJAX_ICONS` in your `.env` file, such as
 `LARAJAX_ICONS=bootstrap`.
 
-`Ui::registerIconPack()` adds a pack, or replaces one, by name. The pack is an array of keys and
+`registerPack()` adds a pack, or replaces one, by name. The pack is an array of keys and
 classes, a class that implements `Larajax\Ui\Classes\IconPack` (or its name), or a closure that returns
 the array. A closure or class name is only resolved when the pack is first used. The registrations
 above add an `amber` pack built on the phosphor pack with one key swapped. The table compares a few keys
@@ -59,6 +59,7 @@ Keys | Used by
 `action.*` | shared actions, such as `action.delete`.
 `search.*`, `dropdown.*`, `tooltip.*` | the search input, dropdown carets and field tooltips.
 `callout.*` | the callout types: `info`, `success`, `warning` and `danger`.
+`scoreboard.*` | the scoreboard trend arrows, `up` and `down`.
 `filter.*` | the filter widget.
 `list.*`, `pagination.*` | the list widget: reordering, setup, tree rows, sorting, switch columns and paging.
 `checkboxlist.*`, `datepicker.*`, `sensitive.*` | the checkbox list field, the date picker and the sensitive field.
@@ -83,10 +84,13 @@ Option | Description
 
 ## Methods {#methods}
 
+The methods are on the icon manager, `app('larajax.ui.icons')`.
+
 Method | Description
 ------------- | -------------
-**Ui::extendIcons($extension)** | replaces or adds keys in every pack, from an array or a closure.
-**Ui::registerIconPack($name, $pack)** | adds or replaces a pack.
+**extend($extension)** | replaces or adds keys in every pack, from an array or a closure.
+**registerPack($name, $pack)** | adds or replaces a pack.
+**icons($pack)** | returns a pack's resolved keys and classes, the default pack when `$pack` is `null`.
 
 The widgets draw their icons through `Ui::icon()` and `Ui::iconClass()`, which resolve a key in the
 default pack. They exist for the library's own views, so an app rarely needs to call them.

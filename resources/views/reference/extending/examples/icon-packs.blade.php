@@ -1,5 +1,5 @@
 @php
-    $iconManager = app(\Larajax\Ui\Classes\IconManager::class);
+    $iconManager = app('larajax.ui.icons');
 @endphp
 
 <table class="table ui-icon-table">

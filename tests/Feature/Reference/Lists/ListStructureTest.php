@@ -22,6 +22,9 @@ class ListStructureTest extends TestCase
      */
     protected function ajax(string $handler, array $data = []): TestResponse
     {
+        // Laravel keeps the route's controller across a test's requests, and the controller keeps its first AJAX handler
+        app('router')->getRoutes()->getByName('reference.lists.list-structure')->flushController();
+
         return $this->withHeaders([
             'X-AJAX-HANDLER' => $handler,
             'X-Requested-With' => 'XMLHttpRequest',
@@ -59,11 +62,11 @@ class ListStructureTest extends TestCase
     {
         $html = $this->get(route('reference.lists.list-structure'))->assertOk()->getContent();
 
-        foreach (['treeList', 'browseTree', 'reorderList'] as $alias) {
+        foreach (['treeList', 'checkboxTree', 'browseTree', 'reorderList'] as $alias) {
             $this->assertStringContainsString('id="ListStructure-'.$alias.'"', $html);
         }
 
-        foreach (['makeTreeList', 'makeTreeToolbar', 'makeBrowseTree', 'makeReorderList'] as $method) {
+        foreach (['makeTreeList', 'makeTreeToolbar', 'makeCheckboxTree', 'makeCheckboxTreeToolbar', 'onShowCheckedCategories', 'makeBrowseTree', 'makeReorderList'] as $method) {
             $this->assertStringContainsString("function {$method}(", $html);
         }
 
@@ -72,13 +75,39 @@ class ListStructureTest extends TestCase
         $this->assertStringContainsString('ui-example-preview reference-scroll-preview', $html);
     }
 
+    public function test_the_tree_cell_carries_its_level_and_indent_for_the_guides(): void
+    {
+        $this->makeTree();
+
+        $html = $this->structureHtml('treeList');
+
+        // A level is 18 pixels, after 15 for the tree's toggles
+        $this->assertMatchesRegularExpression('/<td class="[^"]*list-cell-tree[^"]*" style="--tree-level:0;--tree-pad:15px;padding-left:15px"/', $html);
+        $this->assertMatchesRegularExpression('/<td class="[^"]*list-cell-tree[^"]*" style="--tree-level:2;--tree-pad:51px;padding-left:51px"/', $html);
+    }
+
+    public function test_the_checkbox_tree_puts_a_checkbox_before_the_drag_handle_and_sends_the_checked_rows(): void
+    {
+        [$root, $child] = $this->makeTree();
+
+        $html = $this->structureHtml('checkboxTree');
+
+        $this->assertMatchesRegularExpression('/class="control-list list-scrollable list-checkboxes"\s+data-control="listwidget liststructurewidget"/', $html);
+        $this->assertMatchesRegularExpression('/<td class="list-checkbox[^"]*"[^>]*>.*?<\/td>\s*<td class="list-reorder nolink">/s', $html);
+
+        $this->ajax('onShowCheckedCategories', ['checked' => [$child->id, $root->id]])
+            ->assertOk()
+            ->assertJsonPath('__ajax.ops.0.op', 'flash')
+            ->assertJsonPath('__ajax.ops.0.text', '2 categories checked: Forms, Guides.');
+    }
+
     public function test_the_category_tree_renders_three_levels(): void
     {
         [$root] = $this->makeTree();
 
         $html = $this->structureHtml('treeList');
 
-        $this->assertStringContainsString('data-control="liststructurewidget"', $html);
+        $this->assertStringContainsString('data-control="listwidget liststructurewidget"', $html);
         $this->assertStringContainsString('data-reorder-handler="treeList::onReorder"', $html);
         $this->assertStringContainsString('data-use-reorder="1"', $html);
         $this->assertStringContainsString('data-use-tree="1"', $html);
@@ -191,6 +220,43 @@ class ListStructureTest extends TestCase
         $this->assertStringContainsString('data-use-tree=""', $html);
         $this->assertStringContainsString('Validation Rules', $html);
         $this->assertStringContainsString('data-request="treeList::onShowStructure"', $html);
+    }
+
+    public function test_a_sorted_tree_offers_a_labelled_way_back_to_the_tree(): void
+    {
+        $this->makeTree();
+
+        $html = $this->ajax('treeList::onSort', ['sortColumn' => 'name'])->assertOk()->json('__ajax.ops.0.html');
+
+        // The last head cell holds it, with no column of its own
+        $this->assertMatchesRegularExpression('/<th style="" class="list-cell-name-posts_count[^"]*has-show-structure[^"]*">\s*<button\s+type="button"\s+class="list-show-structure"\s+data-request="treeList::onShowStructure"\s*>\s*<i class="ph ph-tree-structure" aria-hidden="true"><\/i>\s*<span>\s*Show tree\s*<\/span>\s*<\/button>\s*<a/', $html);
+
+        preg_match('/<thead>.*?<\/thead>/s', $html, $head);
+        preg_match('/<tr\s+class="[^"]*"\s+data-tree-id=.*?<\/tr>/s', $html, $row);
+        $this->assertSame(preg_match_all('/<th[\s>]/', $head[0]), preg_match_all('/<td[\s>]/', $row[0]));
+        $this->assertStringNotContainsString('list-setup', $html);
+    }
+
+    public function test_a_sorted_reorder_list_offers_its_way_back_to_the_order(): void
+    {
+        User::factory()->count(2)->create();
+
+        $html = $this->ajax('reorderList::onSort', ['sortColumn' => 'name'])->assertOk()->json('__ajax.ops.0.html');
+
+        $this->assertStringContainsString('data-request="reorderList::onShowStructure"', $html);
+        $this->assertMatchesRegularExpression('/<span>\s*Show order\s*<\/span>/', $html);
+    }
+
+    public function test_a_searched_tree_offers_no_way_back_until_the_search_is_cleared(): void
+    {
+        $this->makeTree();
+
+        $html = $this->ajax('treeToolbarSearch::onSubmit', ['treeToolbarSearch' => ['term' => 'validation']])
+            ->assertOk()
+            ->json('__ajax.ops.0.html');
+
+        $this->assertStringNotContainsString('list-show-structure', $html);
+        $this->assertStringNotContainsString('has-show-structure', $html);
     }
 
     public function test_on_reorder_stores_the_new_user_order(): void

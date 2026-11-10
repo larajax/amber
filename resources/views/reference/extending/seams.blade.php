@@ -13,13 +13,13 @@
     </div>
 </section>
 
-<section class="ui-section" id="ui-url">
-    @include('reference._heading', ['id' => 'ui-url', 'title' => 'Ui::url()', 'caption' => 'A widget path, a resolved scheme link and one that points nowhere.'])
+<section class="ui-section" id="addresses">
+    @include('reference._heading', ['id' => 'addresses', 'title' => 'Building addresses', 'caption' => 'A widget path, a resolved scheme link and one that points nowhere.'])
     @include('reference._example', ['view' => 'reference.extending.examples.seams-url', 'stacked' => true])
 </section>
 
 <section class="ui-section" id="widget-paths">
-    @include('reference._heading', ['id' => 'widget-paths', 'title' => 'Widget paths', 'caption' => '<code>recordUrl</code>, <code>linkUrl</code> and a toolbar <code>url</code> through <code>Ui::resolveUrlUsing()</code>.'])
+    @include('reference._heading', ['id' => 'widget-paths', 'title' => 'Widget paths', 'caption' => '<code>recordUrl</code>, <code>linkUrl</code> and a toolbar <code>url</code> through <code>resolveUrlUsing()</code>.'])
     @if (request()->filled('path'))
         {{ Ui::callout(label: 'The resolver received '.request()->query('path'), comment: 'That is the widget path, before the resolver turned it into this address.', success: true) }}
     @endif
@@ -34,7 +34,7 @@
 </section>
 
 <section class="ui-section" id="scheme-links">
-    @include('reference._heading', ['id' => 'scheme-links', 'title' => 'Scheme links', 'caption' => '<code>reference://</code> links through <code>Ui::resolveLinkUsing()</code>, one of them retired.'])
+    @include('reference._heading', ['id' => 'scheme-links', 'title' => 'Scheme links', 'caption' => '<code>reference://</code> links through <code>resolveLinkUsing()</code>, one of them retired.'])
     <div class="ui-example is-stacked">
         <div class="ui-example-preview">
             {{ $linkToolbar }}
@@ -46,7 +46,7 @@
 </section>
 
 <section class="ui-section" id="timezone">
-    @include('reference._heading', ['id' => 'timezone', 'title' => 'Viewer timezone', 'caption' => 'Pick a timezone for <code>Ui::resolveTimezoneUsing()</code> to return.'])
+    @include('reference._heading', ['id' => 'timezone', 'title' => 'Viewer timezone', 'caption' => 'Pick a timezone for <code>resolveTimezoneUsing()</code> to return.'])
     @include('reference._example', ['view' => 'reference.extending.examples.seams-timezone', 'stacked' => true])
 </section>
 

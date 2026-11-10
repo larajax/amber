@@ -1188,12 +1188,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/larajax/ui.git",
-                "reference": "06ba8e9b27f46f4570c44bdb55b3b6aa63afd9d5"
+                "reference": "1e40800e8fa0249b9830f45dad2deb9bee3c7efb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/larajax/ui/zipball/06ba8e9b27f46f4570c44bdb55b3b6aa63afd9d5",
-                "reference": "06ba8e9b27f46f4570c44bdb55b3b6aa63afd9d5",
+                "url": "https://api.github.com/repos/larajax/ui/zipball/1e40800e8fa0249b9830f45dad2deb9bee3c7efb",
+                "reference": "1e40800e8fa0249b9830f45dad2deb9bee3c7efb",
                 "shasum": ""
             },
             "require": {
@@ -1229,7 +1229,7 @@
                 "source": "https://github.com/larajax/ui/tree/main",
                 "issues": "https://github.com/larajax/ui/issues"
             },
-            "time": "2026-11-05T11:49:02+00:00"
+            "time": "2026-11-06T20:21:10+00:00"
         },
         {
             "name": "laravel/framework",

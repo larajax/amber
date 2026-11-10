@@ -1,4 +1,8 @@
 tabs:
+    icons:
+        Who it is for: ph ph-users-three
+        How it is sold: ph ph-storefront
+
     fields:
         audience:
             label: Audience

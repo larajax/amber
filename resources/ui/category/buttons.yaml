@@ -14,3 +14,11 @@ buttons:
         icon: ph ph-article
         type: secondary
         url: posts
+
+    delete:
+        label: Delete
+        icon: ph ph-trash
+        type: danger
+        handler: onDelete
+        confirm: Delete the checked categories and the categories below them?
+        checked: true

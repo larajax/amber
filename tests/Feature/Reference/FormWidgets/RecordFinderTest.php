@@ -202,7 +202,7 @@ class RecordFinderTest extends TestCase
         $response = $this->ajax('exampleTreePrimaryCategory::onFindRecord', ['recordfinder_flag' => 1]);
 
         $response->assertOk();
-        $this->assertStringContainsString('data-control="liststructurewidget"', $response->json('result'));
+        $this->assertStringContainsString('data-control="listwidget liststructurewidget"', $response->json('result'));
         $this->assertStringContainsString('Forms', $response->json('result'));
     }
 

@@ -165,7 +165,7 @@ class FormWidgetsController extends ReferenceControllerBase
     public function tagList(): View
     {
         $this->makeExampleForms('form-widgets/tag-list', [
-            'array', 'string', 'options', 'use-key', 'relation', 'relation-custom', 'read-only', 'preview',
+            'array', 'string', 'options', 'sortable', 'use-key', 'relation', 'relation-custom', 'read-only', 'preview',
         ]);
 
         return view('reference.form-widgets.tag-list', $this->exampleVars());

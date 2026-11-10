@@ -62,6 +62,22 @@ class UiController extends ReferenceControllerBase
     }
 
     /**
+     * scoreboards displays the Scoreboards page.
+     */
+    public function scoreboards(): View
+    {
+        return view('reference.ui.scoreboards');
+    }
+
+    /**
+     * charts displays the Charts page.
+     */
+    public function charts(): View
+    {
+        return view('reference.ui.charts');
+    }
+
+    /**
      * flags displays the Flags page.
      */
     public function flags(): View

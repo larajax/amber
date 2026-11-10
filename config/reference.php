@@ -219,9 +219,19 @@ return [
                     'label' => 'Feedback',
                     'icon' => 'ph-chat-centered-text',
                     'covers' => [
-                        'element:callout', 'element:scoreboard', 'ui:callout', 'ui:slot', 'ui:end',
+                        'element:callout', 'element:status-list', 'ui:callout', 'ui:slot', 'ui:end', 'ui:statusList', 'ui:statusItem',
                         'control:load-indicator', 'control:loader-container', 'control:change-monitor',
                     ],
+                ],
+                'scoreboards' => [
+                    'label' => 'Scoreboards',
+                    'icon' => 'ph-gauge',
+                    'covers' => ['element:scoreboard', 'ui:scoreboard', 'ui:scoreboardItem', 'ui:scoreboardThumbnail'],
+                ],
+                'charts' => [
+                    'label' => 'Charts',
+                    'icon' => 'ph-chart-pie-slice',
+                    'covers' => ['control:chart', 'ui:pieChart', 'ui:barChart', 'ui:lineChart'],
                 ],
                 'flags' => [
                     'label' => 'Flags',
@@ -249,12 +259,15 @@ return [
                 'icons' => [
                     'label' => 'Icons',
                     'icon' => 'ph-shapes',
-                    'covers' => ['ui:registerIconPack', 'ui:extendIcons'],
+                    'covers' => ['larajax.ui.icons:extend', 'larajax.ui.icons:registerPack', 'larajax.ui.icons:icons'],
                 ],
                 'seams' => [
                     'label' => 'URLs and Timezones',
                     'icon' => 'ph-plugs',
-                    'covers' => ['ui:url', 'ui:resolveUrlUsing', 'ui:resolveLinkUsing', 'ui:timezone', 'ui:resolveTimezoneUsing'],
+                    'covers' => [
+                        'larajax.ui:url', 'larajax.ui:resolveUrlUsing', 'larajax.ui:resolveLinkUsing',
+                        'larajax.ui:timezone', 'larajax.ui:resolveTimezoneUsing',
+                    ],
                 ],
             ],
         ],

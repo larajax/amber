@@ -155,6 +155,18 @@ class Post extends Model
     }
     // #endregion docs-list-status-color-options
 
+    // #region docs-list-category-options
+    /**
+     * listCategoryOptions returns every category by name, a list long enough for its dropdown filter to offer a search box.
+     *
+     * @return array<int, string>
+     */
+    public static function listCategoryOptions(): array
+    {
+        return Category::query()->orderBy('name')->pluck('name', 'id')->all();
+    }
+    // #endregion docs-list-category-options
+
     /**
      * getStatusOptions supplies the status dropdown and the selectable status column by naming convention.
      *

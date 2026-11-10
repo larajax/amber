@@ -6,20 +6,12 @@ use App\Controllers\Reference\FormWidgetsController;
 use App\Models\Sample;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
-use Larajax\Ui\Facades\Ui;
 use Larajax\Ui\Widgets\Form;
 use Tests\TestCase;
 
 class DatePickerTest extends TestCase
 {
     use RefreshDatabase;
-
-    protected function tearDown(): void
-    {
-        Ui::resolveTimezoneUsing(null);
-
-        parent::tearDown();
-    }
 
     /**
      * weekendDays is a disableDays callable used by the tests.
@@ -129,7 +121,7 @@ class DatePickerTest extends TestCase
     public function test_the_timezone_example_keeps_the_stored_time_while_the_default_converts(): void
     {
         $this->makeDatedSample();
-        Ui::resolveTimezoneUsing(fn () => 'Australia/Sydney');
+        app('larajax.ui')->resolveTimezoneUsing(fn () => 'Australia/Sydney');
 
         $html = $this->get(route('reference.form-widgets.date-picker'))->assertOk()->getContent();
 

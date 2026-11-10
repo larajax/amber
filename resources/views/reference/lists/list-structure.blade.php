@@ -15,6 +15,14 @@
     ])
 </section>
 
+<section class="ui-section" id="checkboxes">
+    @include('reference._heading', ['id' => 'checkboxes', 'title' => 'Tree with checkboxes', 'caption' => '<code>showCheckboxes: true</code> beside the drag handles, with a toolbar that sends the checked rows.'])
+    @include('reference._widget_example', [
+        'widgets' => [$checkboxTreeToolbar, $checkboxTree],
+        'methods' => ['makeCheckboxTree', 'makeCheckboxTreeToolbar', 'onShowCheckedCategories'],
+    ])
+</section>
+
 <section class="ui-section" id="browse">
     @include('reference._heading', ['id' => 'browse', 'title' => 'Browsing tree', 'caption' => '<code>treeExpanded: false</code> and <code>showReorder: false</code>.'])
     @include('reference._widget_example', [

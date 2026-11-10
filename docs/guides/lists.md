@@ -112,7 +112,7 @@ Larajax runs the `index` action before the handler, so `prepareListVars()` has a
 
 `recordUrl: 'posts/:id/edit'` makes each row a link to its post. `:id`, and any other attribute name
 after a colon, is replaced with the record's value, and the result becomes an address through
-`Ui::url()`, which you can [change for your application](/extending/seams#ui-url). Clicking anywhere on a
+`app('larajax.ui')->url()`, which you can [change for your application](/extending/seams#addresses). Clicking anywhere on a
 row follows the link, except cells that link on their own. The author and category columns are
 `linkage` columns with their own `linkUrl`, so they open the author or the category instead.
 
@@ -174,7 +174,10 @@ and drag-and-drop reordering, and it takes every list option as well as its own:
 
 `showTree` draws the tree with arrows to open and close each branch, `treeExpanded` starts with every
 branch open, and `maxDepth` stops a category from nesting more than three levels deep. With
-`dragRow: false`, a row moves by its handle only, so a click on the row still opens the category. The
+`dragRow: false`, a row moves by its handle only, so a click on the row still opens the category.
+`showCheckboxes` works in a tree as in any list, and the toolbar's Delete button, with `checked: true`
+in `resources/ui/category/buttons.yaml`, sends the checked rows to `onDelete`, which keeps any branch
+that holds posts and refreshes the tree. The
 category model implements `TreeInterface` and `SortableInterface`, keeping its parent in `parent_id` and
 its place in `sort_order`, and dragging a row stores both, see [trees](/guides/models#trees). Searching shows the matches as a flat list until the search
 is cleared, and so does sorting by a column. The [list structure](/lists/list-structure) page shows a

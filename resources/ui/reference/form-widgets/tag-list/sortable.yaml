@@ -1,0 +1,11 @@
+fields:
+    hashtags:
+        label: Hashtags
+        type: taglist
+        mode: array
+        customTags: true
+        sortable: true
+        tagPattern: ^[a-z0-9-]+$
+        createOnBlur: true
+        placeholder: Type lowercase tags, drag to reorder
+        comment: Lowercase tags with dashes, kept in the order they are dragged to.

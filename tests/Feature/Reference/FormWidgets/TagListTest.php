@@ -58,11 +58,11 @@ class TagListTest extends TestCase
 
         $html = $this->get(route('reference.form-widgets.tag-list'))->assertOk()->getContent();
 
-        foreach (['array', 'string', 'options', 'use-key', 'relation', 'relation-custom', 'read-only', 'preview'] as $example) {
+        foreach (['array', 'string', 'options', 'sortable', 'use-key', 'relation', 'relation-custom', 'read-only', 'preview'] as $example) {
             $this->assertStringContainsString("resources/ui/reference/form-widgets/tag-list/{$example}.yaml", $html);
         }
 
-        $this->assertSame(6, substr_count($html, 'select-hide-selected'));
+        $this->assertSame(7, substr_count($html, 'select-hide-selected'));
         $this->assertSame(2, substr_count($html, 'taglist--preview'));
         $this->assertStringContainsString('data-request="onSaveExamples"', $html);
     }
@@ -141,6 +141,38 @@ class TagListTest extends TestCase
         $this->assertStringNotContainsString('data-token-separators', $html);
         $this->assertMatchesRegularExpression('/<option\s+selected="selected"\s+value="design"\s*>Design<\/option>/', $html);
         $this->assertMatchesRegularExpression('/<option\s+value="research"\s*>Research<\/option>/', $html);
+    }
+
+    public function test_sortable_tags_render_their_order_pattern_and_blur_options(): void
+    {
+        Sample::factory()->create(['hashtags' => ['warm-light', 'new-in']]);
+
+        $html = $this->section($this->get(route('reference.form-widgets.tag-list'))->getContent(), 'sortable');
+
+        $this->assertStringContainsString('data-sortable', $html);
+        $this->assertStringContainsString('data-create-filter="^[a-z0-9-]+$"', $html);
+        $this->assertStringContainsString('data-create-on-blur', $html);
+        $this->assertMatchesRegularExpression('/value="warm-light"\s*>warm-light<\/option>.*value="new-in"\s*>new-in<\/option>/s', $html);
+    }
+
+    public function test_sortable_tags_save_in_the_order_they_post(): void
+    {
+        $sample = Sample::factory()->create(['hashtags' => ['warm-light', 'new-in']]);
+
+        $this->ajax('onSaveExamples', ['hashtags' => ['new-in', 'warm-light', 'desk-lamp']])->assertOk();
+
+        $this->assertSame(['new-in', 'warm-light', 'desk-lamp'], $sample->refresh()->hashtags);
+    }
+
+    public function test_the_tag_pattern_and_blur_options_need_custom_tags(): void
+    {
+        $sample = Sample::factory()->create();
+
+        $html = (string) $this->makeTagForm($sample, ['tagPattern' => '^[a-z]+$', 'createOnBlur' => true, 'sortable' => true, 'options' => ['a' => 'A']])->render();
+
+        $this->assertStringContainsString('data-sortable', $html);
+        $this->assertStringNotContainsString('data-create-filter', $html);
+        $this->assertStringNotContainsString('data-create-on-blur', $html);
     }
 
     public function test_use_key_false_renders_the_labels_as_values(): void

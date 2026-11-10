@@ -3,7 +3,7 @@
 @section('content')
 
 @include('reference._header', [
-    'intro' => 'Callouts, scoreboards, and the loading and unsaved states that controls add.',
+    'intro' => 'Callouts, status lists, and the loading and unsaved states that controls add.',
 ])
 
 <section class="ui-section" id="callouts">
@@ -35,9 +35,9 @@
     @include('reference._example', ['view' => 'reference.ui.examples.callout-dismiss', 'stacked' => true])
 </section>
 
-<section class="ui-section" id="scoreboard">
-    @include('reference._heading', ['id' => 'scoreboard', 'title' => 'Scoreboard', 'caption' => 'Four figures, with <code>positive</code> and <code>negative</code> trends.'])
-    @include('reference._example', ['view' => 'reference.ui.examples.scoreboard', 'stacked' => true])
+<section class="ui-section" id="status-list">
+    @include('reference._heading', ['id' => 'status-list', 'title' => 'Status list', 'caption' => 'Statuses with an icon, a link or a label, from <code>Ui::statusList()</code>.'])
+    @include('reference._example', ['view' => 'reference.ui.examples.status-list', 'stacked' => true])
 </section>
 
 <section class="ui-section" id="loader-container">

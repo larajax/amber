@@ -3,18 +3,20 @@
 namespace App\Controllers;
 
 use App\Classes\ControllerBase;
+use App\Controllers\AuthorsController\AuthorFigures;
 use App\Controllers\AuthorsController\AuthorForm;
 use App\Controllers\AuthorsController\AuthorList;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 
 /**
- * AuthorsController holds the author pages, with the list and form widgets and their AJAX handlers in the AuthorList and AuthorForm traits.
+ * AuthorsController holds the author pages, with the list and form widgets and their AJAX handlers in the AuthorList and AuthorForm traits, and the edit page's scoreboard figures in AuthorFigures.
  */
 class AuthorsController extends ControllerBase
 {
     use AuthorList;
     use AuthorForm;
+    use AuthorFigures;
 
     /**
      * index displays a filtered, searchable list of the authors with the number of posts each one wrote.
@@ -46,6 +48,7 @@ class AuthorsController extends ControllerBase
         return view('authors.edit', [
             'user' => $user,
             'formWidget' => $this->formWidget,
+            ...$this->prepareAuthorFigureVars($user),
         ]);
     }
 }

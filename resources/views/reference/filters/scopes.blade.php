@@ -31,7 +31,7 @@
 </section>
 
 <section class="ui-section" id="dropdown">
-    @include('reference._heading', ['id' => 'dropdown', 'title' => 'Dropdown', 'caption' => '<code>dropdown</code> with <code>optionsMethod</code> and <code>emptyOption</code>.'])
+    @include('reference._heading', ['id' => 'dropdown', 'title' => 'Dropdown', 'caption' => '<code>dropdown</code> with <code>optionsMethod</code> and <code>emptyOption</code>, and a search box once the list is long.'])
     @include('reference._widget_example', [
         'widgets' => [$examples['dropdown']['filter'], $examples['dropdown']['list']],
         'sources' => ['resources/ui/reference/filters/scopes/dropdown.yaml'],

@@ -44,6 +44,16 @@ call the model's `get{Field}Options()` method. `maxItems` caps how many tags can
 
 <<< @/../resources/ui/reference/form-widgets/tag-list/options.yaml
 
+## Sorting and checking tags {#sortable}
+
+`sortable` lets the user drag the tags into a new order, and the field saves them in that order, which
+matters in array and string mode. With `customTags`, `tagPattern` is a regular expression a typed tag
+must match before it becomes a tag, here lowercase words joined by dashes, and `createOnBlur` keeps the
+text still being typed as a tag when the field loses focus, rather than dropping it. The pattern only
+guides the user, so validate the saved value with the model's rules as well.
+
+<<< @/../resources/ui/reference/form-widgets/tag-list/sortable.yaml
+
 ## Saving labels {#use-key}
 
 `useKey: false` saves the option labels instead of their keys, here `["English", "Japanese"]`. Custom
@@ -98,6 +108,9 @@ Option | Description
 **nameFrom** | in relation mode, the related model's column that names each tag. Default: `name`.
 **placeholder** | the text shown while the field is empty. Default: none.
 **maxItems** | the most tags that can be picked. Default: no limit.
+**sortable** | lets the user drag the tags into a new order, saved in that order. Default: `false`.
+**tagPattern** | with `customTags`, a regular expression a typed tag must match, such as `^[a-z0-9-]+$`. Default: none.
+**createOnBlur** | with `customTags`, keeps the typed text as a tag when the field loses focus. Default: `false`.
 
 The field also takes the common [field properties](/forms/fields#field-properties), such as `readOnly`,
 `disabled` and `valueFrom`.

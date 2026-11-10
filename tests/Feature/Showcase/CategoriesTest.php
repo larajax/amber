@@ -166,4 +166,60 @@ class CategoriesTest extends TestCase
 
         $this->assertSame(3, Category::count());
     }
+
+    public function test_the_tree_has_checkboxes_and_a_delete_button_for_the_checked_rows(): void
+    {
+        $this->makeTree();
+
+        $html = $this->get('categories')->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/class="control-list[^"]*list-checkboxes"\s+data-control="listwidget liststructurewidget"/', $html);
+        $this->assertMatchesRegularExpression('/<button[^>]*class="btn-solid theme-danger"[^>]*data-request="onDelete"[^>]*data-request-confirm="Delete the checked categories and the categories below them\?"[^>]*data-list-checked-trigger/', $html);
+    }
+
+    public function test_on_delete_deletes_the_checked_categories_with_the_categories_below_them(): void
+    {
+        [$root, $child] = $this->makeTree();
+        $news = Category::factory()->create(['name' => 'News', 'slug' => 'news']);
+
+        // The child is checked as well as its parent, and goes with it
+        $response = $this->ajax('onDelete', ['checked' => [$child->id, $root->id]])->assertOk();
+
+        $this->assertSame([$news->id], Category::pluck('id')->all());
+
+        $ops = collect($response->json('__ajax.ops'));
+        $this->assertSame('success', $ops->firstWhere('op', 'flash')['level']);
+        $this->assertSame('2 categories deleted.', $ops->firstWhere('op', 'flash')['text']);
+        $this->assertTrue($ops->contains(fn (array $op) => str_contains($op['html'] ?? '', 'data-tree-id="'.$news->id.'"')), 'The tree is not refreshed.');
+    }
+
+    public function test_on_delete_keeps_a_checked_branch_that_holds_posts(): void
+    {
+        [$root, , $grandchild] = $this->makeTree();
+        Post::factory()->for($grandchild)->create();
+        $news = Category::factory()->create(['name' => 'News', 'slug' => 'news']);
+
+        $response = $this->ajax('onDelete', ['checked' => [$root->id, $news->id]])->assertOk();
+
+        $flash = collect($response->json('__ajax.ops'))->firstWhere('op', 'flash');
+        $this->assertSame('warning', $flash['level']);
+        $this->assertSame('1 category deleted. Guides holds posts, so it stays.', $flash['text']);
+        $this->assertSame(3, Category::count());
+        $this->assertNull(Category::find($news->id));
+    }
+
+    public function test_on_delete_refuses_when_every_checked_branch_holds_posts(): void
+    {
+        [$root] = $this->makeTree();
+        $news = Category::factory()->create(['name' => 'News', 'slug' => 'news']);
+        Post::factory()->for($root)->create();
+        Post::factory()->for($news)->create();
+
+        $response = $this->ajax('onDelete', ['checked' => [$news->id, $root->id]])->assertOk();
+
+        $flash = collect($response->json('__ajax.ops'))->firstWhere('op', 'flash');
+        $this->assertSame('error', $flash['level']);
+        $this->assertSame('Guides and News hold posts, so they stay. Move or delete the posts first.', $flash['text']);
+        $this->assertSame(4, Category::count());
+    }
 }

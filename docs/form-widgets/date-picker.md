@@ -100,7 +100,7 @@ fills in `00:00` instead.
 ## Timezone {#timezone}
 
 Dates are stored in the application timezone. Once a timezone resolver is set with
-`Ui::resolveTimezoneUsing()` (see [URLs and Timezones](/extending/seams)), datetime values show in the
+`app('larajax.ui')->resolveTimezoneUsing()` (see [URLs and Timezones](/extending/seams)), datetime values show in the
 viewer's timezone and save back in the application timezone.
 
 `useTimezone: false` shows and saves the value as stored, for times that belong to a place rather than a

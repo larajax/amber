@@ -96,6 +96,7 @@ class SampleSeeder extends Seeder
                 'tags' => ['lighting', 'bestseller'],
                 'keywords' => 'lamp desk dimmable',
                 'topics' => ['design', 'engineering'],
+                'hashtags' => ['new-in', 'desk-lamp', 'warm-light'],
                 'content' => [
                     ['_group' => 'heading', 'title' => 'Light that follows you', 'subtitle' => 'Bends to any angle'],
                     ['_group' => 'paragraph', 'text' => 'Aurora holds its place wherever you point it.', 'align' => 'left'],

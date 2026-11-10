@@ -52,7 +52,7 @@ class FeedbackTest extends TestCase
         $html = $this->get(route('reference.ui.feedback'))->assertOk()->getContent();
 
         $examples = [
-            'callout-types', 'callout-body', 'callout-action', 'callout-icons', 'callout-dismiss', 'scoreboard',
+            'callout-types', 'callout-body', 'callout-action', 'callout-icons', 'callout-dismiss', 'status-list',
             'loader-container', 'load-indicator-markup', 'load-indicator-api', 'change-monitor',
         ];
 
@@ -61,7 +61,7 @@ class FeedbackTest extends TestCase
             $this->assertStringContainsString('<pre><code>'.$source.'</code></pre>', $html, "{$example} is not shown.");
         }
 
-        foreach (['callouts', 'callout-body', 'callout-action', 'callout-icons', 'callout-dismiss', 'scoreboard', 'loader-container', 'load-indicator', 'load-indicator-api', 'change-monitor'] as $section) {
+        foreach (['callouts', 'callout-body', 'callout-action', 'callout-icons', 'callout-dismiss', 'status-list', 'loader-container', 'load-indicator', 'load-indicator-api', 'change-monitor'] as $section) {
             $this->assertStringContainsString('id="'.$section.'"', $html);
         }
 
@@ -82,8 +82,7 @@ class FeedbackTest extends TestCase
         $this->assertMatchesRegularExpression('/<div class="action">\s*<button class="btn-solid theme-primary" type="button" data-request="onCalloutAction"[^>]*>\s*Add a card\s*<\/button>\s*<\/div>/', $html);
         $this->assertMatchesRegularExpression('/<div class="content">\s*<p>\s*Add a payment method to keep your projects\./', $html);
         $this->assertStringContainsString('data-request="onCalloutAction"', $html);
-        $this->assertStringContainsString('class="scoreboard"', $html);
-        $this->assertStringContainsString('<p class="positive">', $html);
+        $this->assertStringContainsString('<div class="control-status-list">', $html);
         $this->assertStringContainsString('data-control="loader-container"', $html);
         $this->assertStringContainsString('class="loading-indicator size-small"', $html);
         $this->assertStringContainsString('class="loading-indicator indicator-center"', $html);
@@ -271,5 +270,51 @@ class FeedbackTest extends TestCase
         $response = $this->ajax('onSaveProfile', ['display_name' => 'Ada Lovelace', 'is_public' => '1']);
 
         $this->assertFlash($response, 'success', 'Profile saved.');
+    }
+
+    public function test_the_page_renders_the_status_list(): void
+    {
+        $html = $this->get(route('reference.ui.feedback'))->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/<span class="status-icon success">\s*<i class="ph ph-check" aria-hidden="true"><\/i>\s*<\/span>\s*<span class="status-text success">\s*Software is up to date\s*<\/span>\s*<a href="#status-list" class="status-label link">\s*Check again\s*<\/a>/', $html);
+        $this->assertMatchesRegularExpression('/<span class="status-text muted">\s*Online since\s*<\/span>\s*<span class="status-label">\s*4 April 2026\s*<\/span>/', $html);
+    }
+
+    public function test_a_status_list_holds_its_items(): void
+    {
+        $html = $this->capture(function () {
+            Ui::statusList(id: 'health')->slot();
+            echo Ui::statusItem(label: 'System build', value: '313');
+            Ui::end();
+        });
+
+        $this->assertMatchesRegularExpression('/^<div class="control-status-list" id="health">\s*<ul>\s*<li>\s*<span class="status-text">\s*System build\s*<\/span>\s*<span class="status-label">\s*313\s*<\/span>\s*<\/li>\s*<\/ul>\s*<\/div>/', $html);
+    }
+
+    public function test_a_status_item_escapes_its_text_and_takes_one_type(): void
+    {
+        $html = Ui::statusItem(label: '<b>Disk</b>', value: '<i>90%</i>', icon: 'ph ph-hard-drives', danger: true, warning: true)->toHtml();
+
+        $this->assertStringContainsString('<span class="status-icon warning">', $html);
+        $this->assertMatchesRegularExpression('/<span class="status-text warning">\s*&lt;b&gt;Disk&lt;\/b&gt;\s*<\/span>/', $html);
+        $this->assertMatchesRegularExpression('/<span class="status-label">\s*&lt;i&gt;90%&lt;\/i&gt;\s*<\/span>/', $html);
+
+        $html = Ui::statusItem(label: 'Plain', muted: true)->toHtml();
+
+        $this->assertStringNotContainsString('status-icon', $html);
+        $this->assertStringNotContainsString('status-label', $html);
+        $this->assertStringContainsString('<span class="status-text muted">', $html);
+    }
+
+    public function test_a_status_item_slot_takes_markup_on_the_right(): void
+    {
+        $html = $this->capture(function () {
+            Ui::statusItem(label: 'Updates', value: 'unused', href: '/unused')->slot();
+            echo '<button class="btn-solid theme-primary" type="button">Update</button>';
+            Ui::end();
+        });
+
+        $this->assertMatchesRegularExpression('/<span class="status-label">\s*<button class="btn-solid theme-primary" type="button">Update<\/button>\s*<\/span>/', $html);
+        $this->assertStringNotContainsString('unused', $html);
     }
 }

@@ -63,6 +63,7 @@ return new class extends Migration
             $table->text('tags')->nullable();
             $table->string('keywords')->nullable();
             $table->text('topics')->nullable();
+            $table->text('hashtags')->nullable();
 
             // Structured
             $table->text('content')->nullable();

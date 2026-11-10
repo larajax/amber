@@ -35,7 +35,7 @@ class FileUploadTest extends TestCase
         app('router')->getRoutes()->getByName('reference.form-widgets.file-upload')->flushController();
 
         // Upload fields register with the request's held uploads, which a test's requests would otherwise share
-        app()->forgetInstance(\Larajax\Ui\Classes\HeldUploads::class);
+        app()->forgetInstance('larajax.ui.uploads');
 
         return $this->withHeaders([
             'X-AJAX-HANDLER' => $handler,

@@ -16,9 +16,10 @@ names its parent in a `parent_id` column and keeps its place in a `sort_order` c
 down to reorder it, or to the right to nest it under the row above, down to `maxDepth` levels. The arrows expand and collapse a branch, and the list remembers each branch for the
 session.
 
-Sorting by a header or searching shows a flat list, and the icon at the end of the header, or a third
-click on the same header, brings the tree back. The toolbar's search box is bound to the tree the same
-way as to any list, and looks in its `searchable` columns.
+Sorting by a header or searching shows a flat list. After a sort, the "Show tree" button at the end of
+the header, or a third click on the same header, brings the tree back; a flat reorderable list's button
+reads "Show order". After a search, clearing the search brings it back. The toolbar's search box is
+bound to the tree the same way as to any list, and looks in its `searchable` columns.
 
 <<< @/../app/Controllers/Reference/ListsController/ListStructureExamples.php#docs-tree{php}
 
@@ -30,6 +31,15 @@ After a drop, the list associates the category's `parent` relation with its new 
 `setSortableOrder()` the ids of every row in their new order, as `sort_orders`:
 
 <<< @/../app/Models/Category.php#docs-sortable-order{php}
+
+## Tree with checkboxes {#checkboxes}
+
+`showCheckboxes: true` puts a checkbox before each row, and the drag handle beside it, so the tree can
+be both reordered and worked on. Shift and click checks a run of rows, as in any list. A toolbar
+button with `checked: true` sends the ids of the checked rows as `checked`, and is disabled while
+none are checked.
+
+<<< @/../app/Controllers/Reference/ListsController/ListStructureExamples.php#docs-checkboxes{php}
 
 ## Browsing tree {#browse}
 

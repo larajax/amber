@@ -90,9 +90,9 @@ class IconsTest extends TestCase
 
     public function test_a_pack_can_be_an_array_a_class_or_a_closure(): void
     {
-        Ui::registerIconPack('plain', ['action.delete' => 'plain-trash']);
-        Ui::registerIconPack('lazy', fn () => ['action.delete' => 'lazy-trash']);
-        Ui::registerIconPack('classy', new class implements IconPack {
+        app('larajax.ui.icons')->registerPack('plain', ['action.delete' => 'plain-trash']);
+        app('larajax.ui.icons')->registerPack('lazy', fn () => ['action.delete' => 'lazy-trash']);
+        app('larajax.ui.icons')->registerPack('classy', new class implements IconPack {
             public function icons(): array
             {
                 return ['action.delete' => 'classy-trash'];
@@ -110,14 +110,14 @@ class IconsTest extends TestCase
         $this->assertSame('bi bi-trash', Ui::iconClass('action.delete'));
 
         config(['larajax-icons.overrides' => ['action.delete' => 'my-trash']]);
-        Ui::registerIconPack('fresh', ['action.delete' => 'fresh-trash']);
+        app('larajax.ui.icons')->registerPack('fresh', ['action.delete' => 'fresh-trash']);
         $this->assertSame('my-trash', Ui::iconClass('action.delete', 'fresh'));
     }
 
     public function test_extensions_apply_to_every_pack_in_order(): void
     {
-        Ui::extendIcons(['status.live' => 'ph ph-broadcast']);
-        Ui::extendIcons(fn (array $icons, string $pack) => $pack === 'bootstrap' ? ['status.live' => 'bi bi-broadcast'] + $icons : $icons);
+        app('larajax.ui.icons')->extend(['status.live' => 'ph ph-broadcast']);
+        app('larajax.ui.icons')->extend(fn (array $icons, string $pack) => $pack === 'bootstrap' ? ['status.live' => 'bi bi-broadcast'] + $icons : $icons);
 
         $this->assertSame('ph ph-broadcast', Ui::iconClass('status.live'));
         $this->assertSame('bi bi-broadcast', Ui::iconClass('status.live', 'bootstrap'));

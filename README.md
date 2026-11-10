@@ -58,11 +58,12 @@ php artisan serve
 
 | Screen | URL | What it shows | Guide |
 | --- | --- | --- | --- |
+| Dashboard | `/dashboard` | Scoreboard with a status pie, a trend against the month before, sparklines, an icon tile and a goal meter; line and bar charts; a status list; a short List of the most read posts | [Scoreboards](https://ui.larajax.org/ui/scoreboards) |
 | Posts | `/posts` | Toolbar with a quick post popup and bulk actions, Filter, List with a setup popup | [Building a List Page](https://ui.larajax.org/guides/lists) |
 | Create / edit post | `/posts/create`, `/posts/{id}/edit` | Form with tabs, relations to the category, author and tags, an image upload held until the post saves | [Building a Form Page](https://ui.larajax.org/guides/forms) |
-| Categories | `/categories` | ListStructure as a tree, nested and reordered by dragging | [A tree of records](https://ui.larajax.org/guides/lists#list-structure) |
+| Categories | `/categories` | ListStructure as a tree with checkboxes, nested and reordered by dragging, with a bulk delete | [A tree of records](https://ui.larajax.org/guides/lists#list-structure) |
 | Authors | `/authors` | Filter, List with a post count, bulk delete, on Laravel's stock `User` model | [Models](https://ui.larajax.org/guides/models) |
-| Create / edit author | `/authors/create`, `/authors/{id}/edit` | Form with relations to the groups, validated in the controller | [Validation](https://ui.larajax.org/guides/forms#validation) |
+| Create / edit author | `/authors/create`, `/authors/{id}/edit` | Form with relations to the groups, validated in the controller, under a scoreboard of the author's figures | [Validation](https://ui.larajax.org/guides/forms#validation) |
 | Groups | `/groups` | List whose rows edit the group in a popup | [Editing rows in a popup](https://ui.larajax.org/guides/lists#popup-editing) |
 
 The widget definitions live in [`resources/ui`](resources/ui) and the controllers that build them in

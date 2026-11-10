@@ -118,9 +118,10 @@ The page action builds this example and the next, then switches their modes on:
 
 ## Survey mode {#survey}
 
-The form option `surveyMode` renders the tabs one after another, each under a heading, so the whole form
-reads top to bottom with nothing hidden behind a tab. You set it like horizontal mode, with
-`$form->surveyMode = true` or `surveyMode: true` passed to `Form::make()`.
+The form option `surveyMode` renders the tabs one after another, each as a card headed by the tab name
+and its icon from `icons`, so the whole form reads top to bottom with nothing hidden behind a tab. You
+set it like horizontal mode, with `$form->surveyMode = true` or `surveyMode: true` passed to
+`Form::make()`.
 
 <<< @/../resources/ui/reference/forms/layout/survey.yaml
 
@@ -174,5 +175,5 @@ widget's other options are covered in [Building a Form Page](/guides/forms).
 Option | Description
 ------------- | -------------
 **horizontalMode** | puts each label in a column beside its field. Default: `false`.
-**surveyMode** | renders the tabs one after another under headings. Default: `false`.
+**surveyMode** | renders the tabs one after another as cards. Default: `false`.
 **previewMode** | shows every field as uneditable text. Default: `false`.

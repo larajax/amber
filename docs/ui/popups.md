@@ -34,7 +34,9 @@ indicator while its request runs, then closes the popup when the request succeed
 with a shake when it fails.
 
 A popup opened from inside another stacks over it, and the one below steps back until the top one
-closes, as the dialog's Open another button shows. While a handler's content loads, a backdrop with a
+closes, as the dialog's Open another button shows. Only the first popup dims and blurs the page; each
+popup above it adds a light tint, `--oc-backdrop-stacked-opacity` (0.15), so the page does not darken
+with every popup and the ones below stay readable. While a handler's content loads, a backdrop with a
 loading indicator covers the page.
 
 ## Sizes from the window and content {#window-sizes}
@@ -132,7 +134,7 @@ Option | Description
 **closeOnPageClick** | closes the popover on a click outside it. Default: `true`.
 **closeOnEsc** | closes the popover on Escape. Default: `true`.
 **containerClass** | extra classes for the popover element.
-**offset** | how far the popover is shifted along the trigger, in pixels. Default: `15`.
+**offset** | how far the popover is shifted along the trigger, in pixels. Default: `0`, lined up with the trigger.
 **offsetX** | the offset for the `top` and `bottom` sides, in place of `offset`.
 **offsetY** | the offset for the `left` and `right` sides, in place of `offset`.
 **container** | an element or selector to mount the popover in. Default: the enclosing `<dialog>`, or else the body.

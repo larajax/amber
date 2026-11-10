@@ -97,7 +97,7 @@ which is *No records found.* by default. [Search](/lists/search) covers the sear
 ## Record URL {#record-url}
 
 `recordUrl` links every row to an address, where `:id` and any other `:attribute` take the record's
-values. The path becomes an address through [`Ui::url()`](/extending/seams#widget-paths). The whole row
+values. The path becomes an address through the [URL resolver](/extending/seams#widget-paths). The whole row
 follows the link, except cells with `clickable: false`, here the Live column, and linkage cells, which
 keep their own link. Ctrl or Cmd and click, or a middle click, opens the row in a new tab.
 

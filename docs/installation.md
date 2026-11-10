@@ -205,7 +205,7 @@ give each method a name that says which concern it belongs to, such as `makeList
 ## Timezones {#timezones}
 
 Dates are stored in the application timezone. To show them in each person's own timezone, register a
-resolver with `Ui::resolveTimezoneUsing()`, see [timezones](/extending/seams#timezone). The columns,
+resolver with `app('larajax.ui')->resolveTimezoneUsing()`, see [timezones](/extending/seams#timezone). The columns,
 fields and scopes that convert, and the `useTimezone` option that turns it off, are listed in
 [timezones in lists, filters and forms](/extending/seams#timezone-lists).
 
