@@ -1,13 +1,22 @@
 ---
-subtitle: Build your own form widget, with its own partials, handler and assets.
+subtitle: Build your own form widget or standalone widget, with its own partials, handlers and assets.
 demo: /reference/extending/custom-widgets
 ---
 # Custom Widgets
 
-Your app can add its own form widgets beside the built-in ones. A form widget is a PHP class with its
-own partials, any number of AJAX handlers, and a script and stylesheet that load only on the pages
-that render it. This page builds one, a time checker that compares the browser clock with the server
-clock, and walks through each file.
+Your app can add its own widgets beside the built-in ones. A widget is a PHP class with its own
+partials, any number of AJAX handlers, and a script and stylesheet that load only on the pages that
+render it. There are two kinds, and this page builds one of each:
+
+- A **form widget** is a field type. A form creates it for any field that names it as its `type`. The
+  first is a time checker that compares the browser clock with the server clock, and the page walks
+  through each of its files.
+- A **standalone widget** is a part of a page that a controller builds itself, the way it builds a list
+  or a form. The second is a feed of a post's comments, see [a standalone widget](#standalone-widget).
+
+When a screen needs something the built-in fields and widgets do not cover, build it as one of these
+rather than as markup and script in a view. The widget carries its handlers and assets with it, so it
+works on every page that uses it.
 
 ## The time checker widget {#time-checker}
 
@@ -118,3 +127,65 @@ scripts at the end of the body.
 
 A widget created by an AJAX handler, such as a form loaded into a popup, sends its assets with the
 handler's response instead, and the browser loads any that the page does not have yet.
+
+## A standalone widget {#standalone-widget}
+
+A widget does not have to be a form field. A standalone widget is built by a controller and printed in
+a view, the way the list, the filter and the form are. It suits a part of a page that has behaviour of
+its own and that more than one page can use, such as a feed, a panel or a picker.
+
+The comment feed shows the newest comments on a post, three at a time, with a button that loads the
+next three. The controller builds it with `make()`, passing its options as named arguments:
+
+<<< @/../app/Controllers/Reference/ExtendingController/StandaloneWidgets.php{php}
+
+The page's action passes the widget to its view, which prints it with `{{ $commentFeed }}`. Three
+things follow from building it this way:
+
+- **Nothing to register.** A form widget needs a code because YAML names it. A standalone widget is
+  built by its class, so the class is all there is.
+- **Built in the action.** `make()` binds the widget to the controller, which is how its handlers are
+  reached. Build it in the action on every request, see
+  [built in the action](/guides/widgets#built-in-the-action).
+- **Named by its alias.** The alias is the class name in lower case, here `commentfeed`, so the handler
+  is `commentfeed::onLoadMore`. Two feeds on one page need an alias each, passed as
+  `CommentFeed::make(alias: 'latestComments', ...)`.
+
+## The standalone widget class {#standalone-class}
+
+A standalone widget extends `Larajax\Ui\Classes\WidgetBase`, the class that `FormWidgetBase` and the
+built-in widgets extend too. Everything [the widget class](#widget-class) says about `init()`,
+`render()`, handlers, partials and `fillFromConfig()` applies here. What a standalone widget leaves out
+is the field: it has no `getLoadValue()`, `getFieldName()` or `getSaveValue()`, and takes what it needs
+through its options instead.
+
+<<< @/../app/Widgets/CommentFeed.php{php}
+
+- `init()` copies the `post` and `pageSize` options onto the properties of the same name, keeping the
+  property's value as the default.
+- `render()` prepares the first page of comments and returns the outer partial.
+- `onLoadMore()` reads the number of comments the page shows from the posted `shown` value, prepares
+  that many and one more page, and returns the inner partial keyed by `#` and the widget's id, so
+  Larajax replaces what is inside the widget's element.
+
+The feed keeps nothing between requests. The button posts the number of comments shown, and Larajax
+runs the page's action again before the handler, so the handler works on the post the page was built
+with. A widget that has to remember something, as the search box remembers its term, can keep it in
+the session with `putSession()` and `getSession()`.
+
+The partials sit in a `partials` folder beside the class, in a folder named after it. The outer partial
+holds the element with the widget's id, and the inner one is what goes inside it, the same split the
+time checker uses:
+
+<<< @/../app/Widgets/CommentFeed/partials/_commentfeed.php{php}
+
+<<< @/../app/Widgets/CommentFeed/partials/_comments.php{php}
+
+The button is a [`Ui::ajaxButton()`](/ui/buttons#ajax-button). Its `handler` is the widget's own, from
+`getEventHandler('onLoadMore')`, and its `requestData` posts the number of comments shown. Everything
+a reader wrote goes through `e()`, since a partial is plain PHP and escapes nothing by itself.
+
+The feed needs no script, only a stylesheet. `loadAssets()` adds it the way the time checker adds
+[its own assets](#assets), and [`Ui::renderAssets()`](#render-assets) prints it:
+
+<<< @/../public/css/widgets/commentfeed.css{css}

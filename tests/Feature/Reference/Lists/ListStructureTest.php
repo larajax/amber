@@ -82,8 +82,8 @@ class ListStructureTest extends TestCase
         $html = $this->structureHtml('treeList');
 
         // A level is 18 pixels, after 15 for the tree's toggles
-        $this->assertMatchesRegularExpression('/<td class="[^"]*list-cell-tree[^"]*" style="--tree-level:0;--tree-pad:15px;padding-left:15px"/', $html);
-        $this->assertMatchesRegularExpression('/<td class="[^"]*list-cell-tree[^"]*" style="--tree-level:2;--tree-pad:51px;padding-left:51px"/', $html);
+        $this->assertMatchesRegularExpression('/<td class="[^"]*list-cell-tree[^"]*" style="padding-left:15px"/', $html);
+        $this->assertMatchesRegularExpression('/<td class="[^"]*list-cell-tree[^"]*" style="padding-left:51px"/', $html);
     }
 
     public function test_the_checkbox_tree_puts_a_checkbox_before_the_drag_handle_and_sends_the_checked_rows(): void

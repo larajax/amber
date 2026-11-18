@@ -249,7 +249,7 @@ return [
         'extending' => [
             'label' => 'Extending',
             'icon' => 'ph-plugs-connected',
-            'description' => 'Building your own form widget with its own assets, and the seams that adapt the library to your application.',
+            'description' => 'Building your own form widget and standalone widget with their own assets, and the seams that adapt the library to your application.',
             'pages' => [
                 'custom-widgets' => [
                     'label' => 'Custom Widgets',

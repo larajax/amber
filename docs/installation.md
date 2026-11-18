@@ -209,6 +209,31 @@ resolver with `app('larajax.ui')->resolveTimezoneUsing()`, see [timezones](/exte
 fields and scopes that convert, and the `useTimezone` option that turns it off, are listed in
 [timezones in lists, filters and forms](/extending/seams#timezone-lists).
 
+## Working with AI agents {#ai-agents}
+
+A coding agent that has not seen Larajax UI writes forms and tables by hand, in the Blade and Bootstrap
+it already knows. The package ships an `AGENTS.md` file, installed at `vendor/larajax/ui/AGENTS.md`,
+that tells an agent:
+
+- when to use each widget in place of hand-written markup;
+- how a page is built, from its YAML definitions to its controller, view and route;
+- which field, column and scope types exist, so it checks them before inventing one;
+- how to write a [form widget or standalone widget](/extending/custom-widgets) of its own when nothing
+  built in fits.
+
+Agents read the instruction file at the root of your application, not the ones inside `vendor`, so
+point to the package's file from there. Add this to your application's `AGENTS.md`, or to `CLAUDE.md`
+if that is the file your agent reads:
+
+```markdown
+## Larajax UI
+
+This application builds its forms, lists and filters with `larajax/ui` widgets, not hand-written
+markup. Before building or changing a screen, read `vendor/larajax/ui/AGENTS.md` and follow it.
+```
+
+The file is versioned with the package, so the guidance an agent reads matches the version installed.
+
 ## Next steps
 
 - [Building a Form Page](/guides/forms): render, save and validate a form

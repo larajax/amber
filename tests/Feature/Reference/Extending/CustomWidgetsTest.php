@@ -5,7 +5,10 @@ namespace Tests\Feature\Reference\Extending;
 use App\Classes\ControllerBase;
 use App\Controllers\Reference\ExtendingController;
 use App\FormWidgets\TimeChecker;
+use App\Models\Comment;
+use App\Models\Post;
 use App\Models\Sample;
+use App\Widgets\CommentFeed;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -70,6 +73,46 @@ class CustomWidgetsTest extends TestCase
         $form->bindToController();
 
         return $form;
+    }
+
+    /**
+     * makePostWithComments creates a post with numbered comments, "Comment 1" being the oldest.
+     */
+    protected function makePostWithComments(int $count): Post
+    {
+        $post = Post::factory()->create();
+
+        foreach (range(1, $count) as $number) {
+            Comment::factory()->for($post)->create(['author' => "Reader {$number}", 'content' => "Comment {$number}"]);
+        }
+
+        return $post;
+    }
+
+    /**
+     * makeFeed builds a comment feed for the given post, bound to the page's controller.
+     *
+     * @param  array<string, mixed>  $config
+     */
+    protected function makeFeed(Post $post, array $config = []): CommentFeed
+    {
+        $feed = CommentFeed::createIn(new ExtendingController, $config + ['post' => $post]);
+
+        $feed->bindToController();
+
+        return $feed;
+    }
+
+    /**
+     * shownComments returns the numbers of the comments in the markup, in the order they are shown.
+     *
+     * @return array<int, int>
+     */
+    protected function shownComments(string $html): array
+    {
+        preg_match_all('/Comment (\d+)/', $html, $matches);
+
+        return array_map('intval', $matches[1]);
     }
 
     /**
@@ -216,6 +259,128 @@ class CustomWidgetsTest extends TestCase
 
         $this->assertSame('2026-10-30 21:15:42', $widget->getSaveValue('2026-10-30 21:15:42'));
         $this->assertNull($widget->getSaveValue(''));
+    }
+
+    public function test_the_page_renders_the_comment_feed_and_every_source_file(): void
+    {
+        $this->makePostWithComments(2);
+        $this->makePostWithComments(5);
+
+        $html = $this->get(route('reference.extending.custom-widgets'))->assertOk()->getContent();
+        $head = substr($html, 0, strpos($html, '</head>'));
+
+        $sources = [
+            'app/Widgets/CommentFeed.php',
+            'app/Widgets/CommentFeed/partials/_commentfeed.php',
+            'app/Widgets/CommentFeed/partials/_comments.php',
+            'public/css/widgets/commentfeed.css',
+        ];
+
+        foreach ($sources as $path) {
+            $this->assertStringContainsString($path, $html);
+            $this->assertStringContainsString('<pre><code>'.e(trim(file_get_contents(base_path($path)))).'</code></pre>', $html, "{$path} is not shown.");
+        }
+
+        // The method that builds the widget is printed from the trait that holds it
+        $this->assertStringContainsString('app/Controllers/Reference/ExtendingController/StandaloneWidgets.php', $html);
+        $this->assertStringContainsString(e('protected function makeCommentFeedWidget(): CommentFeed'), $html);
+
+        // The feed shows the first page of the post with the most comments, newest first
+        $feed = substr($html, strpos($html, '<div id="CommentFeed" class="comment-feed">'));
+        $feed = substr($feed, 0, strpos($feed, '<details'));
+
+        $this->assertSame([5, 4, 3], $this->shownComments($feed));
+        $this->assertStringContainsString('data-request="commentfeed::onLoadMore"', $feed);
+        $this->assertStringContainsString('data-request-data="'.e('{"shown":3}').'"', $feed);
+        $this->assertStringContainsString('Show more (2 left)', $feed);
+
+        $this->assertStringContainsString('<link rel="stylesheet" href="'.asset('css/widgets/commentfeed.css').'" />', $head);
+    }
+
+    public function test_the_page_renders_an_empty_feed_when_there_are_no_posts(): void
+    {
+        $html = $this->get(route('reference.extending.custom-widgets'))->assertOk()->getContent();
+
+        $this->assertStringContainsString('No comments yet.', $html);
+        $this->assertStringNotContainsString('data-request="commentfeed::onLoadMore"', $html);
+    }
+
+    public function test_showing_more_adds_a_page_of_comments_to_the_feed(): void
+    {
+        $this->makePostWithComments(8);
+
+        $response = $this->ajax('commentfeed::onLoadMore', route('reference.extending.custom-widgets'), ['shown' => 3])->assertOk();
+
+        $patch = collect($response->json('__ajax.ops'))->first(fn (array $op) => isset($op['selector']));
+
+        $this->assertSame('#CommentFeed', $patch['selector']);
+        $this->assertSame([8, 7, 6, 5, 4, 3], $this->shownComments($patch['html']));
+        $this->assertStringContainsString('data-request-data="'.e('{"shown":6}').'"', $patch['html']);
+        $this->assertStringContainsString('Show more (2 left)', $patch['html']);
+
+        // The handler replaces what is inside the widget's element, which stays on the page
+        $this->assertStringNotContainsString('id="CommentFeed"', $patch['html']);
+    }
+
+    public function test_the_last_page_of_comments_has_no_button(): void
+    {
+        $this->makePostWithComments(5);
+
+        $response = $this->ajax('commentfeed::onLoadMore', route('reference.extending.custom-widgets'), ['shown' => 3])->assertOk();
+
+        $patch = collect($response->json('__ajax.ops'))->first(fn (array $op) => isset($op['selector']));
+
+        $this->assertSame([5, 4, 3, 2, 1], $this->shownComments($patch['html']));
+        $this->assertStringNotContainsString('onLoadMore', $patch['html']);
+    }
+
+    public function test_the_feed_takes_its_page_size_from_the_options(): void
+    {
+        $html = (string) $this->makeFeed($this->makePostWithComments(5), ['pageSize' => 2])->render();
+
+        $this->assertSame([5, 4], $this->shownComments($html));
+        $this->assertStringContainsString('Show more (3 left)', $html);
+        $this->assertStringContainsString('Reader 5', $html);
+    }
+
+    public function test_the_feed_leaves_out_deleted_comments_and_other_posts(): void
+    {
+        $post = $this->makePostWithComments(3);
+        $post->comments()->where('content', 'Comment 2')->first()->delete();
+        Comment::factory()->create(['content' => 'Comment 99']);
+
+        $html = (string) $this->makeFeed($post, ['pageSize' => 10])->render();
+
+        $this->assertSame([3, 1], $this->shownComments($html));
+        $this->assertStringNotContainsString('onLoadMore', $html);
+    }
+
+    public function test_an_alias_names_the_feed_element_and_its_handler(): void
+    {
+        $html = (string) $this->makeFeed($this->makePostWithComments(5), ['alias' => 'latestComments'])->render();
+
+        $this->assertStringContainsString('id="CommentFeed-latestComments"', $html);
+        $this->assertStringContainsString('data-request="latestComments::onLoadMore"', $html);
+    }
+
+    public function test_the_feed_escapes_what_readers_wrote(): void
+    {
+        $post = Post::factory()->create();
+        Comment::factory()->for($post)->create(['author' => '<b>Mallory</b>', 'content' => '<script>alert(1)</script>']);
+
+        $html = (string) $this->makeFeed($post)->render();
+
+        $this->assertStringContainsString(e('<b>Mallory</b>'), $html);
+        $this->assertStringContainsString(e('<script>alert(1)</script>'), $html);
+        $this->assertStringNotContainsString('<script>alert(1)</script>', $html);
+    }
+
+    public function test_the_feed_adds_its_own_stylesheet(): void
+    {
+        $this->assertSame([
+            'js' => [],
+            'css' => [asset('css/widgets/commentfeed.css')],
+        ], $this->makeFeed(Post::factory()->create())->getAssetPaths());
     }
 
     public function test_a_layout_prints_widget_assets_once_in_the_head(): void

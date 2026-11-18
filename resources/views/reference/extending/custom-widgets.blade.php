@@ -3,7 +3,7 @@
 @section('content')
 
 @include('reference._header', [
-    'intro' => 'An app form widget with its own partials, AJAX handler, script and stylesheet.',
+    'intro' => 'An app form widget with its own partials, AJAX handler, script and stylesheet, and a standalone widget built the same way.',
 ])
 
 <form data-request="onSaveExamples" data-request-flash>
@@ -49,6 +49,24 @@
     @include('reference._heading', ['id' => 'render-assets', 'title' => 'Printing the assets', 'caption' => '<code>Ui::renderAssets()</code> in the layout head.'])
     <div class="ui-example">
         @include('reference._source', ['path' => 'resources/views/layouts/app.blade.php'])
+    </div>
+</section>
+
+<section class="ui-section" id="standalone-widget">
+    @include('reference._heading', ['id' => 'standalone-widget', 'title' => 'A standalone widget', 'caption' => 'A <code>CommentFeed</code> widget built in the controller, which loads more comments through its own handler.'])
+    @include('reference._widget_example', [
+        'widgets' => [$commentFeed],
+        'methods' => ['makeCommentFeedWidget'],
+    ])
+</section>
+
+<section class="ui-section" id="standalone-class">
+    @include('reference._heading', ['id' => 'standalone-class', 'title' => 'The standalone widget class', 'caption' => 'A <code>WidgetBase</code> class with an <code>onLoadMore</code> handler, its partials and its stylesheet.'])
+    <div class="ui-example">
+        @include('reference._source', ['path' => 'app/Widgets/CommentFeed.php'])
+        @include('reference._source', ['path' => 'app/Widgets/CommentFeed/partials/_commentfeed.php'])
+        @include('reference._source', ['path' => 'app/Widgets/CommentFeed/partials/_comments.php'])
+        @include('reference._source', ['path' => 'public/css/widgets/commentfeed.css'])
     </div>
 </section>
 

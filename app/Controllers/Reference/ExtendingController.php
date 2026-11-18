@@ -6,16 +6,18 @@ use App\Classes\ReferenceControllerBase;
 use App\Controllers\Reference\ExtendingController\IconRegistrations;
 use App\Controllers\Reference\ExtendingController\SeamResolvers;
 use App\Controllers\Reference\ExtendingController\SeamWidgets;
+use App\Controllers\Reference\ExtendingController\StandaloneWidgets;
 use Illuminate\Contracts\View\View;
 
 /**
- * ExtendingController holds the Extending reference pages, where the icon and resolver setup lives in traits the pages print.
+ * ExtendingController holds the Extending reference pages, where the icon and resolver setup and the app's own widget live in traits the pages print.
  */
 class ExtendingController extends ReferenceControllerBase
 {
     use IconRegistrations;
     use SeamResolvers;
     use SeamWidgets;
+    use StandaloneWidgets;
 
     /**
      * customWidgets displays the Custom Widgets page.
@@ -24,7 +26,9 @@ class ExtendingController extends ReferenceControllerBase
     {
         $this->makeExampleForms('extending/custom-widgets', ['time-checker']);
 
-        return view('reference.extending.custom-widgets', $this->exampleVars());
+        return view('reference.extending.custom-widgets', $this->exampleVars() + [
+            'commentFeed' => $this->makeCommentFeedWidget(),
+        ]);
     }
 
     /**
