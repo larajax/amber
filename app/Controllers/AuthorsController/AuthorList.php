@@ -38,7 +38,7 @@ trait AuthorList
     }
 
     /**
-     * makeListWidget builds the paginated list of authors in name order, where clicking a row opens the author's form.
+     * makeListWidget builds the paginated list of authors in name order, where clicking a row opens the author's preview page.
      */
     protected function makeListWidget(): Lists
     {
@@ -47,7 +47,7 @@ trait AuthorList
             columns: '~/resources/ui/user/columns.yaml',
             recordsPerPage: 10,
             showCheckboxes: true,
-            recordUrl: 'authors/:id/edit',
+            recordUrl: 'authors/:id',
             defaultSort: ['column' => 'name', 'direction' => 'asc'],
             noRecordsMessage: 'No authors match the search and filters.',
         );

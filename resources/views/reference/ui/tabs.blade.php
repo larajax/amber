@@ -26,6 +26,11 @@
     @include('reference._example', ['view' => 'reference.ui.examples.tabs-underline', 'stacked' => true])
 </section>
 
+<section class="ui-section" id="tabs-content">
+    @include('reference._heading', ['id' => 'tabs-content', 'title' => 'Content tabs', 'caption' => 'The <code>content-tabs</code> style, for the sections of a record.'])
+    @include('reference._example', ['view' => 'reference.ui.examples.tabs-content', 'stacked' => true])
+</section>
+
 <section class="ui-section" id="tabs-overflow">
     @include('reference._heading', ['id' => 'tabs-overflow', 'title' => 'Overflowing tabs', 'caption' => 'Twelve tabs in a row that scrolls sideways.'])
     @include('reference._example', ['view' => 'reference.ui.examples.tabs-overflow', 'stacked' => true])

@@ -62,7 +62,7 @@ class PostsTest extends TestCase
         $html = $this->get('posts')->assertOk()->getContent();
 
         $this->assertStringContainsString('Hello Blog', $html);
-        $this->assertStringContainsString('href="'.route('authors.edit', $author).'" >Ada Writer</a>', $html);
+        $this->assertStringContainsString('href="'.route('authors.preview', $author).'" >Ada Writer</a>', $html);
         $this->assertStringContainsString('href="'.route('categories.edit', $category).'" >Guides</a>', $html);
         $this->assertStringContainsString('href="'.route('posts.edit', $post).'"', $html);
 

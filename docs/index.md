@@ -37,8 +37,8 @@ The app has two halves:
 - **Showcase** is a small blog that puts the pieces together: a dashboard of scoreboards and charts
   (`/dashboard`), posts with a filtered list, bulk actions and a quick post popup (`/posts`), a category
   tree with checkboxes that you reorder by dragging (`/categories`), authors on a plain Eloquent model,
-  each with a scoreboard of their figures (`/authors`), and groups edited in a popup (`/groups`). Each
-  page links to the guide that builds it.
+  each with a scoreboard of their figures and a preview page in content tabs (`/authors`), and groups
+  edited in a popup (`/groups`). Each page links to the guide that builds it.
 
 ## The sixty second version {#sixty-second-version}
 
@@ -56,7 +56,8 @@ The view prints the widgets:
 
 That renders a sortable, searchable, paginated table of authors, with filter scopes from
 `resources/ui/user/scopes.yaml` and a toolbar of buttons and a search box above it. Clicking a row opens
-the author's form, which works the same way from a `fields.yaml` file.
+the author's preview page, a read-only form built the same way from a `fields.yaml` file, whose Edit
+button opens the form itself.
 
 Each widget declares its common options as `make()` arguments, so your editor can suggest and document
 them as you type, and less common options pass through the same call by name. A configuration array

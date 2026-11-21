@@ -43,6 +43,22 @@ data, such as a week, month and year.
 
 <<< @/../resources/views/reference/ui/examples/tabs-underline.blade.php{blade}
 
+## Content tabs {#tabs-content}
+
+`content-tabs` draws each tab as a box joined to the pane under it, for the sections of a record, such
+as the details, orders and notes of a customer. The panes have no padding of their own: a pane's first
+`toolbar-widget`, `list-header` or `padded-container` element takes the open tab's background and a top
+padding, so a list's toolbar or the pane's text sits clear of the tabs. The preview page of each author
+in the showcase (`/authors/{id}`) has its details in one tab and lists of their posts and comments in
+others.
+
+Add `tabs-inset` when the control sits in a padded container, so the line under the tabs reaches the
+container's edges, `tabs-offset` to move the first tab in by the same padding, or `tabs-flush` to join
+the tabs to the element above. When the tabs do not fit their row, their edges fade into the page in
+place of the arrows.
+
+<<< @/../resources/views/reference/ui/examples/tabs-content.blade.php{blade}
+
 ## Overflowing tabs {#tabs-overflow}
 
 Tabs that do not fit their row scroll sideways, by dragging or with the mouse wheel, and a small arrow

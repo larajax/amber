@@ -1,0 +1,10 @@
+# ===================================
+#  Author Post Toolbar Button Definitions
+# ===================================
+
+buttons:
+    create:
+        label: New Post
+        icon: ph ph-plus
+        type: primary
+        url: posts/create

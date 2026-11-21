@@ -1,0 +1,28 @@
+# ===================================
+#  Comment List Column Definitions
+# ===================================
+
+columns:
+    content:
+        label: Comment
+        type: summary
+        limitWords: 12
+        searchable: true
+
+    author:
+        label: Reader
+        searchable: true
+        sortable: true
+        width: 160px
+
+    post:
+        label: Post
+        relation: post
+        select: title
+        sortable: true
+
+    created_at:
+        label: Posted
+        type: timesince
+        sortable: true
+        width: 140px

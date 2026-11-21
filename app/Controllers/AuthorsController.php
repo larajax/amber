@@ -6,16 +6,18 @@ use App\Classes\ControllerBase;
 use App\Controllers\AuthorsController\AuthorFigures;
 use App\Controllers\AuthorsController\AuthorForm;
 use App\Controllers\AuthorsController\AuthorList;
+use App\Controllers\AuthorsController\AuthorPreview;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 
 /**
- * AuthorsController holds the author pages, with the list and form widgets and their AJAX handlers in the AuthorList and AuthorForm traits, and the edit page's scoreboard figures in AuthorFigures.
+ * AuthorsController holds the author pages, with the list and form widgets and their AJAX handlers in the AuthorList and AuthorForm traits, the preview page's widgets in AuthorPreview, and the scoreboard figures in AuthorFigures.
  */
 class AuthorsController extends ControllerBase
 {
     use AuthorList;
     use AuthorForm;
+    use AuthorPreview;
     use AuthorFigures;
 
     /**
@@ -35,6 +37,18 @@ class AuthorsController extends ControllerBase
 
         return view('authors.create', [
             'formWidget' => $this->formWidget,
+        ]);
+    }
+
+    /**
+     * preview shows an author read only, with their figures and content tabs of their details, posts and the comments on them.
+     */
+    public function preview(User $user): View
+    {
+        return view('authors.preview', [
+            'user' => $user,
+            ...$this->preparePreviewVars($user),
+            ...$this->prepareAuthorFigureVars($user),
         ]);
     }
 

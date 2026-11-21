@@ -48,7 +48,7 @@
             'label' => 'Authors',
             'icon' => 'ph-pen-nib',
             'href' => route('authors.index'),
-            'active' => request()->routeIs('authors.index', 'authors.edit'),
+            'active' => request()->routeIs('authors.index', 'authors.preview', 'authors.edit'),
             'children' => [
                 [
                     'label' => 'New Author',

@@ -26,7 +26,7 @@ columns:
         type: linkage
         relation: author
         select: name
-        linkUrl: authors/:author_id/edit
+        linkUrl: authors/:author_id
         sortable: true
 
     category:

@@ -22,6 +22,8 @@ handlers live in a trait in a folder named after the controller.
   `resources/views/posts/create.blade.php`.
 - **A plain Eloquent model, validated in the controller:**
   `app/Controllers/AuthorsController/AuthorForm.php` and `AuthorList.php`.
+- **A read-only preview page with content tabs:** `app/Controllers/AuthorsController/AuthorPreview.php`
+  and `resources/views/authors/preview.blade.php`.
 - **Editing a row in a popup:** `app/Controllers/GroupsController` and
   `resources/views/groups/_popup_form.blade.php`.
 - **A quick create popup:** `app/Controllers/PostsController/QuickPostForm.php`.

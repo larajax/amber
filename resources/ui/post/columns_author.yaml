@@ -1,0 +1,46 @@
+# ===================================
+#  Author Post List Column Definitions
+# ===================================
+
+columns:
+    title:
+        label: Title
+        searchable: true
+        sortable: true
+
+    category:
+        label: Category
+        relation: category
+        select: name
+        sortable: true
+
+    status:
+        label: Status
+        type: selectable
+        sortable: true
+        width: 140px
+
+    published_at:
+        label: Published
+        type: timetense
+        sortable: true
+
+    comments_count:
+        label: Comments
+        type: number
+        relation: comments
+        relationCount: true
+        sortable: true
+        width: 110px
+
+    views:
+        label: Views
+        type: number
+        sortable: true
+        width: 100px
+
+    created_at:
+        label: Created
+        type: timesince
+        sortable: true
+        invisible: true

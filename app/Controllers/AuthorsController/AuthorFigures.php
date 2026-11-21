@@ -7,12 +7,12 @@ use App\Models\Post;
 use App\Models\User;
 
 /**
- * AuthorFigures counts the figures in the scoreboard above an author's form.
+ * AuthorFigures counts the figures in the scoreboard above an author's form and preview.
  */
 trait AuthorFigures
 {
     /**
-     * prepareAuthorFigureVars counts the author's posts, their views and comments, and finds their latest post, for the edit view.
+     * prepareAuthorFigureVars counts the author's posts, their views and comments, and finds their latest post, for the edit and preview views.
      *
      * @return array{figures: array<string, mixed>}
      */

@@ -63,11 +63,13 @@ Route::match(['get', 'post'], '/categories/{category}/edit', [CategoriesControll
 |--------------------------------------------------------------------------
 |
 | The users who write the posts, on a plain Eloquent model: a filtered list
-| with bulk delete and a form page that validates in the controller.
+| with bulk delete, a form page that validates in the controller, and a
+| preview page with content tabs of the author's details, posts and comments.
 |
 */
 Route::match(['get', 'post'], '/authors', [AuthorsController::class, 'index'])->name('authors.index');
 Route::match(['get', 'post'], '/authors/create', [AuthorsController::class, 'create'])->name('authors.create');
+Route::match(['get', 'post'], '/authors/{user}', [AuthorsController::class, 'preview'])->name('authors.preview');
 Route::match(['get', 'post'], '/authors/{user}/edit', [AuthorsController::class, 'edit'])->name('authors.edit');
 
 /*

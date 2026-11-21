@@ -1,0 +1,35 @@
+# ===================================
+#  Author Preview Field Definitions
+# ===================================
+#
+# The preview page prints each tab in its own column.
+
+tabs:
+    fields:
+
+        name:
+            label: Name
+            tab: Account
+
+        email:
+            label: Email
+            type: email
+            tab: Account
+
+        notes:
+            label: Notes
+            type: textarea
+            size: small
+            tab: Account
+
+        primary_group:
+            label: Primary Group
+            type: relation
+            emptyOption: No group
+            tab: Groups
+
+        groups:
+            label: Other Groups
+            type: relation
+            emptyOption: No other groups
+            tab: Groups

@@ -36,7 +36,8 @@ class AuthorsTest extends TestCase
         $html = $this->get('authors')->assertOk()->getContent();
 
         $this->assertStringContainsString('Ada Writer', $html);
-        $this->assertStringContainsString('href="'.url("authors/{$ada->id}/edit").'"', $html);
+        $this->assertStringContainsString('href="'.url("authors/{$ada->id}").'"', $html);
+        $this->assertStringNotContainsString('href="'.url("authors/{$ada->id}/edit").'"', $html);
         $this->assertMatchesRegularExpression('/list-cell-name-posts_count list-cell-type-number\s+">\s+3\s+</', $html);
         $this->assertStringContainsString('href="'.url('authors/create').'"', $html);
         $this->assertMatchesRegularExpression('/data-request="onDelete"[^>]*data-request-confirm=/', $html);
@@ -158,6 +159,68 @@ class AuthorsTest extends TestCase
         $this->assertStringContainsString('Reset Password', $html);
         $this->assertMatchesRegularExpression('/selected="selected"\s+value="'.$editors->id.'"\s*>Editors<\/option>/', $html);
         $this->assertMatchesRegularExpression('/value="'.$support->id.'"\s+checked="checked"/', $html);
+        $this->assertStringContainsString('href="'.route('authors.preview', $author).'"', $html);
+    }
+
+    public function test_the_preview_page_shows_the_author_read_only_in_content_tabs(): void
+    {
+        $editors = UserGroup::factory()->create(['name' => 'Editors', 'code' => 'editors']);
+        $author = User::factory()->create(['name' => 'Ada Writer', 'primary_group_id' => $editors->id]);
+
+        $html = $this->get("authors/{$author->id}")->assertOk()->getContent();
+
+        $this->assertStringContainsString('class="control-tabs content-tabs" data-control="tab" data-linkable', $html);
+        foreach (['author' => 'Author', 'posts' => 'Posts', 'comments' => 'Comments'] as $anchor => $title) {
+            $this->assertMatchesRegularExpression('/<a href="#'.$anchor.'">\s*'.$title.'\s*<\/a>/', $html);
+        }
+        $this->assertStringContainsString('<span class="form-control">'.e($author->email).'</span>', $html);
+        $this->assertStringContainsString('Editors', $html);
+        $this->assertDoesNotMatchRegularExpression('/<input[^>]*\sname="email"/', $html);
+        $this->assertStringContainsString('class="control-toolbar form-toolbar" data-control="toolbar"', $html);
+        $this->assertStringContainsString('href="'.route('authors.edit', $author).'"', $html);
+        $this->assertMatchesRegularExpression('/data-request="onDestroy"[^>]*data-request-confirm=/', $html);
+        $this->assertMatchesRegularExpression('/Posts\s*<\/div>\s*<p>\s*0\s*<\/p>/', $html);
+    }
+
+    public function test_the_preview_tabs_list_only_the_author_posts_and_the_comments_on_them(): void
+    {
+        $author = User::factory()->create();
+        $theirs = Post::factory()->for($author, 'author')->create(['title' => 'Their Own Words']);
+        $other = Post::factory()->for(User::factory(), 'author')->create(['title' => 'Someone Else Wrote']);
+        Comment::factory()->for($theirs)->create(['content' => 'A kind reply.']);
+        Comment::factory()->for($other)->create(['content' => 'An unrelated reply.']);
+
+        $html = $this->get("authors/{$author->id}")->assertOk()->getContent();
+
+        $this->assertStringContainsString('Their Own Words', $html);
+        $this->assertStringNotContainsString('Someone Else Wrote', $html);
+        $this->assertStringContainsString('A kind reply.', $html);
+        $this->assertStringNotContainsString('An unrelated reply.', $html);
+        $this->assertStringContainsString('href="'.url('posts/create').'"', $html);
+    }
+
+    public function test_searching_the_preview_posts_keeps_to_the_author(): void
+    {
+        $author = User::factory()->create();
+        Post::factory()->for($author, 'author')->create(['title' => 'Caching Option Lists']);
+        Post::factory()->for($author, 'author')->create(['title' => 'Testing Handlers']);
+        Post::factory()->for(User::factory(), 'author')->create(['title' => 'Caching Elsewhere']);
+
+        $this->ajax('postToolbarSearch::onSubmit', ['postToolbarSearch' => ['term' => 'caching']], "authors/{$author->id}")
+            ->assertOk()
+            ->assertSee('Caching Option Lists')
+            ->assertDontSee('Testing Handlers')
+            ->assertDontSee('Caching Elsewhere');
+    }
+
+    public function test_on_destroy_from_the_preview_deletes_the_author_and_returns_to_the_list(): void
+    {
+        $author = User::factory()->create();
+
+        $response = $this->ajax('onDestroy', [], "authors/{$author->id}")->assertOk();
+
+        $this->assertSame(route('authors.index'), $response->json('__ajax.redirect'));
+        $this->assertNull(User::find($author->id));
     }
 
     public function test_the_edit_page_scoreboard_counts_the_author_posts_views_and_comments(): void
