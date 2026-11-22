@@ -93,3 +93,8 @@ columns:
         type: timesince
         sortable: true
         invisible: true
+
+    _actions:
+        label: ''
+        type: actions
+        buttons: ~/resources/ui/post/actions.yaml

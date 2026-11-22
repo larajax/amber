@@ -38,9 +38,10 @@ return [
                     'icon' => 'ph-columns',
                     'covers' => [
                         'widget:Lists',
-                        'column:text', 'column:number', 'column:image', 'column:file', 'column:switch',
-                        'column:summary', 'column:datetime', 'column:time', 'column:date', 'column:timesince',
-                        'column:timetense', 'column:selectable', 'column:linkage', 'column:partial', 'column:colorpicker',
+                        'column:text', 'column:number', 'column:summary', 'column:datetime', 'column:time',
+                        'column:date', 'column:timesince', 'column:timetense', 'column:partial', 'column:colorpicker',
+                        'listwidget:Image', 'listwidget:File', 'listwidget:SwitchColumn', 'listwidget:Selectable',
+                        'listwidget:Linkage', 'listwidget:Actions',
                     ],
                 ],
                 'options' => [

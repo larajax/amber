@@ -5,12 +5,13 @@ namespace App\Controllers\PostsController;
 use App\Models\Post;
 use Illuminate\Support\Str;
 use Larajax\Classes\AjaxResponse;
+use Larajax\Ui\Classes\ToolbarButton;
 use Larajax\Ui\Widgets\Filter;
 use Larajax\Ui\Widgets\Lists;
 use Larajax\Ui\Widgets\Toolbar;
 
 /**
- * PostList builds the posts list, its filter and toolbar, and handles the bulk actions on the checked rows.
+ * PostList builds the posts list, its filter and toolbar, and handles the bulk actions on the checked rows and the actions menu of each row.
  */
 trait PostList
 {
@@ -149,4 +150,22 @@ trait PostList
         return array_map('intval', array_filter((array) request()->input('checked'), 'is_numeric'));
     }
     // #endregion docs-bulk-actions
+
+    // #region docs-row-visibility
+    /**
+     * isPostPublished shows a row action only on published posts.
+     */
+    public function isPostPublished(ToolbarButton $button, Post $post): bool
+    {
+        return $post->published;
+    }
+
+    /**
+     * isPostUnpublished shows a row action only on posts that are not published.
+     */
+    public function isPostUnpublished(ToolbarButton $button, Post $post): bool
+    {
+        return !$post->published;
+    }
+    // #endregion docs-row-visibility
 }

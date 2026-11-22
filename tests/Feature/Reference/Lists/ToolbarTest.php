@@ -246,6 +246,28 @@ class ToolbarTest extends TestCase
         $this->assertNull($toolbar->getButton('missing.item'));
     }
 
+    public function test_menu_items_take_placeholders_and_state_from_a_record(): void
+    {
+        $draft = Post::factory()->create(['title' => 'Tom & "Jerry"', 'published' => false]);
+        $live = Post::factory()->create(['published' => true]);
+
+        $toolbar = $this->makeToolbar([
+            'open' => ['label' => 'Open', 'url' => 'posts/:id/edit?q=:title'],
+            'publish' => ['label' => 'Publish', 'handler' => 'onPublish', 'visible' => 'isRowPostDraft', 'requestData' => ['ids' => [':id'], 'other' => ':nope']],
+            'delete' => ['label' => 'Delete', 'handler' => 'onDelete', 'confirm' => 'Delete :title?'],
+        ]);
+
+        $html = $toolbar->renderMenuItems($draft);
+
+        // Addresses take encoded values, while request data and messages take them as they are
+        $this->assertStringContainsString('href="'.e(url('posts/'.$draft->id.'/edit?q=Tom+%26+%22Jerry%22')).'"', $html);
+        $this->assertStringContainsString('data-request-data="{&quot;ids&quot;:[&quot;'.$draft->id.'&quot;],&quot;other&quot;:&quot;:nope&quot;}"', $html);
+        $this->assertStringContainsString('data-request-confirm="Delete Tom &amp; &quot;Jerry&quot;?"', $html);
+        $this->assertSame($draft, $toolbar->getRecord());
+
+        $this->assertStringNotContainsString('onPublish', $toolbar->renderMenuItems($live));
+    }
+
     public function test_disabled_links_outline_styles_and_a_dropdown_without_a_caret_render(): void
     {
         $html = $this->makeToolbar([

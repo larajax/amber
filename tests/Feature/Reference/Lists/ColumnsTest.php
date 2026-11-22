@@ -60,7 +60,7 @@ class ColumnsTest extends TestCase
     {
         $html = $this->get(route('reference.lists.columns'))->assertOk()->getContent();
 
-        foreach (['text', 'number', 'switch', 'colorpicker', 'selectable', 'dates', 'relative', 'summary', 'image', 'files', 'linkage', 'partial', 'relations', 'headers'] as $example) {
+        foreach (['text', 'number', 'switch', 'colorpicker', 'selectable', 'dates', 'relative', 'summary', 'image', 'files', 'linkage', 'partial', 'actions', 'relations', 'headers'] as $example) {
             $this->assertStringContainsString("resources/ui/reference/lists/columns/{$example}.yaml", $html);
             $this->assertStringContainsString('id="Lists-'.Str::camel($example).'List"', $html);
         }
@@ -311,6 +311,79 @@ class ColumnsTest extends TestCase
         $this->assertStringContainsString('alpha', $html);
         $this->assertStringContainsString('beta', $html);
         $this->assertStringContainsString('Untagged', $html);
+    }
+
+    public function test_actions_columns_render_a_menu_for_each_row_from_its_record(): void
+    {
+        $draft = Post::factory()->create(['title' => 'Draft "One"', 'published' => false]);
+        $live = Post::factory()->create(['title' => 'Live One', 'published' => true]);
+
+        $html = $this->listHtml('actions');
+
+        $this->assertMatchesRegularExpression('/<td class="[^"]*list-cell-type-actions[^"]*nolink">\s*<button class="btn-icon-link ph ph-dots-three-vertical list-actions-toggle" type="button" title="Actions" data-bs-toggle="menu" data-bs-placement="bottom-end"/', $html);
+        $this->assertDoesNotMatchRegularExpression('/<th[^>]*list-cell-name-_actions[^>]*>\s*<a/', $html);
+
+        $draftRow = $this->rowContaining($html, 'Draft &quot;One&quot;');
+        $liveRow = $this->rowContaining($html, 'Live One');
+
+        $this->assertStringContainsString('href="'.url('posts/'.$draft->id.'/edit').'"', $draftRow);
+        $this->assertStringContainsString('data-request-data="{&quot;action&quot;:&quot;publish&quot;,&quot;id&quot;:&quot;'.$draft->id.'&quot;}"', $draftRow);
+        $this->assertStringNotContainsString('Unpublish', $draftRow);
+        $this->assertStringContainsString('data-request-confirm="Delete &quot;Draft &quot;One&quot;&quot;?"', $draftRow);
+
+        $this->assertStringContainsString('data-request-data="{&quot;action&quot;:&quot;unpublish&quot;,&quot;id&quot;:&quot;'.$live->id.'&quot;}"', $liveRow);
+        $this->assertStringNotContainsString('&quot;publish&quot;', $liveRow);
+    }
+
+    public function test_an_actions_column_leaves_out_the_menu_when_no_item_shows(): void
+    {
+        $post = Post::factory()->create(['published' => true]);
+
+        $list = Lists::createIn(new ListsController, [
+            'alias' => 'hiddenActionsList',
+            'model' => new Post,
+            'columns' => [
+                'title' => ['label' => 'Title'],
+                '_actions' => ['type' => 'actions', 'buttons' => [
+                    'publish' => ['label' => 'Publish', 'handler' => 'onPublish', 'visible' => 'isRowPostDraft'],
+                ]],
+            ],
+        ]);
+
+        $column = $list->getColumns()['_actions'];
+
+        $this->assertNull($list->getColumnValue($post, $column));
+        $this->assertFalse($column->sortable);
+        $this->assertFalse($column->clickable);
+        $this->assertSame('hiddenActionsListActionsToolbar', $list->getListWidget('_actions')->getToolbar()->alias);
+    }
+
+    public function test_on_post_row_action_names_the_action_and_leaves_the_post(): void
+    {
+        $post = Post::factory()->create(['title' => 'Kept Post']);
+
+        $response = $this->withHeaders([
+            'X-AJAX-HANDLER' => 'onPostRowAction',
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->post(route('reference.lists.columns'), ['action' => 'delete', 'id' => $post->id])->assertOk();
+
+        $flash = collect($response->json('__ajax.ops'))->firstWhere('op', 'flash');
+        $this->assertSame('Delete would apply to "Kept Post". The reference pages leave the posts in place.', $flash['text']);
+        $this->assertSame(1, Post::count());
+    }
+
+    /**
+     * rowContaining returns the markup of the first table row that contains the given text.
+     */
+    protected function rowContaining(string $html, string $text): string
+    {
+        foreach (explode('<tr', $html) as $row) {
+            if (str_contains($row, $text)) {
+                return $row;
+            }
+        }
+
+        $this->fail("No row contains {$text}.");
     }
 
     public function test_relation_and_sql_columns_read_their_values_in_the_query(): void

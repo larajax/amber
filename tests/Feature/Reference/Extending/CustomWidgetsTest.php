@@ -15,10 +15,12 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Testing\TestResponse;
+use Larajax\Ui\Classes\ListWidgetBase;
 use Larajax\Ui\Classes\WidgetBase;
 use Larajax\Ui\Classes\WidgetManager;
 use Larajax\Ui\Facades\Ui;
 use Larajax\Ui\Widgets\Form;
+use Larajax\Ui\Widgets\Lists;
 use October\Rain\Exception\ApplicationException;
 use Tests\TestCase;
 
@@ -538,6 +540,87 @@ class CustomWidgetsTest extends TestCase
         $widget->handleError(new Exception('Something broke'));
 
         $this->assertStringContainsString('"Something broke" on line', $widget->getFatalError());
+    }
+
+    public function test_the_meter_list_widget_draws_each_value_as_a_share_of_max(): void
+    {
+        Post::factory()->create(['title' => 'Popular', 'views' => 6000]);
+        Post::factory()->create(['title' => 'Overflowing', 'views' => 9000]);
+
+        $html = $this->get(route('reference.extending.custom-widgets'))->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/<td class="[^"]*list-cell-type-meter[^"]*">\s*<span class="list-meter" title="6,000">\s*<span class="list-meter-bar" style="width: 75%"><\/span>/', $html);
+        $this->assertStringContainsString('<span class="list-meter-bar" style="width: 100%"></span>', $html);
+        $this->assertStringContainsString('<link rel="stylesheet" href="'.asset('css/widgets/meter.css').'"', $html);
+
+        foreach (['list-widget', 'list-widget-class'] as $section) {
+            $this->assertStringContainsString('id="'.$section.'"', $html);
+        }
+
+        $this->assertStringContainsString('app/ListWidgets/Meter.php', $html);
+    }
+
+    public function test_a_list_widget_code_keeps_the_first_widget_registered_under_it(): void
+    {
+        app('system.widgets')->registerListWidgets(function ($manager) {
+            $manager->registerListWidget(ShoutTestListWidget::class, 'switch');
+            $manager->registerListWidget(ShoutTestListWidget::class, 'shout');
+        });
+
+        $this->assertSame(\Larajax\Ui\ListWidgets\SwitchColumn::class, WidgetManager::instance()->resolveListWidget('switch'));
+        $this->assertSame(\App\ListWidgets\Meter::class, WidgetManager::instance()->resolveListWidget('meter'));
+        $this->assertSame(ShoutTestListWidget::class, WidgetManager::instance()->resolveListWidget('shout'));
+    }
+
+    public function test_a_built_in_column_type_wins_over_a_list_widget_of_the_same_code(): void
+    {
+        app('system.widgets')->registerListWidgets(function ($manager) {
+            $manager->registerListWidget(ShoutTestListWidget::class, 'text');
+            $manager->registerListWidget(ShoutTestListWidget::class, 'shout');
+        });
+
+        $post = Post::factory()->create(['title' => 'Quiet']);
+
+        $list = Lists::createIn(new ExtendingController, [
+            'model' => new Post,
+            'columns' => [
+                'title' => ['label' => 'Title', 'type' => 'text'],
+                'excerpt' => ['label' => 'Excerpt', 'type' => 'shout', 'sortable' => true],
+            ],
+        ]);
+
+        $columns = $list->getColumns();
+
+        $this->assertSame('Quiet', $list->getColumnValue($post, $columns['title']));
+        $this->assertSame('SHOUT QUIET', $list->getColumnValue($post, $columns['excerpt']));
+        $this->assertNull($list->getListWidget('title'));
+        $this->assertInstanceOf(ShoutTestListWidget::class, $list->getListWidget('excerpt'));
+
+        // The widget's column defaults apply only where the column does not set them
+        $this->assertFalse($columns['excerpt']->clickable);
+        $this->assertTrue($columns['excerpt']->sortable);
+    }
+}
+
+/**
+ * ShoutTestListWidget is a list widget that writes the record's title in capitals.
+ */
+class ShoutTestListWidget extends ListWidgetBase
+{
+    /**
+     * columnDefaults keeps the column out of the row link and of sorting.
+     */
+    public static function columnDefaults(): array
+    {
+        return ['clickable' => false, 'sortable' => false];
+    }
+
+    /**
+     * renderValue shouts the record's title.
+     */
+    public function renderValue($record, $value)
+    {
+        return 'SHOUT '.strtoupper($record->title);
     }
 }
 

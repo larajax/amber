@@ -1,0 +1,9 @@
+columns:
+    title:
+        label: Title
+
+    views:
+        label: Views
+        type: meter
+        max: 8000
+        sortable: true

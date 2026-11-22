@@ -61,7 +61,7 @@ Keys | Used by
 `callout.*` | the callout types: `info`, `success`, `warning` and `danger`.
 `scoreboard.*` | the scoreboard trend arrows, `up` and `down`.
 `filter.*` | the filter widget.
-`list.*`, `pagination.*` | the list widget: reordering, setup, tree rows, sorting, switch columns and paging.
+`list.*`, `pagination.*` | the list widget: reordering, setup, tree rows, sorting, switch columns, the row actions menu and paging.
 `checkboxlist.*`, `datepicker.*`, `sensitive.*` | the checkbox list field, the date picker and the sensitive field.
 `fileupload.*`, `file.type.*` | the file upload widget, with an icon per file type.
 `recordfinder.*`, `repeater.*`, `datatable.*` | the record finder, repeater and data table widgets.

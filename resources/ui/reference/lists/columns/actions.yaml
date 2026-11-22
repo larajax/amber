@@ -1,0 +1,55 @@
+columns:
+    title:
+        label: Title
+
+    published:
+        label: Live
+        type: switch
+
+    _actions:
+        label: ''
+        type: actions
+        buttons:
+            edit:
+                label: Edit
+                icon: ph ph-pencil-simple
+                url: posts/:id/edit
+
+            statusHeader:
+                header: Status
+
+            publish:
+                label: Publish
+                icon: ph ph-eye
+                handler: onPostRowAction
+                visible: isRowPostDraft
+                requestData:
+                    action: publish
+                    id: ':id'
+                attributes:
+                    data-request-flash: true
+
+            unpublish:
+                label: Unpublish
+                icon: ph ph-eye-slash
+                handler: onPostRowAction
+                visible: isRowPostPublished
+                requestData:
+                    action: unpublish
+                    id: ':id'
+                attributes:
+                    data-request-flash: true
+
+            deleteDivider: divider
+
+            delete:
+                label: Delete
+                icon: ph ph-trash
+                type: danger
+                handler: onPostRowAction
+                confirm: Delete ":title"?
+                requestData:
+                    action: delete
+                    id: ':id'
+                attributes:
+                    data-request-flash: true

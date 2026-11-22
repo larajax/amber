@@ -147,6 +147,32 @@ partial does not run a query for every row. Give a partial with links of its own
 
 <<< @/../resources/views/reference/lists/columns/_column_tags.php
 
+## Actions {#actions}
+
+`actions` adds a menu to the end of each row. `buttons` takes the same definitions as a
+[toolbar's buttons](/lists/toolbar#button-definitions), inline as here or as the path of a YAML file
+whose `buttons` hold them, so the menu can have links, handlers, popups, headers, dividers and
+submenus. For each row:
+
+- `:name` placeholders in `url`, `requestData` and `confirm` take that attribute of the row's record,
+  so `posts/:id/edit` links to the row's post and `id: ':id'` sends its id.
+- A `visible`, `active` or `disabled` method on the controller receives the record after the button
+  definition, so an item can depend on the row. Here Publish shows on drafts and Unpublish on published
+  posts.
+- A row whose items are all hidden shows no menu.
+
+The column is not sortable and not part of the row link, and `icon` changes the icon of the button that
+opens the menu. `label: ''` leaves the header empty, while the button keeps a label for screen readers.
+The Posts page uses a YAML file for the same menu, `resources/ui/post/actions.yaml`.
+
+<<< @/../resources/ui/reference/lists/columns/actions.yaml
+
+<<< @/../app/Controllers/Reference/ListsController/ColumnsExamples.php#docs-row-actions{php}
+
+The menu's definitions are a toolbar inside the column, with the column's alias and `Toolbar` added,
+such as `actionsListActionsToolbar`, so a `toolbarExtendButtons()` method or a `toolbar.extendButtons`
+listener [changes them](/lists/toolbar#extend-buttons) as it does a toolbar's.
+
 ## Values from relations and SQL {#relations}
 
 A column with a `relation` and a `select` reads a column of the related record inside the list query,
@@ -233,9 +259,10 @@ Type | Shows | Options
 **file** | an icon for each attached file. | `limit`
 **linkage** | the value as a link. | `linkUrl`, `linkText`, `attributes`
 **partial** | a file of your own. | `path`
+**actions** | a menu of actions on the row. | `buttons`, `icon`
 
-The types are fixed: any other `type` throws an error that names it. For a cell no type covers, use a
-`partial` column.
+A `type` can also name a [list widget](/extending/custom-widgets#list-widget) your app registers, and
+any other `type` throws an error that names it. For a one-off cell, use a `partial` column.
 
 ### Type options {#type-options}
 
@@ -256,3 +283,5 @@ Option | Description
 **linkText** | `linkage`: the link text, in place of the value.
 **attributes** | `linkage`: HTML attributes for the link, such as `target: _blank`.
 **path** | `partial`: the file to render, as a `~/` path or a namespaced view.
+**buttons** | `actions`: the menu's [button definitions](/lists/toolbar#button-definitions), or the path of a YAML file whose `buttons` hold them.
+**icon** | `actions`: the icon of the button that opens the menu. Default: the `list.actions` [icon](/extending/icons).

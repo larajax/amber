@@ -76,6 +76,15 @@
     ]])
 </section>
 
+<section class="ui-section" id="actions">
+    @include('reference._heading', ['id' => 'actions', 'title' => 'Actions', 'caption' => '<code>actions</code>, a menu on each row from toolbar <code>buttons</code> with <code>:id</code> placeholders.'])
+    @include('reference._widget_example', [
+        'widgets' => [$lists['actions']],
+        'methods' => ['isRowPostDraft', 'onPostRowAction'],
+        'sources' => ['resources/ui/reference/lists/columns/actions.yaml'],
+    ])
+</section>
+
 <section class="ui-section" id="relations">
     @include('reference._heading', ['id' => 'relations', 'title' => 'Values from relations and SQL', 'caption' => '<code>relation</code> with <code>select</code>, a bracket name and raw SQL.'])
     @include('reference._widget_example', ['widgets' => [$lists['relations']], 'sources' => ['resources/ui/reference/lists/columns/relations.yaml']])

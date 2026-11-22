@@ -1,18 +1,20 @@
 ---
-subtitle: Build your own form widget or standalone widget, with its own partials, handlers and assets.
+subtitle: Build your own form widget, standalone widget or list widget, with its own partials, handlers and assets.
 demo: /reference/extending/custom-widgets
 ---
 # Custom Widgets
 
 Your app can add its own widgets beside the built-in ones. A widget is a PHP class with its own
 partials, any number of AJAX handlers, and a script and stylesheet that load only on the pages that
-render it. There are two kinds, and this page builds one of each:
+render it. There are three kinds, and this page builds one of each:
 
 - A **form widget** is a field type. A form creates it for any field that names it as its `type`. The
   first is a time checker that compares the browser clock with the server clock, and the page walks
   through each of its files.
 - A **standalone widget** is a part of a page that a controller builds itself, the way it builds a list
   or a form. The second is a feed of a post's comments, see [a standalone widget](#standalone-widget).
+- A **list widget** is a column type. A list creates it for any column that names it as its `type`. The
+  third is a meter that draws a number as a bar, see [a list widget](#list-widget).
 
 When a screen needs something the built-in fields and widgets do not cover, build it as one of these
 rather than as markup and script in a view. The widget carries its handlers and assets with it, so it
@@ -84,7 +86,7 @@ fields and `getSaveValue()` receives it.
 
 `registerFormWidget()` gives the class a code, which fields name as their `type`. Register your
 widgets in a service provider's `boot()` method, through the widget manager's `registerFormWidgets()`
-callback:
+callback. The provider also registers the [list widget](#list-widget) further down this page:
 
 <<< @/../app/Providers/AppServiceProvider.php{php}
 
@@ -189,3 +191,41 @@ The feed needs no script, only a stylesheet. `loadAssets()` adds it the way the 
 [its own assets](#assets), and [`Ui::renderAssets()`](#render-assets) prints it:
 
 <<< @/../public/css/widgets/commentfeed.css{css}
+
+## A list widget {#list-widget}
+
+A list widget is a column type of your own. Where a [partial column](/lists/columns#partial) suits one
+list, a list widget is a class with options, partials and assets, so any list can name it as a column's
+`type`. The meter draws the views of each post as a bar, filled by its share of `max`:
+
+<<< @/../resources/ui/reference/extending/custom-widgets/meter.yaml
+
+<<< @/../app/Controllers/Reference/ExtendingController/ListWidgetExamples.php{php}
+
+The list makes one meter for the column the first time it renders a cell, and asks it for each row's
+markup. The widget gets its code from `registerListWidget()`, inside the widget manager's
+`registerListWidgets()` callback, in the same [service provider](#registering) as the form widget.
+
+A built-in column type keeps its code: a list widget registered as `text` or `image` is never used for
+those columns, and a code goes to the first widget registered under it.
+
+## The list widget class {#list-widget-class}
+
+A list widget extends `Larajax\Ui\Classes\ListWidgetBase`, a `WidgetBase` that knows its column.
+
+<<< @/../app/ListWidgets/Meter.php{php}
+
+- `init()` copies the column's options onto the properties of the same name, here `max`, as a form
+  widget's `init()` does.
+- `renderValue($record, $value)` returns the markup of one cell, given the row's record and the
+  column's value. The list calls it for every row, so the widget keeps nothing per row.
+- `loadAssets()` adds the stylesheet the first time a meter column renders.
+- `columnDefaults()`, a static method, returns options a column of the type takes unless it sets them,
+  such as `['sortable' => false]` for a column without a value of its own.
+
+`getColumn()` returns the column definition and `getParentList()` the list. The partial receives the
+values `renderValue()` passes it:
+
+<<< @/../app/ListWidgets/Meter/partials/_meter.php
+
+<<< @/../public/css/widgets/meter.css

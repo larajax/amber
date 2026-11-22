@@ -21,6 +21,18 @@ allows. `sortable` adds a sorting link to the header, `searchable` includes the 
 `invisible` hides the column until someone shows it from the list setup. The
 [columns page](/lists/columns) covers every column type.
 
+The last column, `_actions`, has no attribute behind it. It is an [actions](/lists/columns#actions)
+column, a menu on each row whose items come from a YAML file of toolbar button definitions, where
+`:id` and `:title` take the row's values:
+
+<<< @/../resources/ui/post/actions.yaml
+
+Each item sends the row's id as `checked`, so the [bulk action handlers](#bulk-actions) serve one row
+as they serve the checked rows. `visible` names a controller method that receives the row's post, so
+a draft offers Publish and a published post Unpublish:
+
+<<< @/../app/Controllers/PostsController/PostList.php#docs-row-visibility{php}
+
 The posts controller's `index` action returns `view('posts.index', $this->prepareListVars())`, and
 the `PostList` trait builds the list with `Lists::make()`:
 

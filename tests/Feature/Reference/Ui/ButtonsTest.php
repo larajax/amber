@@ -197,6 +197,20 @@ class ButtonsTest extends TestCase
         $this->assertStringContainsString('disabled="disabled"', (string) Ui::button(label: 'Locked', disabled: true));
     }
 
+    public function test_attribute_values_are_escaped_so_quotes_cannot_end_the_attribute(): void
+    {
+        $html = (string) Ui::ajaxButton(
+            label: 'Delete',
+            handler: 'onDelete',
+            title: '" onmouseover="alert(1)',
+            dataRequestConfirm: 'Delete "<b>Tom & Jerry</b>"?'
+        );
+
+        $this->assertStringContainsString('title="&quot; onmouseover=&quot;alert(1)"', $html);
+        $this->assertStringContainsString('data-request-confirm="Delete &quot;&lt;b&gt;Tom &amp; Jerry&lt;/b&gt;&quot;?"', $html);
+        $this->assertStringNotContainsString('onmouseover="', $html);
+    }
+
     public function test_on_flash_message_flashes_a_message(): void
     {
         $this->assertFlash($this->ajax('onFlashMessage'), 'success', 'Hello from the server.');

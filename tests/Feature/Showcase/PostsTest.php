@@ -104,6 +104,24 @@ class PostsTest extends TestCase
             ->assertSee('data-handler="list::onLoadSetup"', false);
     }
 
+    public function test_each_row_has_an_actions_menu_for_its_post(): void
+    {
+        $draft = Post::factory()->create(['title' => 'Draft Post', 'published' => false]);
+        $live = Post::factory()->create(['title' => 'Live Post', 'published' => true]);
+
+        $html = $this->get('posts')->assertOk()->getContent();
+
+        $rows = collect(explode('<tr', $html));
+        $draftRow = $rows->first(fn ($row) => str_contains($row, 'Draft Post'));
+        $liveRow = $rows->first(fn ($row) => str_contains($row, 'Live Post'));
+
+        $this->assertStringContainsString('href="'.url('posts/'.$draft->id.'/edit').'"', $draftRow);
+        $this->assertStringContainsString('data-request="onBulkPublish" data-request-data="{&quot;checked&quot;:[&quot;'.$draft->id.'&quot;]}"', $draftRow);
+        $this->assertStringNotContainsString('onBulkUnpublish', $draftRow);
+        $this->assertStringContainsString('data-request="onBulkUnpublish" data-request-data="{&quot;checked&quot;:[&quot;'.$live->id.'&quot;]}"', $liveRow);
+        $this->assertStringContainsString('data-request-confirm="Delete &quot;Live Post&quot; with its comments?"', $liveRow);
+    }
+
     public function test_searching_matches_the_author_name(): void
     {
         Post::factory()->for(User::factory()->create(['name' => 'Ada Writer']), 'author')->create(['title' => 'First Article']);

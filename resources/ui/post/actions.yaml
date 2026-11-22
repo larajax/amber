@@ -1,0 +1,44 @@
+# ===================================
+#  Post Row Action Definitions
+# ===================================
+#
+# Each action sends the row's id as `checked`, the way the bulk actions read it.
+
+buttons:
+    edit:
+        label: Edit
+        icon: ph ph-pencil-simple
+        url: posts/:id/edit
+
+    publish:
+        label: Publish
+        icon: ph ph-eye
+        handler: onBulkPublish
+        visible: isPostUnpublished
+        requestData:
+            checked: [':id']
+        attributes:
+            data-request-flash: true
+
+    unpublish:
+        label: Unpublish
+        icon: ph ph-eye-slash
+        handler: onBulkUnpublish
+        visible: isPostPublished
+        requestData:
+            checked: [':id']
+        attributes:
+            data-request-flash: true
+
+    deleteDivider: divider
+
+    delete:
+        label: Delete
+        icon: ph ph-trash
+        type: danger
+        handler: onBulkDelete
+        confirm: Delete ":title" with its comments?
+        requestData:
+            checked: [':id']
+        attributes:
+            data-request-flash: true

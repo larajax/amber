@@ -72,7 +72,7 @@ class DropdownsTest extends TestCase
         $html = $this->get(route('reference.ui.dropdowns'))->assertOk()->getContent();
 
         $this->assertSame(10, substr_count($html, '<div class="menu control-dropdown" role="menu">'));
-        $this->assertStringContainsString("data-request-data=\"action: 'archive'\"", $html);
+        $this->assertStringContainsString('data-request-data="action: &#039;archive&#039;"', $html);
         $this->assertStringContainsString('href="'.route('reference.index').'"', $html);
         $this->assertStringContainsString('class="menu-item disabled" role="menuitem" href="javascript:;" aria-disabled="true"', $html);
         $this->assertStringContainsString('class="menu-item theme-danger"', $html);

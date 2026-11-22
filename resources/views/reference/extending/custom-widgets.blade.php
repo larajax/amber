@@ -3,7 +3,7 @@
 @section('content')
 
 @include('reference._header', [
-    'intro' => 'An app form widget with its own partials, AJAX handler, script and stylesheet, and a standalone widget built the same way.',
+    'intro' => 'An app form widget with its own partials, AJAX handler, script and stylesheet, a standalone widget built the same way, and a list widget for a column type of your own.',
 ])
 
 <form data-request="onSaveExamples" data-request-flash>
@@ -67,6 +67,24 @@
         @include('reference._source', ['path' => 'app/Widgets/CommentFeed/partials/_commentfeed.php'])
         @include('reference._source', ['path' => 'app/Widgets/CommentFeed/partials/_comments.php'])
         @include('reference._source', ['path' => 'public/css/widgets/commentfeed.css'])
+    </div>
+</section>
+
+<section class="ui-section" id="list-widget">
+    @include('reference._heading', ['id' => 'list-widget', 'title' => 'A list widget', 'caption' => 'A <code>meter</code> column type that draws the views of each post as a bar.'])
+    @include('reference._widget_example', [
+        'widgets' => [$meterList],
+        'methods' => ['makeMeterList'],
+        'sources' => ['resources/ui/reference/extending/custom-widgets/meter.yaml'],
+    ])
+</section>
+
+<section class="ui-section" id="list-widget-class">
+    @include('reference._heading', ['id' => 'list-widget-class', 'title' => 'The list widget class', 'caption' => 'A <code>ListWidgetBase</code> class with <code>renderValue()</code>, its partial and its stylesheet.'])
+    <div class="ui-example">
+        @include('reference._source', ['path' => 'app/ListWidgets/Meter.php'])
+        @include('reference._source', ['path' => 'app/ListWidgets/Meter/partials/_meter.php'])
+        @include('reference._source', ['path' => 'public/css/widgets/meter.css'])
     </div>
 </section>
 

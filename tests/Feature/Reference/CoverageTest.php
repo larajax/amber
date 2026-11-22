@@ -113,7 +113,7 @@ class CoverageTest extends TestCase
     }
 
     /**
-     * libraryUnits discovers every widget, form and filter widget, field, column and scope type, control, element, Ui factory method and larajax.ui and larajax.ui.icons service method in the library.
+     * libraryUnits discovers every widget, form, filter and list widget, field, column and scope type, control, element, Ui factory method and larajax.ui and larajax.ui.icons service method in the library.
      *
      * @return array<int, string>
      */
@@ -125,6 +125,7 @@ class CoverageTest extends TestCase
             ...$this->prefixed('widget', $this->baseNames("{$root}/src/Widgets/*.php")),
             ...$this->prefixed('formwidget', $this->baseNames("{$root}/src/FormWidgets/*.php")),
             ...$this->prefixed('filterwidget', $this->baseNames("{$root}/src/FilterWidgets/*.php")),
+            ...$this->prefixed('listwidget', $this->baseNames("{$root}/src/ListWidgets/*.php")),
             ...$this->prefixed('field', $this->partialTypes("{$root}/src/Widgets/Form/partials/_field_*.php", '_field_')),
             ...$this->prefixed('scope', $this->partialTypes("{$root}/src/Widgets/Filter/partials/_scope_*.php", '_scope_')),
             ...$this->prefixed('column', $this->columnTypes()),

@@ -1,0 +1,22 @@
+/*
+ * Meter list widget
+ * --------------------------------------------------
+ * Loaded by App\ListWidgets\Meter through loadAssets(), so it only reaches pages with a meter column.
+ */
+
+.list-meter {
+    display: inline-block;
+    width: 6rem;
+    height: 0.5rem;
+    overflow: hidden;
+    vertical-align: middle;
+    background: var(--bs-bg-3);
+    border-radius: 1rem;
+
+    .list-meter-bar {
+        display: block;
+        height: 100%;
+        background: var(--bs-primary-base);
+        border-radius: inherit;
+    }
+}

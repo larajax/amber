@@ -5,10 +5,12 @@ namespace App\Controllers\Reference\ListsController;
 use App\Models\Post;
 use App\Models\Sample;
 use Illuminate\Support\Str;
+use Larajax\Classes\AjaxResponse;
+use Larajax\Ui\Classes\ToolbarButton;
 use Larajax\Ui\Widgets\Lists;
 
 /**
- * ColumnsExamples builds the small lists on the Columns page, one for each column example.
+ * ColumnsExamples builds the small lists on the Columns page, one for each column example, and handles the row actions example.
  */
 trait ColumnsExamples
 {
@@ -32,6 +34,7 @@ trait ColumnsExamples
             'files' => Sample::class,
             'linkage' => Post::class,
             'partial' => Post::class,
+            'actions' => Post::class,
             'relations' => Post::class,
             'headers' => Post::class,
         ];
@@ -50,4 +53,32 @@ trait ColumnsExamples
 
         return $lists;
     }
+
+    // #region docs-row-actions
+    /**
+     * isRowPostDraft shows a row action only on posts that are not published.
+     */
+    public function isRowPostDraft(ToolbarButton $button, Post $post): bool
+    {
+        return !$post->published;
+    }
+
+    /**
+     * isRowPostPublished shows a row action only on published posts.
+     */
+    public function isRowPostPublished(ToolbarButton $button, Post $post): bool
+    {
+        return $post->published;
+    }
+
+    /**
+     * onPostRowAction names the action and the post of the row it came from, leaving the post as it is.
+     */
+    public function onPostRowAction(): AjaxResponse
+    {
+        $post = Post::find(request()->input('id'));
+
+        return ajax()->flash('info', Str::headline((string) request()->input('action')).' would apply to "'.($post?->title ?? 'no post').'". The reference pages leave the posts in place.');
+    }
+    // #endregion docs-row-actions
 }

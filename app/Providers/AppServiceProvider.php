@@ -23,5 +23,10 @@ class AppServiceProvider extends ServiceProvider
         app('system.widgets')->registerFormWidgets(function ($manager) {
             $manager->registerFormWidget(\App\FormWidgets\TimeChecker::class, 'timechecker');
         });
+
+        // The app's own list widget, used in column definitions as type: meter
+        app('system.widgets')->registerListWidgets(function ($manager) {
+            $manager->registerListWidget(\App\ListWidgets\Meter::class, 'meter');
+        });
     }
 }

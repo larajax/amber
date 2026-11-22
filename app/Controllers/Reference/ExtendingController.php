@@ -4,6 +4,7 @@ namespace App\Controllers\Reference;
 
 use App\Classes\ReferenceControllerBase;
 use App\Controllers\Reference\ExtendingController\IconRegistrations;
+use App\Controllers\Reference\ExtendingController\ListWidgetExamples;
 use App\Controllers\Reference\ExtendingController\SeamResolvers;
 use App\Controllers\Reference\ExtendingController\SeamWidgets;
 use App\Controllers\Reference\ExtendingController\StandaloneWidgets;
@@ -15,6 +16,7 @@ use Illuminate\Contracts\View\View;
 class ExtendingController extends ReferenceControllerBase
 {
     use IconRegistrations;
+    use ListWidgetExamples;
     use SeamResolvers;
     use SeamWidgets;
     use StandaloneWidgets;
@@ -28,6 +30,7 @@ class ExtendingController extends ReferenceControllerBase
 
         return view('reference.extending.custom-widgets', $this->exampleVars() + [
             'commentFeed' => $this->makeCommentFeedWidget(),
+            'meterList' => $this->makeMeterList(),
         ]);
     }
 
