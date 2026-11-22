@@ -71,7 +71,7 @@
 </section>
 
 <section class="ui-section" id="list-widget">
-    @include('reference._heading', ['id' => 'list-widget', 'title' => 'A list widget', 'caption' => 'A <code>meter</code> column type that draws the views of each post as a bar.'])
+    @include('reference._heading', ['id' => 'list-widget', 'title' => 'A list widget', 'caption' => 'A <code>meter</code> column type that draws the views of each post as a bar, and names them on a click.'])
     @include('reference._widget_example', [
         'widgets' => [$meterList],
         'methods' => ['makeMeterList'],
@@ -80,7 +80,7 @@
 </section>
 
 <section class="ui-section" id="list-widget-class">
-    @include('reference._heading', ['id' => 'list-widget-class', 'title' => 'The list widget class', 'caption' => 'A <code>ListWidgetBase</code> class with <code>renderValue()</code>, its partial and its stylesheet.'])
+    @include('reference._heading', ['id' => 'list-widget-class', 'title' => 'The list widget class', 'caption' => 'A <code>ListWidgetBase</code> class with <code>renderValue()</code> and an <code>onShowValue</code> handler, its partial and its stylesheet.'])
     <div class="ui-example">
         @include('reference._source', ['path' => 'app/ListWidgets/Meter.php'])
         @include('reference._source', ['path' => 'app/ListWidgets/Meter/partials/_meter.php'])

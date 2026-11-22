@@ -239,7 +239,7 @@ are:
 
 Method | Event | Called
 ------------- | ------------- | -------------
-**eventExtendColumns()** | `list.extendColumns` | once the columns are defined, to add them with `addColumns()` or remove them with `removeColumn()`.
+**eventExtendColumns()** | `list.extendColumns` | once the columns are defined, which `make()` does as it binds the list, to add them with `addColumns()` or remove them with `removeColumn()`. A listener bound after `make()` also runs straight away, so the columns it adds have their [list widgets](/extending/custom-widgets#list-widget) in place for an AJAX handler.
 **eventExtendQueryBefore($query)** | `list.extendQueryBefore` | before the list applies its own constraints to the query.
 **eventExtendSearchQuery($query)** | `list.extendSearchQuery` | inside the search conditions, to search more places.
 **eventExtendSortColumn($query, $column, $direction)** | `list.extendSortColumn` | after the sort is applied.

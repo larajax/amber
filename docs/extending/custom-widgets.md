@@ -195,16 +195,18 @@ The feed needs no script, only a stylesheet. `loadAssets()` adds it the way the 
 ## A list widget {#list-widget}
 
 A list widget is a column type of your own. Where a [partial column](/lists/columns#partial) suits one
-list, a list widget is a class with options, partials and assets, so any list can name it as a column's
-`type`. The meter draws the views of each post as a bar, filled by its share of `max`:
+list, a list widget is a class with options, partials, assets and AJAX handlers, so any list can name
+it as a column's `type`. The meter draws the views of each post as a bar, filled by its share of `max`,
+and clicking a bar names the views of that post:
 
 <<< @/../resources/ui/reference/extending/custom-widgets/meter.yaml
 
 <<< @/../app/Controllers/Reference/ExtendingController/ListWidgetExamples.php{php}
 
-The list makes one meter for the column the first time it renders a cell, and asks it for each row's
-markup. The widget gets its code from `registerListWidget()`, inside the widget manager's
-`registerListWidgets()` callback, in the same [service provider](#registering) as the form widget.
+The list makes one meter for the column when it defines its columns, which `make()` does as it binds
+the list, and asks the meter for each row's markup. The widget gets its code from
+`registerListWidget()`, inside the widget manager's `registerListWidgets()` callback, in the same
+[service provider](#registering) as the form widget.
 
 A built-in column type keeps its code: a list widget registered as `text` or `image` is never used for
 those columns, and a code goes to the first widget registered under it.
@@ -219,11 +221,17 @@ A list widget extends `Larajax\Ui\Classes\ListWidgetBase`, a `WidgetBase` that k
   widget's `init()` does.
 - `renderValue($record, $value)` returns the markup of one cell, given the row's record and the
   column's value. The list calls it for every row, so the widget keeps nothing per row.
+- `onShowValue()` is an AJAX handler. The list binds its widgets to the controller when it defines its
+  columns, so the handler is reached by the widget's alias, the list's alias and the column name, here
+  `meterListViews::onShowValue`. `getEventHandler()` returns that name for the partial.
+- `findRecord($key)` finds the row's record through the list's own query, with its filters and search,
+  so the handler cannot reach a record the list would not show. Post the record's key, not the record.
+- `columnDefaults()`, a static method, returns options a column of the type takes unless it sets them.
+  The meter sets `clickable: false`, so a click on the bar does not follow the row link.
 - `loadAssets()` adds the stylesheet the first time a meter column renders.
-- `columnDefaults()`, a static method, returns options a column of the type takes unless it sets them,
-  such as `['sortable' => false]` for a column without a value of its own.
 
-`getColumn()` returns the column definition and `getParentList()` the list. The partial receives the
+`getColumn()` returns the column definition and `getParentList()` the list. A column hidden from the
+visitor by `permissions` has no widget, so its handlers cannot be reached. The partial receives the
 values `renderValue()` passes it:
 
 <<< @/../app/ListWidgets/Meter/partials/_meter.php

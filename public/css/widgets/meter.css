@@ -8,10 +8,18 @@
     display: inline-block;
     width: 6rem;
     height: 0.5rem;
+    padding: 0;
     overflow: hidden;
     vertical-align: middle;
+    cursor: pointer;
     background: var(--bs-bg-3);
+    border: 0;
     border-radius: 1rem;
+
+    &:focus-visible {
+        outline: 2px solid var(--bs-primary-base);
+        outline-offset: 2px;
+    }
 
     .list-meter-bar {
         display: block;

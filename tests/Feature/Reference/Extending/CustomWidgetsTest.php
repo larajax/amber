@@ -549,7 +549,7 @@ class CustomWidgetsTest extends TestCase
 
         $html = $this->get(route('reference.extending.custom-widgets'))->assertOk()->getContent();
 
-        $this->assertMatchesRegularExpression('/<td class="[^"]*list-cell-type-meter[^"]*">\s*<span class="list-meter" title="6,000">\s*<span class="list-meter-bar" style="width: 75%"><\/span>/', $html);
+        $this->assertMatchesRegularExpression('/<td class="[^"]*list-cell-type-meter[^"]*nolink">\s*<button\s+type="button"\s+class="list-meter"\s+title="6,000"\s+data-request="meterListViews::onShowValue"[^>]*>\s*<span class="list-meter-bar" style="width: 75%"><\/span>/', $html);
         $this->assertStringContainsString('<span class="list-meter-bar" style="width: 100%"></span>', $html);
         $this->assertStringContainsString('<link rel="stylesheet" href="'.asset('css/widgets/meter.css').'"', $html);
 
@@ -558,6 +558,90 @@ class CustomWidgetsTest extends TestCase
         }
 
         $this->assertStringContainsString('app/ListWidgets/Meter.php', $html);
+    }
+
+    public function test_the_meter_handler_names_the_value_of_a_row_in_the_list(): void
+    {
+        $post = Post::factory()->create(['views' => 2000]);
+
+        $response = $this->ajax('meterListViews::onShowValue', route('reference.extending.custom-widgets'), ['key' => $post->id])->assertOk();
+
+        $flash = collect($response->json('__ajax.ops'))->firstWhere('op', 'flash');
+        $this->assertSame('info', $flash['level']);
+        $this->assertSame('Views: 2,000, 25% of 8,000.', $flash['text']);
+    }
+
+    public function test_list_widget_handlers_reach_bound_and_late_columns_through_the_list_query(): void
+    {
+        $this->registerPingListWidget();
+
+        $published = Post::factory()->create(['title' => 'Shown', 'published' => true]);
+        $draft = Post::factory()->create(['title' => 'Filtered out', 'published' => false]);
+
+        $this->assertFlash($this->pingAjax('listViews::onPing', ['key' => $published->id]), 'views: Shown');
+        $this->assertFlash($this->pingAjax('listLate::onPing', ['key' => $published->id]), 'late: Shown');
+        $this->assertFlash($this->pingAjax('listViews::onPing', ['key' => $draft->id]), 'views: none');
+    }
+
+    public function test_a_list_widget_column_hidden_by_permissions_has_no_handlers(): void
+    {
+        $this->registerPingListWidget();
+
+        $post = Post::factory()->create(['published' => true]);
+
+        $response = $this->pingAjax('listSecret::onPing', ['key' => $post->id]);
+
+        $this->assertNull(collect($response->json('__ajax.ops'))->firstWhere('op', 'flash'));
+        $this->assertStringContainsString('listSecret', (string) $response->getContent());
+    }
+
+    public function test_a_late_extend_columns_listener_still_shapes_the_rendered_list(): void
+    {
+        $this->registerPingListWidget();
+
+        Post::factory()->create(['title' => 'Shown', 'published' => true]);
+
+        $html = $this->get('/list-widgets')->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/list-cell-name-late[^>]*>\s*PING late Shown/', $html);
+        $this->assertStringNotContainsString('list-cell-name-secret', $html);
+    }
+
+    /**
+     * registerPingListWidget registers the ping test widget and the page that lists posts with it.
+     */
+    protected function registerPingListWidget(): void
+    {
+        app('system.widgets')->registerListWidgets(function ($manager) {
+            $manager->registerListWidget(PingTestListWidget::class, 'ping');
+        });
+
+        Route::middleware('web')->group(function () {
+            Route::match(['get', 'post'], '/list-widgets', [ListWidgetTestController::class, 'index'])->name('list-widgets-test');
+        });
+    }
+
+    /**
+     * pingAjax posts an AJAX handler request to the ping list page, with a fresh controller so a second request in the test runs its own handler.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    protected function pingAjax(string $handler, array $data = []): TestResponse
+    {
+        app('router')->getRoutes()->refreshNameLookups();
+        app('router')->getRoutes()->getByName('list-widgets-test')->flushController();
+
+        return $this->ajax($handler, '/list-widgets', $data);
+    }
+
+    /**
+     * assertFlash checks an AJAX response carries an info flash message with the given text.
+     */
+    protected function assertFlash(TestResponse $response, string $text): void
+    {
+        $response->assertOk();
+
+        $this->assertSame($text, collect($response->json('__ajax.ops'))->firstWhere('op', 'flash')['text'] ?? null);
     }
 
     public function test_a_list_widget_code_keeps_the_first_widget_registered_under_it(): void
@@ -599,6 +683,57 @@ class CustomWidgetsTest extends TestCase
         // The widget's column defaults apply only where the column does not set them
         $this->assertFalse($columns['excerpt']->clickable);
         $this->assertTrue($columns['excerpt']->sortable);
+    }
+}
+
+/**
+ * ListWidgetTestController lists published posts with ping columns: one defined at make(), one added by a listener bound after make(), and one hidden by permissions.
+ */
+class ListWidgetTestController extends ControllerBase
+{
+    /**
+     * index builds the list and prints it.
+     */
+    public function index()
+    {
+        $list = Lists::make(
+            model: new Post,
+            columns: [
+                'title' => ['label' => 'Title'],
+                'views' => ['label' => 'Views', 'type' => 'ping'],
+                'secret' => ['label' => 'Secret', 'type' => 'ping', 'permissions' => 'see-secrets'],
+            ],
+        );
+
+        $list->addFilter(fn ($query) => $query->where('published', true));
+
+        $list->bindEvent('list.extendColumns', function () use ($list) {
+            $list->addColumns(['late' => ['label' => 'Late', 'type' => 'ping']]);
+        });
+
+        return response((string) $list->render());
+    }
+}
+
+/**
+ * PingTestListWidget is a list widget whose handler names its column and the record it finds through the list.
+ */
+class PingTestListWidget extends ListWidgetBase
+{
+    /**
+     * renderValue names the column and the record's title.
+     */
+    public function renderValue($record, $value)
+    {
+        return 'PING '.$this->columnName.' '.e($record->title);
+    }
+
+    /**
+     * onPing flashes the column and the title of the record found through the list query.
+     */
+    public function onPing()
+    {
+        return ajax()->flash('info', $this->columnName.': '.($this->findRecord(request()->input('key'))?->title ?? 'none'));
     }
 }
 
