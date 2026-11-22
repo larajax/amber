@@ -1,0 +1,26 @@
+buttons:
+    create:
+        label: New Post
+        icon: ph ph-plus
+        type: primary
+        url: posts/create
+
+    actions:
+        label: Actions
+        icon: ph ph-dots-three-outline
+        items:
+            publish:
+                label: Publish
+                handler: onToolbarButton
+                requestData:
+                    button: publish
+                attributes:
+                    data-request-flash: true
+
+            archive:
+                label: Archive
+                handler: onToolbarButton
+                requestData:
+                    button: archive
+                attributes:
+                    data-request-flash: true

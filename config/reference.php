@@ -198,12 +198,12 @@ return [
                 'buttons' => [
                     'label' => 'Buttons',
                     'icon' => 'ph-cursor-click',
-                    'covers' => ['element:buttons', 'ui:button', 'ui:ajaxButton', 'ui:iconButton'],
+                    'covers' => ['element:buttons', 'ui:button', 'ui:ajaxButton', 'ui:iconButton', 'ui:buttonGroup'],
                 ],
                 'dropdowns' => [
                     'label' => 'Dropdowns',
                     'icon' => 'ph-caret-circle-down',
-                    'covers' => ['control:dropdown', 'ui:dropdownButton', 'ui:dropdownItem', 'ui:dropdownDivider'],
+                    'covers' => ['control:dropdown', 'ui:dropdownButton', 'ui:dropdownItem', 'ui:dropdownDivider', 'ui:dropdownHeader', 'ui:splitButton'],
                 ],
                 'popups' => [
                     'label' => 'Popups',

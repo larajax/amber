@@ -87,7 +87,7 @@ trait PostList
     protected function makeToolbarWidget(Lists $list): Toolbar
     {
         return Toolbar::make(
-            buttons: '~/resources/views/posts/_list_toolbar.php',
+            buttons: '~/resources/ui/post/buttons.yaml',
             search: [
                 'prompt' => 'Search posts...',
                 'scope' => 'applySearch',

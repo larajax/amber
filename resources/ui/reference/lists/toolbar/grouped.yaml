@@ -1,0 +1,49 @@
+buttons:
+    view:
+        group: true
+        items:
+            list:
+                label: List
+                icon: ph ph-list-bullets
+                handler: onToolbarButton
+                active: isToolbarViewActive
+                requestData:
+                    button: list
+                attributes:
+                    data-request-flash: true
+
+            grid:
+                label: Grid
+                icon: ph ph-squares-four
+                handler: onToolbarButton
+                active: isToolbarViewActive
+                requestData:
+                    button: grid
+                attributes:
+                    data-request-flash: true
+
+    viewDivider: divider
+
+    archive:
+        label: Archive
+        icon: ph ph-archive
+        handler: onToolbarButton
+        disabled: true
+
+    status:
+        partial: ~/resources/views/reference/lists/toolbar/_toolbar_status.php
+
+    help:
+        label: Help
+        icon: ph ph-question
+        align: end
+        items:
+            reference:
+                label: Reference overview
+                url: reference
+
+            larajax:
+                label: Larajax docs
+                url: https://larajax.org
+                attributes:
+                    target: _blank

@@ -75,26 +75,26 @@ The [scope types](/filters/scopes) and [filter options](/filters/options) pages 
 
 `Toolbar::make()` takes the buttons, the search box and the list setup icon:
 
-- `buttons` is a YAML file of button definitions, or a partial of `Ui` buttons as here. Either renders
-  inside the toolbar, linked to the list.
+- `buttons` is a YAML file of button definitions, or a partial of `Ui` buttons. Either renders inside
+  the toolbar, linked to the list.
 - `search` adds the search box. `prompt` is its placeholder, and `scope` names a model scope that runs
   the search instead of the `searchable` columns, here `applySearch`, which also matches the category,
   tag and author names (see [search with a scope](/lists/search#scope)).
 - `setupHandler` shows the icon that opens the list setup. `$list->getEventHandler('onLoadSetup')`
   returns `list::onLoadSetup`, the list's own handler.
 
-The posts toolbar is a partial, which lets it hold a popup button and a dropdown:
+The posts toolbar declares its buttons in YAML, a popup button and a dropdown of bulk actions among
+them:
 
-<<< @/../resources/views/posts/_list_toolbar.php
+<<< @/../resources/ui/post/buttons.yaml
 
-The Bulk Actions dropdown is disabled until a row is checked (`dataListCheckedTrigger`), and each item
-sends the ids of the checked rows with its request (`dataListCheckedRequest`). The Authors page declares
-its buttons in YAML instead, where `checked: true` does both for its Delete button:
+`checked: true` keeps the Bulk Actions dropdown disabled until a row is checked, and each item in it
+sends the ids of the checked rows with its request. The item given as the word `divider` draws the
+line above Delete.
 
-<<< @/../resources/ui/user/buttons.yaml
-
-See [buttons from YAML](/lists/toolbar#yaml-buttons) and [buttons from a partial](/lists/toolbar#partial)
-for the full set of button options.
+See [buttons from YAML](/lists/toolbar#yaml-buttons) and [dropdown menus](/lists/toolbar#menus) for
+the full set of button options, and [buttons from a partial](/lists/toolbar#partial) for a toolbar of
+your own markup.
 
 ## Bulk actions on checked rows {#bulk-actions}
 

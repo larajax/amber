@@ -1,0 +1,87 @@
+buttons:
+    create:
+        label: New Post
+        icon: ph ph-plus
+        type: primary
+        url: posts/create
+
+    bulk:
+        label: Bulk Actions
+        icon: ph ph-stack
+        checked: true
+        items:
+            statusHeader:
+                header: Status
+
+            publish:
+                label: Publish
+                icon: ph ph-eye
+                handler: onCheckedToolbarButton
+                requestData:
+                    button: publish
+                attributes:
+                    data-request-flash: true
+
+            feature:
+                label: Feature
+                icon: ph ph-star
+                handler: onCheckedToolbarButton
+                requestData:
+                    button: feature
+                attributes:
+                    data-request-flash: true
+
+            exportDivider: divider
+
+            export:
+                label: Export
+                icon: ph ph-export
+                items:
+                    csv:
+                        label: As CSV
+                        handler: onCheckedToolbarButton
+                        hotkey: shift+x
+                        requestData:
+                            button: csv export
+                        attributes:
+                            data-request-flash: true
+
+                    json:
+                        label: As JSON
+                        handler: onCheckedToolbarButton
+                        requestData:
+                            button: json export
+                        attributes:
+                            data-request-flash: true
+
+            deleteDivider: divider
+
+            delete:
+                label: Delete
+                icon: ph ph-trash
+                type: danger
+                handler: onDeleteCheckedPosts
+                confirm: Delete the checked posts?
+                attributes:
+                    data-request-flash: true
+
+    sort:
+        label: Sort
+        icon: ph ph-sort-ascending
+        items:
+            newest:
+                label: Newest first
+                handler: onToolbarButton
+                active: true
+                requestData:
+                    button: newest
+                attributes:
+                    data-request-flash: true
+
+            oldest:
+                label: Oldest first
+                handler: onToolbarButton
+                requestData:
+                    button: oldest
+                attributes:
+                    data-request-flash: true

@@ -1,8 +1,8 @@
-<div class="btn-group">
+<?php Ui::buttonGroup()->slot() ?>
     {{ Ui::button(label: 'Day', secondary: true) }}
     {{ Ui::button(label: 'Week', secondary: true) }}
     {{ Ui::button(label: 'Month', secondary: true) }}
-</div>
+<?php Ui::end() ?>
 
 <div>
     {{ Ui::ajaxButton(label: 'Save draft', handler: 'onSaveDraft', primary: true, dataRequestFlash: true) }}

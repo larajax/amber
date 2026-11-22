@@ -49,10 +49,21 @@ class DropdownsTest extends TestCase
     {
         $html = $this->get(route('reference.ui.dropdowns'))->assertOk()->getContent();
 
-        foreach (['dropdown-buttons', 'dropdown-caret', 'dropdown-items', 'dropdown-markup', 'dropdown-placement'] as $example) {
+        $sections = [
+            'dropdown-buttons' => 'dropdown-button',
+            'dropdown-caret' => 'dropdown-caret',
+            'dropdown-items' => 'dropdown-items',
+            'dropdown-headers' => 'dropdown-headers',
+            'dropdown-submenus' => 'dropdown-submenus',
+            'dropdown-split' => 'split-button',
+            'dropdown-markup' => 'dropdown-markup',
+            'dropdown-placement' => 'dropdown-placement',
+        ];
+
+        foreach ($sections as $example => $section) {
             $source = e(trim(file_get_contents(resource_path("views/reference/ui/examples/{$example}.blade.php"))));
             $this->assertStringContainsString('<pre><code>'.$source.'</code></pre>', $html, "{$example} is not shown.");
-            $this->assertStringContainsString('id="'.str_replace('dropdown-buttons', 'dropdown-button', $example).'"', $html);
+            $this->assertStringContainsString('id="'.$section.'"', $html);
         }
     }
 
@@ -60,7 +71,7 @@ class DropdownsTest extends TestCase
     {
         $html = $this->get(route('reference.ui.dropdowns'))->assertOk()->getContent();
 
-        $this->assertSame(6, substr_count($html, '<div class="menu control-dropdown" role="menu">'));
+        $this->assertSame(10, substr_count($html, '<div class="menu control-dropdown" role="menu">'));
         $this->assertStringContainsString("data-request-data=\"action: 'archive'\"", $html);
         $this->assertStringContainsString('href="'.route('reference.index').'"', $html);
         $this->assertStringContainsString('class="menu-item disabled" role="menuitem" href="javascript:;" aria-disabled="true"', $html);
@@ -103,6 +114,63 @@ class DropdownsTest extends TestCase
         $this->assertStringContainsString('class="menu-item theme-danger"', $html);
         $this->assertStringContainsString('href="javascript:;"', $html);
         $this->assertStringNotContainsString('data-request', $html);
+    }
+
+    public function test_the_dropdown_item_takes_popups_request_data_hotkeys_and_states(): void
+    {
+        $popup = (string) Ui::dropdownItem(label: 'Details', handler: 'onLoadDialog', popup: true, requestData: ['id' => 4]);
+        $this->assertStringContainsString('data-control="popup" data-handler="onLoadDialog" data-request-data="{&quot;id&quot;:4}"', $popup);
+        $this->assertStringNotContainsString('data-request="', $popup);
+
+        $hotkey = (string) Ui::dropdownItem(label: 'Refresh', handler: 'onRefresh', hotkey: 'shift+r');
+        $this->assertMatchesRegularExpression('/data-hotkey="shift\+r">\s*Refresh\s*<kbd class="menu-item-hotkey">⇧R<\/kbd>/', $hotkey);
+
+        $selected = (string) Ui::dropdownItem(label: 'Newest', selected: true);
+        $this->assertStringContainsString('class="menu-item selected" role="menuitem" href="javascript:;" aria-current="true"', $selected);
+        $this->assertStringContainsString(Ui::iconClass('dropdown.check').' menu-item-check', $selected);
+
+        $disabled = (string) Ui::dropdownItem(label: 'Export', disabled: true);
+        $this->assertStringContainsString('class="menu-item disabled" role="menuitem" href="javascript:;" aria-disabled="true"', $disabled);
+    }
+
+    public function test_the_dropdown_item_slot_opens_a_submenu(): void
+    {
+        ob_start();
+        Ui::dropdownItem(label: 'Export', icon: 'ph ph-export')->slot();
+        echo Ui::dropdownItem(label: 'As PDF', handler: 'onPdf');
+        Ui::end();
+        $html = ob_get_clean();
+
+        $this->assertMatchesRegularExpression('/^<div class="submenu">\s*<a class="menu-item" role="menuitem" href="javascript:;" aria-haspopup="true">.*?Export\s*<\/a>\s*<div class="menu control-dropdown" role="menu">\s*<a class="menu-item"[^>]*data-request="onPdf"/s', trim($html));
+    }
+
+    public function test_the_dropdown_header_labels_a_section(): void
+    {
+        $this->assertMatchesRegularExpression('/^<div class="menu-header extra">\s*Density &amp; size\s*<\/div>$/', trim((string) Ui::dropdownHeader(label: 'Density & size', class: 'extra')));
+    }
+
+    public function test_the_split_button_runs_its_action_beside_a_caret_menu(): void
+    {
+        ob_start();
+        Ui::splitButton(
+            label: 'Save',
+            handler: 'onSave',
+            requestData: ['close' => 0],
+            primary: true,
+            toggleAttributes: ['data-list-checked-trigger' => 'true'],
+            dataRequestFlash: true
+        )->slot();
+        echo Ui::dropdownItem(label: 'Save and close', handler: 'onSave');
+        Ui::end();
+        $html = ob_get_clean();
+
+        $this->assertStringStartsWith('<div class="btn-group split-button">', trim($html));
+        $this->assertMatchesRegularExpression('/<button class="btn-solid theme-primary" type="button" data-request="onSave" data-request-data="\{&quot;close&quot;:0\}" data-request-flash="true">/', $html);
+        $this->assertMatchesRegularExpression('/<button class="btn-solid theme-primary split-toggle" type="button" title="More options" aria-label="More options" data-bs-toggle="menu" data-bs-strategy="fixed" data-bs-placement="bottom-end" aria-expanded="false" data-list-checked-trigger="true">/', $html);
+        $this->assertMatchesRegularExpression('/<div class="menu control-dropdown" role="menu">\s*<a class="menu-item"[^>]*>\s*Save and close/', $html);
+
+        $link = (string) Ui::splitButton(label: 'Open', href: 'https://example.com', popup: false);
+        $this->assertMatchesRegularExpression('/<a\s+href="https:\/\/example.com" class="btn" type="button">/', $link);
     }
 
     public function test_the_filter_setup_menu_uses_bootstrap_menu_markup(): void

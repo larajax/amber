@@ -21,6 +21,21 @@
     @include('reference._example', ['view' => 'reference.ui.examples.dropdown-items'])
 </section>
 
+<section class="ui-section" id="dropdown-headers">
+    @include('reference._heading', ['id' => 'dropdown-headers', 'title' => 'Headers, checks and hotkeys', 'caption' => '<code>Ui::dropdownHeader()</code>, a <code>selected</code> item, a <code>hotkey</code> and a <code>popup</code> item.'])
+    @include('reference._example', ['view' => 'reference.ui.examples.dropdown-headers'])
+</section>
+
+<section class="ui-section" id="dropdown-submenus">
+    @include('reference._heading', ['id' => 'dropdown-submenus', 'title' => 'Submenus', 'caption' => '<code>Ui::dropdownItem()</code> with a slot of items.'])
+    @include('reference._example', ['view' => 'reference.ui.examples.dropdown-submenus'])
+</section>
+
+<section class="ui-section" id="split-button">
+    @include('reference._heading', ['id' => 'split-button', 'title' => 'Split button', 'caption' => '<code>Ui::splitButton()</code>, a button and a caret that opens a menu.'])
+    @include('reference._example', ['view' => 'reference.ui.examples.dropdown-split'])
+</section>
+
 <section class="ui-section" id="dropdown-markup">
     @include('reference._heading', ['id' => 'dropdown-markup', 'title' => 'Menus in markup', 'caption' => 'A <code>data-bs-toggle="menu"</code> toggle and a <code>control-dropdown</code> menu.'])
     @include('reference._example', ['view' => 'reference.ui.examples.dropdown-markup'])

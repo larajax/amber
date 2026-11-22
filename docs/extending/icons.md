@@ -57,7 +57,7 @@ The keys are grouped by the widget that uses them:
 Keys | Used by
 ------------- | -------------
 `action.*` | shared actions, such as `action.delete`.
-`search.*`, `dropdown.*`, `tooltip.*` | the search input, dropdown carets and field tooltips.
+`search.*`, `dropdown.*`, `tooltip.*` | the search input, dropdown carets and the check on a selected menu item, and field tooltips.
 `callout.*` | the callout types: `info`, `success`, `warning` and `danger`.
 `scoreboard.*` | the scoreboard trend arrows, `up` and `down`.
 `filter.*` | the filter widget.

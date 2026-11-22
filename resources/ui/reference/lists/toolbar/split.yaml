@@ -1,0 +1,47 @@
+buttons:
+    create:
+        label: New Post
+        icon: ph ph-plus
+        type: primary
+        url: posts/create
+        items:
+            quickPost:
+                label: Quick post
+                icon: ph ph-lightning
+                handler: onLoadToolbarDialog
+                popup: true
+
+            import:
+                label: Import
+                icon: ph ph-upload-simple
+                handler: onToolbarButton
+                requestData:
+                    button: import
+                attributes:
+                    data-request-flash: true
+
+    count:
+        label: Count
+        icon: ph ph-calculator
+        type: secondary
+        handler: onCountCheckedPosts
+        checked: true
+        attributes:
+            data-request-flash: true
+        items:
+            delete:
+                label: Delete
+                icon: ph ph-trash
+                type: danger
+                handler: onDeleteCheckedPosts
+                confirm: Delete the checked posts?
+                attributes:
+                    data-request-flash: true
+
+    show:
+        label: Show
+        icon: ph ph-magnifying-glass
+        handler: onShowCheckedPost
+        checked: single
+        attributes:
+            data-request-flash: true

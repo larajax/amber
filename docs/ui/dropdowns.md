@@ -39,12 +39,40 @@ button with an icon and no caret suits a "more actions" menu. The caret is the i
 ## Item options {#dropdown-items}
 
 Items take any attribute, as buttons do, so they can ask for confirmation with `dataRequestConfirm` or
-send values with `dataRequestData`. The `class` argument merges into the item's `menu-item` class:
+send values with `dataRequestData`.
 
-- `disabled` greys an item out. Add `ariaDisabled: 'true'` so screen readers know it too.
-- A theme class, such as `theme-danger`, colors an item, hover included, for destructive actions.
+- `disabled: true` greys an item out and sets `aria-disabled`, so screen readers know it too.
+- A theme class in the `class` argument, such as `theme-danger`, colors an item, hover included, for
+  destructive actions. The class merges into the item's `menu-item` class.
 
 <<< @/../resources/views/reference/ui/examples/dropdown-items.blade.php{blade}
+
+## Headers, checks and hotkeys {#dropdown-headers}
+
+`Ui::dropdownHeader()` labels the items below it. An item with `selected: true` is the current choice,
+shown with a check at its end, and `requestData` sends values with its request as an array.
+
+`hotkey` binds a key combination that clicks the item while the menu is closed, here Shift+R, and the
+item shows the keys at its end. With `popup: true`, the item opens what its handler returns in a
+popup, as [popup buttons](/ui/popups) do.
+
+<<< @/../resources/views/reference/ui/examples/dropdown-headers.blade.php{blade}
+
+## Submenus {#dropdown-submenus}
+
+`Ui::dropdownItem()` with a slot opens the items printed in it as a submenu, beside the menu. Open it
+with `->slot()` and close it with `Ui::end()`, as the dropdown button around it. A submenu opens on
+hover or click, and the arrow keys move into and out of it.
+
+<<< @/../resources/views/reference/ui/examples/dropdown-submenus.blade.php{blade}
+
+## Split button {#split-button}
+
+`Ui::splitButton()` runs its own action, a `handler` or an `href`, beside a caret that opens the items
+printed in its slot. Arguments the method does not name become attributes of the button, and
+`toggleAttributes` sets attributes on the caret. The menu lines up with the caret's right edge.
+
+<<< @/../resources/views/reference/ui/examples/dropdown-split.blade.php{blade}
 
 ## Menus in markup {#dropdown-markup}
 
@@ -108,9 +136,40 @@ Argument | Description
 **handler** | an AJAX handler to run when the item is clicked.
 **href** | an address to follow. Default: `javascript:;`.
 **icon** | icon classes, rendered before the label.
+**popup** | with `handler`, opens the handler's response in a popup. Default: `false`.
+**requestData** | an array of data sent with the request.
+**hotkey** | a key combination that clicks the item, shown at its end.
+**selected** | marks the item as the current choice, with a check. Default: `false`.
+**disabled** | greys the item out. Default: `false`.
 
-Any other argument becomes an attribute on the item, with `class` merged into `menu-item`.
+Any other argument becomes an attribute on the item, with `class` merged into `menu-item`. Given a
+slot, the item opens a submenu of the items in it.
+
+### Ui::dropdownHeader() {#dropdown-header-arguments}
+
+Argument | Description
+------------- | -------------
+**label** | the header text, escaped.
+
+Any other argument becomes an attribute on the header, with `class` merged into `menu-header`.
 
 ### Ui::dropdownDivider() {#dropdown-divider-arguments}
 
 Takes no arguments, and renders `<hr class="menu-divider">`.
+
+### Ui::splitButton() {#split-button-arguments}
+
+Argument | Description
+------------- | -------------
+**label** | the button text, escaped.
+**handler** | an AJAX handler the button runs.
+**href** | an address the button follows, when there is no `handler`.
+**icon** | icon classes, rendered before the label.
+**popup** | with `handler`, opens the handler's response in a popup. Default: `false`.
+**primary**, **secondary**, **danger**, **success**, **warning**, **info** | the style of both halves, as on the [dropdown button](#dropdown-button-arguments). Default: `false`.
+**outline** | the outline variant. Default: `false`.
+**hotkey** | a key combination that clicks the button.
+**requestData** | an array of data sent with the request.
+**toggleAttributes** | an array of attributes for the caret.
+
+Any other argument becomes an attribute on the button.

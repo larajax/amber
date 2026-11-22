@@ -5,6 +5,7 @@ namespace App\Controllers\Reference\ListsController;
 use App\Models\Post;
 use Illuminate\Support\Str;
 use Larajax\Classes\AjaxResponse;
+use Larajax\Ui\Classes\ToolbarButton;
 use Larajax\Ui\Widgets\Lists;
 use Larajax\Ui\Widgets\Toolbar;
 
@@ -24,6 +25,9 @@ trait ToolbarExamples
         $partialList = $this->makeToolbarList('partialList');
         $searchList = $this->makeToolbarList('searchList');
 
+        $menusList = $this->makeToolbarList('menusList');
+        $splitList = $this->makeToolbarList('splitList');
+
         return [
             'buttonsList' => $buttonsList,
             'buttonsToolbar' => $this->makeButtonsToolbar($buttonsList),
@@ -32,6 +36,12 @@ trait ToolbarExamples
             'searchList' => $searchList,
             'searchToolbar' => $this->makeSearchToolbar($searchList),
             'overflowToolbar' => $this->makeOverflowToolbar(),
+            'menusList' => $menusList,
+            'menusToolbar' => $this->makeMenusToolbar($menusList),
+            'splitList' => $splitList,
+            'splitToolbar' => $this->makeSplitToolbar($splitList),
+            'groupedToolbar' => $this->makeGroupedToolbar(),
+            'extendedToolbar' => $this->makeExtendedToolbar(),
         ];
     }
 
@@ -126,6 +136,100 @@ trait ToolbarExamples
     }
     // #endregion docs-overflow-toolbar
 
+    // #region docs-menus-toolbar
+    /**
+     * makeMenusToolbar declares dropdown menus in YAML, one of them following the checked rows of the given list.
+     */
+    protected function makeMenusToolbar(Lists $list): Toolbar
+    {
+        $toolbar = Toolbar::make(
+            alias: 'menusToolbar',
+            buttons: '~/resources/ui/reference/lists/toolbar/menus.yaml',
+        );
+
+        $toolbar->bindToListWidget($list);
+
+        return $toolbar;
+    }
+    // #endregion docs-menus-toolbar
+
+    // #region docs-split-toolbar
+    /**
+     * makeSplitToolbar declares split buttons and a button for exactly one checked row of the given list.
+     */
+    protected function makeSplitToolbar(Lists $list): Toolbar
+    {
+        $toolbar = Toolbar::make(
+            alias: 'splitToolbar',
+            buttons: '~/resources/ui/reference/lists/toolbar/split.yaml',
+        );
+
+        $toolbar->bindToListWidget($list);
+
+        return $toolbar;
+    }
+    // #endregion docs-split-toolbar
+
+    // #region docs-grouped-toolbar
+    /**
+     * makeGroupedToolbar declares a button group, a divider, a disabled button, a partial and a menu at the end.
+     */
+    protected function makeGroupedToolbar(): Toolbar
+    {
+        return Toolbar::make(
+            alias: 'groupedToolbar',
+            buttons: '~/resources/ui/reference/lists/toolbar/grouped.yaml',
+        );
+    }
+
+    /**
+     * isToolbarViewActive marks the List button of the view group as the current view.
+     */
+    public function isToolbarViewActive(ToolbarButton $button): bool
+    {
+        return $button->name === 'list';
+    }
+    // #endregion docs-grouped-toolbar
+
+    // #region docs-extended-toolbar
+    /**
+     * makeExtendedToolbar changes the buttons of its YAML file when they are defined, placing new ones by name.
+     */
+    protected function makeExtendedToolbar(): Toolbar
+    {
+        $toolbar = Toolbar::make(
+            alias: 'extendedToolbar',
+            buttons: '~/resources/ui/reference/lists/toolbar/extend.yaml',
+        );
+
+        $toolbar->bindEvent('toolbar.extendButtons', function (Toolbar $toolbar) {
+            $toolbar->addButtons([
+                'preview' => [
+                    'label' => 'Preview',
+                    'icon' => 'ph ph-app-window',
+                    'handler' => 'onLoadToolbarDialog',
+                    'popup' => true,
+                ],
+            ], before: 'actions');
+
+            $toolbar->addButtons([
+                'feature' => [
+                    'label' => 'Feature',
+                    'handler' => 'onToolbarButton',
+                    'requestData' => ['button' => 'feature'],
+                    'attributes' => ['data-request-flash' => true],
+                ],
+            ], after: 'actions.publish');
+
+            $toolbar->removeButton('actions.archive');
+
+            $toolbar->getButton('actions')->label('More');
+        });
+
+        return $toolbar;
+    }
+    // #endregion docs-extended-toolbar
+
     // #region docs-button-handlers
     /**
      * onLoadToolbarDialog returns the dialog opened by the popup buttons.
@@ -175,4 +279,26 @@ trait ToolbarExamples
         return ajax()->flash('info', 'The '.Str::headline((string) request()->input('button')).' button was clicked.');
     }
     // #endregion docs-toolbar-button
+
+    // #region docs-checked-button
+    /**
+     * onCheckedToolbarButton names the menu item that sent the request and counts the checked posts it received.
+     */
+    public function onCheckedToolbarButton(): AjaxResponse
+    {
+        $count = count((array) request()->input('checked'));
+
+        return ajax()->flash('info', Str::headline((string) request()->input('button')).' would apply to '.$count.' checked '.Str::plural('post', $count).'.');
+    }
+
+    /**
+     * onShowCheckedPost names the one checked post, as the button allows a single row.
+     */
+    public function onShowCheckedPost(): AjaxResponse
+    {
+        $post = Post::find(head((array) request()->input('checked')));
+
+        return ajax()->flash('info', $post ? 'The checked post is "'.$post->title.'".' : 'No post is checked.');
+    }
+    // #endregion docs-checked-button
 }

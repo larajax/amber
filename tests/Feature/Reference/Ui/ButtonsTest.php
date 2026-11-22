@@ -80,7 +80,7 @@ class ButtonsTest extends TestCase
         $this->assertStringContainsString('href="'.route('reference.index').'"', $html);
         $this->assertStringContainsString('title="Any argument the button does not know becomes an attribute"', $html);
         $this->assertStringContainsString('disabled="disabled"', $html);
-        $this->assertStringContainsString('<div class="btn-group">', $html);
+        $this->assertMatchesRegularExpression('/<div class="btn-group" role="group">\s*<button class="btn-solid theme-secondary" type="button">\s*Day/', $html);
         $this->assertStringContainsString('<span class="button-text">', $html);
         $this->assertStringContainsString('data-request="onFlashMessage"', $html);
         $this->assertStringContainsString('data-request-data="{&quot;item&quot;:7}"', $html);

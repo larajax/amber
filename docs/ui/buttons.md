@@ -67,9 +67,10 @@ written in kebab case: `dataRequestFlash` renders `data-request-flash` and `aria
 
 ## Groups and text {#groups}
 
-A `btn-group` element joins the buttons inside it into one bar. A `button-text` span sets muted text
-beside a button, such as an "or Cancel" link next to a save button, and styles a link inside it to
-match.
+`Ui::buttonGroup()` joins the buttons printed in its slot into one bar, a `btn-group` element with a
+faint line between them. Open it with `->slot()` and close it with `Ui::end()`. A `button-text` span
+sets muted text beside a button, such as an "or Cancel" link next to a save button, and styles a link
+inside it to match.
 
 <<< @/../resources/views/reference/ui/examples/button-groups.blade.php{blade}
 
@@ -171,5 +172,11 @@ Argument | Description
 **danger** | turns the icon red on hover. Default: `false`.
 **hotkey** | a keyboard shortcut, or an array of them, that clicks the button.
 
+### Ui::buttonGroup() {#button-group-arguments}
+
+Takes no named arguments. Any argument becomes an attribute on the group, with `class` merged into
+`btn-group`.
+
 `Ui::popupButton()` opens a handler's response in a dialog, and its arguments are listed on the
-[Popups](/ui/popups#popup-button-arguments) page.
+[Popups](/ui/popups#popup-button-arguments) page. `Ui::splitButton()`, a button beside a menu, is on
+the [Dropdowns](/ui/dropdowns#split-button) page.

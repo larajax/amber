@@ -1,0 +1,52 @@
+# ===================================
+#  Post Toolbar Button Definitions
+# ===================================
+
+buttons:
+    create:
+        label: New Post
+        icon: ph ph-plus
+        type: primary
+        url: posts/create
+
+    quickPost:
+        label: Quick Post
+        icon: ph ph-lightning
+        handler: onLoadQuickPost
+        popup: true
+        hotkey: shift+q
+
+    bulk:
+        label: Bulk Actions
+        icon: ph ph-stack
+        checked: true
+        items:
+            publish:
+                label: Publish
+                icon: ph ph-eye
+                handler: onBulkPublish
+                attributes:
+                    data-request-flash: true
+
+            unpublish:
+                label: Unpublish
+                icon: ph ph-eye-slash
+                handler: onBulkUnpublish
+                attributes:
+                    data-request-flash: true
+
+            deleteDivider: divider
+
+            delete:
+                label: Delete
+                icon: ph ph-trash
+                type: danger
+                handler: onBulkDelete
+                confirm: Delete the checked posts?
+                attributes:
+                    data-request-flash: true
+
+    categories:
+        label: Categories
+        icon: ph ph-folders
+        url: categories

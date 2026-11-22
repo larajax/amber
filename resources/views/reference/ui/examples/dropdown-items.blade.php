@@ -6,7 +6,7 @@
         dataRequestData: "action: 'rename'",
         dataRequestFlash: true
     ) }}
-    {{ Ui::dropdownItem(label: 'Export', icon: 'ph ph-download-simple', class: 'disabled', ariaDisabled: 'true') }}
+    {{ Ui::dropdownItem(label: 'Export', icon: 'ph ph-download-simple', disabled: true) }}
     {{ Ui::dropdownDivider() }}
     {{ Ui::dropdownItem(
         label: 'Delete',

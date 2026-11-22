@@ -35,6 +35,79 @@ Delete handlers read the checked ids with `input('checked')`.
 
 <<< @/../app/Controllers/Reference/ListsController/ToolbarExamples.php#docs-button-handlers{php}
 
+## Dropdown menus {#menus}
+
+A button with `items` opens a menu of them instead of running an action of its own. Each item takes the
+options of a button, so it can follow a link, run a handler or open a popup, and a menu adds these:
+
+- `header` labels the items below it, and an item given as the word `divider` draws a line between
+  groups of items. Give a divider any key that is unique in its menu, such as `deleteDivider`.
+- An item with `items` of its own opens them in a submenu, here the Export formats.
+- `hotkey` on an item clicks it while the menu is closed, and the menu shows the keys at the end of the
+  item. Here Shift+X exports the checked posts as CSV.
+- `active: true` marks the current choice with a check, as on the Sort menu.
+- `type` colors an item, such as `danger` for the Delete item.
+
+`checked: true` on the menu keeps its button disabled until rows are checked, and every item with a
+`handler` sends their ids as `checked`. A menu with no visible items is hidden, and a divider or header
+left with nothing to separate or label is left out.
+
+<<< @/../app/Controllers/Reference/ListsController/ToolbarExamples.php#docs-menus-toolbar{php}
+
+<<< @/../resources/ui/reference/lists/toolbar/menus.yaml
+
+<<< @/../app/Controllers/Reference/ListsController/ToolbarExamples.php#docs-checked-button{php}
+
+## Split buttons and single rows {#split-buttons}
+
+A button with `items` and an action of its own, a `url` or a `handler`, is a split button: the button
+runs its action, and the caret beside it opens the menu. With `checked: true`, both halves wait for
+checked rows.
+
+`checked: single` enables a button only while exactly one row is checked, for an action on one record,
+such as the Show button here. Check a second row and it is disabled again.
+
+<<< @/../app/Controllers/Reference/ListsController/ToolbarExamples.php#docs-split-toolbar{php}
+
+<<< @/../resources/ui/reference/lists/toolbar/split.yaml
+
+## Groups and alignment {#groups-alignment}
+
+- `group: true` with `items` joins the items into one button group, side by side.
+- `active` marks a button as pressed. Like `visible`, it takes `true` or the name of a controller
+  method, which receives the button definition. Here `isToolbarViewActive` presses the List button.
+- `disabled` greys a button out, and takes a controller method name in the same way.
+- An entry given as the word `divider` draws a line between buttons.
+- `partial` renders a partial of the controller in place of a button, here a count of the published
+  posts. The partial receives the definition as `$button` and the toolbar as `$toolbar`.
+- `align: end` places a button at the end of the toolbar, outside the scrolling row and before the
+  search box, and its menu opens aligned to its right edge.
+
+<<< @/../app/Controllers/Reference/ListsController/ToolbarExamples.php#docs-grouped-toolbar{php}
+
+<<< @/../resources/ui/reference/lists/toolbar/grouped.yaml
+
+<<< @/../resources/views/reference/lists/toolbar/_toolbar_status.php
+
+## Extending buttons {#extend-buttons}
+
+The toolbar fires `toolbar.extendButtons` once it has defined its buttons, before it renders them. A
+listener bound to one toolbar with `bindEvent()`, or a `toolbarExtendButtons($toolbar)` method on the
+controller for every toolbar it builds, receives the toolbar and can change its buttons:
+
+- `addButtons($buttons, before: 'name')` places new buttons before the named one, and `after:` after
+  it. Without either, they go at the end, and a button with the name of an existing one replaces it
+  where it stands.
+- A dotted name reaches an item of a menu: `after: 'actions.publish'` places the new item in the
+  Actions menu, and `removeButton('actions.archive')` takes one out of it.
+- `getButton()` returns a definition, a `ToolbarButton` object whose options change with fluent calls,
+  as in `$toolbar->getButton('actions')->label('More')`. A definition with items also has `addItems()`
+  and `removeItem()`.
+
+<<< @/../app/Controllers/Reference/ListsController/ToolbarExamples.php#docs-extended-toolbar{php}
+
+<<< @/../resources/ui/reference/lists/toolbar/extend.yaml
+
 ## Buttons from a partial {#partial}
 
 Given any path other than a YAML file, `buttons` renders that file as a partial of the controller, so
@@ -146,13 +219,14 @@ Buttons inside an element with `data-list-linkage="{list id}"` follow the checke
 toolbar bound with `bindToListWidget()` sets the attribute on itself, so every button in it is
 linked.
 
-- `data-list-checked-trigger` keeps the element disabled until rows are checked. An element with
-  `data-list-checked-counter` inside it shows how many are checked, in brackets.
+- `data-list-checked-trigger` keeps the element disabled until rows are checked, or with the value
+  `single`, while any number other than one is checked. An element with `data-list-checked-counter`
+  inside it shows how many are checked, in brackets.
 - `data-list-checked-request` adds the ids of the rows checked on the page to the element's AJAX
   request as `checked`, which the handler reads with `input('checked')`.
 
 A button definition with `checked: true` sets both attributes, the second only when the button has a
-`handler`. The `Ui` factory takes them as named arguments, `dataListCheckedTrigger: true` and
+`handler`, and `checked: single` sets the trigger to `single`. The `Ui` factory takes them as named arguments, `dataListCheckedTrigger: true` and
 `dataListCheckedRequest: true`, as the partial above does.
 
 ## Conditional buttons {#conditional-buttons}
@@ -162,12 +236,10 @@ with the button definition when it renders, showing the button when the method r
 method that does not exist throws an error. `permissions` hides the button from visitors without one
 of the named gate abilities.
 
-For changes that involve several buttons, add a `toolbarExtendButtons($toolbar)` method to the
-controller. The toolbar calls it after defining its buttons, and it can use the toolbar's
-`addButtons()`, `getButton()` and `removeButton()` methods. Each definition is a `ToolbarButton`
-object whose options change with fluent calls, as in
-`$toolbar->getButton('delete')->confirm('This cannot be undone.')`. Listeners of the toolbar's
-`toolbar.extendButtons` event receive the toolbar in the same way.
+`context` shows a button only on a toolbar made with a matching `context`, given as a string or a list
+of them, as [form fields](/forms/fields) do. A button with a `context` is hidden on a toolbar without
+one. These options work on menu items too. For changes that involve several buttons, see
+[extending buttons](#extend-buttons).
 
 ## Toolbar options {#toolbar-options}
 
@@ -179,24 +251,39 @@ Option | Description
 **buttons** | the buttons, as a YAML file path or an array of [button definitions](#button-definitions), or the path of a partial that renders them.
 **search** | the [search options](/lists/search#options) for a search box, or a partial to render in its place. Without it there is no search box.
 **setupHandler** | the handler that opens the list setup, usually `$list->getEventHandler('onLoadSetup')`. It shows the setup icon.
+**context** | shows only the buttons whose `context` matches, as described in [conditional buttons](#conditional-buttons).
 
 `bindToListWidget($list)` links the toolbar to a list: its buttons follow the list's checked rows, and
 its search box sets the list's search term and refreshes the list when the term changes.
 
 ## Button definitions {#button-definitions}
 
+Buttons and menu items take the same options. An entry given as the word `divider`, in place of its
+options, draws a line.
+
 Option | Description
 ------------- | -------------
 **label** | the button text, passed through the translator.
 **icon** | an [icon](/extending/icons) name or CSS classes, such as `ph ph-plus`.
-**type** | the style: `default`, `primary`, `secondary`, `danger`, `success`, `warning` or `info`. Default: `default`.
+**type** | the style: `default`, `primary`, `secondary`, `danger`, `success`, `warning` or `info`. On a menu item, it colors the item. Default: `default`.
+**outline** | uses the outline variant of the style. Default: `false`.
 **url** | makes the button a link to this address.
 **handler** | makes the button run this AJAX handler.
 **popup** | with `handler`, opens the handler's response in a popup. Default: `false`.
 **confirm** | a message to confirm before the request runs.
-**checked** | links the button to the checked rows of the bound list. Default: `false`.
+**checked** | links the button to the checked rows of the bound list: `true` for any rows, or `single` for exactly one. Items of a checked menu send the rows. Default: `false`.
+**items** | the [items of a menu](#menus), opened by the button. With a `url` or `handler`, the button is a [split button](#split-buttons). On a menu item, they open a submenu.
+**group** | with `items`, shows them side by side as a [button group](#groups-alignment). Default: `false`.
+**caret** | shows the caret on a button with a menu. Default: `true`.
+**header** | makes the entry a label for the menu items below it.
+**divider** | makes the entry a line, the same as giving it as the word `divider`. Default: `false`.
+**partial** | renders this partial of the controller in place of the button, with `$button` and `$toolbar`.
+**align** | `end` places the button at the end of the toolbar.
+**active** | marks the button as pressed, or a menu item as the current choice, as `true` or a controller method name. Default: `false`.
+**disabled** | greys the button out, as `true` or a controller method name. Default: `false`.
 **visible** | `false` hides the button, and the name of a controller method decides when it shows. Default: `true`.
 **permissions** | gate abilities needed to see the button, as a string or an array where any one is enough.
+**context** | the toolbar contexts the button shows in, as a string or an array.
 **hotkey** | a key combination that clicks the button, such as `shift+p`.
 **requestData** | data sent with the AJAX request.
 **attributes** | HTML attributes added to the button, such as `data-request-flash: true`.
