@@ -141,7 +141,7 @@ return [
                 'file-upload' => [
                     'label' => 'File Upload',
                     'icon' => 'ph-upload-simple',
-                    'covers' => ['formwidget:FileUpload'],
+                    'covers' => ['formwidget:FileUpload', 'control:image-cropper'],
                 ],
                 'markdown-editor' => [
                     'label' => 'Markdown Editor',

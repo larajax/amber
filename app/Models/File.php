@@ -45,7 +45,7 @@ class File extends Model implements AttachmentInterface, SortableInterface
      */
     public function fromPost($fileInput): static
     {
-        return $this->fromFile($fileInput->getRealPath(), $fileInput->getClientOriginalName());
+        return $this->fromFile($fileInput->getPathname(), $fileInput->getClientOriginalName());
     }
 
     /**
@@ -61,7 +61,7 @@ class File extends Model implements AttachmentInterface, SortableInterface
         $this->disk_name = Str::random(40).'.'.strtolower(pathinfo($this->file_name, PATHINFO_EXTENSION));
         $this->is_public ??= true;
 
-        $this->getStorageDisk()->putFileAs($this->getStorageFolder(), $file, $this->disk_name);
+        $this->getStorageDisk()->putFileAs($this->getStorageFolder(), $path, $this->disk_name);
 
         return $this;
     }

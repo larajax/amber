@@ -1,0 +1,8 @@
+fields:
+    banner:
+        label: Banner
+        type: fileupload
+        mode: image
+        cropWidth: 1200
+        cropHeight: 500
+        comment: Crops a picked image to the shape of 1200 by 500 pixels before it uploads, and scales a larger one down to that size.

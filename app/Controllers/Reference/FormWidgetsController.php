@@ -58,7 +58,7 @@ class FormWidgetsController extends ReferenceControllerBase
     public function fileUpload(): View
     {
         $this->makeExampleForms('form-widgets/file-upload', [
-            'image-single', 'image-multi', 'file-single', 'file-multi', 'private', 'attach-on-upload', 'preview',
+            'image-single', 'image-multi', 'image-crop', 'image-multi-crop', 'file-single', 'file-multi', 'private', 'attach-on-upload', 'preview',
         ]);
 
         return view('reference.form-widgets.file-upload', $this->exampleVars());

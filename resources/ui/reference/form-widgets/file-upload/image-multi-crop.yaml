@@ -1,0 +1,9 @@
+fields:
+    photos:
+        label: Photos
+        type: fileupload
+        mode: image
+        maxFiles: 4
+        cropWidth: 900
+        cropHeight: 1200
+        comment: Up to four photos, each cropped to the portrait shape of 900 by 1200 pixels before it uploads.

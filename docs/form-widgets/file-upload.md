@@ -28,7 +28,8 @@ shows how the save picks it up.
 
 `mode: image` shows the file as a thumbnail. On a `morphOne` relation the field holds one image, and a
 new upload replaces it. `imageWidth` and `imageHeight` set the thumbnail size in pixels, and the field
-asks the file model's `getThumb()` for a thumbnail of that size. Without `fileTypes`, image mode accepts
+asks the file model's `getThumb()` for a thumbnail of that size. The preview shows in the same shape,
+its shorter side 6.75rem long, and narrows to fit the field. Without `fileTypes`, image mode accepts
 jpg, jpeg, bmp, png, webp, avif and gif.
 
 <<< @/../resources/ui/reference/form-widgets/file-upload/image-single.yaml
@@ -45,6 +46,35 @@ list. `thumbOptions` passes options to the file model's `getThumb()`, such as a 
 thumbnails are the images themselves, shown at the thumbnail size.
 
 <<< @/../resources/ui/reference/form-widgets/file-upload/image-multi.yaml
+
+## Crop to a size {#image-crop}
+
+`cropWidth` and `cropHeight` crop each picked image to the shape of that size before it uploads. An
+image of another shape opens a popup, where dragging moves the image and the slider or the mouse wheel
+zooms it, and Crop saves the part in the frame. The part is saved at its own size, up to the crop size,
+so a larger image is scaled down and a smaller one is never enlarged. An image that is the shape already
+uploads without the popup, and closing the popup leaves the field as it was.
+
+The server checks each upload has the shape, so an image that skipped the browser's crop is refused.
+Shapes within one percent of each other count as the same, as does the shape on its side, since a photo
+can be turned by its Exif data. Cropping works in image mode only.
+
+When the field sets neither `imageWidth` nor `imageHeight`, the preview takes the crop's shape. The
+thumbnail keeps the default of 190 pixels on its shorter side and grows the longer one to match, so
+this banner's thumbnail is made at 456 by 190. A field that sets both keeps its own size and shape.
+
+<<< @/../resources/ui/reference/form-widgets/file-upload/image-crop.yaml
+
+## Crop multiple images {#image-multi-crop}
+
+On a `morphMany` relation, each picked image is cropped in turn. Several images picked or dropped at
+once open the popup one after another, its title counting through them, such as Crop Image (2/3).
+Closing a popup skips that image and moves on to the next.
+
+This crop is taller than it is wide, so each preview is a portrait, its thumbnail made at 190 by 253
+pixels.
+
+<<< @/../resources/ui/reference/form-widgets/file-upload/image-multi-crop.yaml
 
 ## Single file {#file-single}
 
@@ -97,8 +127,10 @@ the gallery through `valueFrom`.
 Option | Description
 ------------- | -------------
 **mode** | `image` for thumbnails or `file` for a list of names. The relation picks single or multiple, or name both, such as `image-multi`. Default: `image`.
-**imageWidth** | the thumbnail width in pixels. Default: `190`.
-**imageHeight** | the thumbnail height in pixels. Default: `190`.
+**imageWidth** | the thumbnail width in pixels. With `imageHeight`, it also sets the shape the preview shows in. Default: `190`, or the crop's shape when neither size is set.
+**imageHeight** | the thumbnail height in pixels. Default: `190`, or the crop's shape when neither size is set.
+**cropWidth** | with `cropHeight`, crops each picked image to the shape of this size before it uploads, and scales a larger one down to it. Image mode only. Default: no crop.
+**cropHeight** | see `cropWidth`.
 **thumbOptions** | options passed to the file model's `getThumb()`, such as `mode` and `extension`, or `false` to show the original images. Default: `mode: auto` and `extension: auto`.
 **fileTypes** | the accepted extensions, as a comma separated list, or `*` for any. Default: the image set in image mode, the default set in file mode.
 **mimeTypes** | the accepted content types, as a comma separated list of extensions, checked against the type read from the uploaded content. Default: no check.

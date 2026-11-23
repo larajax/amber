@@ -206,6 +206,11 @@ to the cells and `headCssClass` adds one to the header.
 
 <<< @/../resources/ui/reference/lists/columns/headers.yaml
 
+A table with more columns than fit scrolls sideways, with the scrollbar below it or by dragging the
+header, as on a [drag scroll](/lists/toolbar#drag-scroll) row. The mouse wheel scrolls the table while
+the pointer is over the header, and the page anywhere else. A shadow on an edge of the header shows
+that more columns lie that way, from the `scroll-before` and `scroll-after` classes on the list.
+
 ## Column properties {#column-properties}
 
 Every column takes these properties. A column given as a string, such as `title: Title`, is a text

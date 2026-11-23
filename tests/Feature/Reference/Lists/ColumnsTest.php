@@ -320,7 +320,7 @@ class ColumnsTest extends TestCase
 
         $html = $this->listHtml('actions');
 
-        $this->assertMatchesRegularExpression('/<td class="[^"]*list-cell-type-actions[^"]*nolink">\s*<button class="btn-icon-link ph ph-dots-three-vertical list-actions-toggle" type="button" title="Actions" data-bs-toggle="menu" data-bs-placement="bottom-end"/', $html);
+        $this->assertMatchesRegularExpression('/<td class="[^"]*list-cell-type-actions[^"]*nolink">\s*<button class="btn list-actions-toggle" type="button" title="Actions" aria-label="Actions" data-bs-toggle="menu" data-bs-placement="bottom-end"[^>]*>\s*<i class="ph ph-dots-three-vertical" aria-hidden="true"><\/i>/', $html);
         $this->assertDoesNotMatchRegularExpression('/<th[^>]*list-cell-name-_actions[^>]*>\s*<a/', $html);
 
         $draftRow = $this->rowContaining($html, 'Draft &quot;One&quot;');

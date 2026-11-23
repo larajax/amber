@@ -17,6 +17,16 @@
         @include('reference._form_example', ['name' => 'image-multi'])
     </section>
 
+    <section class="ui-section" id="image-crop">
+        @include('reference._heading', ['id' => 'image-crop', 'title' => 'Crop to a size', 'caption' => '<code>cropWidth</code> and <code>cropHeight</code> crop a picked image in the browser before it uploads.'])
+        @include('reference._form_example', ['name' => 'image-crop'])
+    </section>
+
+    <section class="ui-section" id="image-multi-crop">
+        @include('reference._heading', ['id' => 'image-multi-crop', 'title' => 'Crop multiple images', 'caption' => 'A morphMany gallery with <code>cropWidth</code> and <code>cropHeight</code>, cropping each picked image in turn.'])
+        @include('reference._form_example', ['name' => 'image-multi-crop'])
+    </section>
+
     <section class="ui-section" id="file-single">
         @include('reference._heading', ['id' => 'file-single', 'title' => 'Single file', 'caption' => '<code>mode: file</code> with <code>fileTypes</code>, <code>mimeTypes</code> and <code>maxFilesize</code>.'])
         @include('reference._form_example', ['name' => 'file-single'])

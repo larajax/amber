@@ -158,6 +158,14 @@ class Sample extends Model
     }
 
     /**
+     * banner is a single image, cropped to a shape before it uploads.
+     */
+    public function banner(): MorphOne
+    {
+        return $this->morphOne(File::class, 'attachment')->withAttributes(['field' => 'banner']);
+    }
+
+    /**
      * brochure is a single file.
      */
     public function brochure(): MorphOne
@@ -179,6 +187,14 @@ class Sample extends Model
     public function gallery(): MorphMany
     {
         return $this->morphMany(File::class, 'attachment')->withAttributes(['field' => 'gallery'])->orderBy('sort_order');
+    }
+
+    /**
+     * photos holds many images cropped to a shape before they upload, in their sort order.
+     */
+    public function photos(): MorphMany
+    {
+        return $this->morphMany(File::class, 'attachment')->withAttributes(['field' => 'photos'])->orderBy('sort_order');
     }
 
     /**

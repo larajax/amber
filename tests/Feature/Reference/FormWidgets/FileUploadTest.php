@@ -69,7 +69,7 @@ class FileUploadTest extends TestCase
 
         $html = $this->get(route('reference.form-widgets.file-upload'))->assertOk()->getContent();
 
-        foreach (['image-single', 'image-multi', 'file-single', 'file-multi', 'private', 'attach-on-upload', 'preview'] as $example) {
+        foreach (['image-single', 'image-multi', 'image-crop', 'image-multi-crop', 'file-single', 'file-multi', 'private', 'attach-on-upload', 'preview'] as $example) {
             $this->assertStringContainsString("resources/ui/reference/form-widgets/file-upload/{$example}.yaml", $html);
         }
 
@@ -89,6 +89,195 @@ class FileUploadTest extends TestCase
         $this->assertMatchesRegularExpression('/name="_session_key" value="[^"]{40}"/', $html);
     }
 
+    /**
+     * uploadBanner uploads a fake image of the given size to the crop example's banner field.
+     */
+    protected function uploadBanner(int $width, int $height): TestResponse
+    {
+        return $this->ajax('exampleImageCropBanner::onUpload', [
+            'file_data' => UploadedFile::fake()->image('banner.png', $width, $height),
+            '_session_key' => 'session-1',
+        ]);
+    }
+
+    public function test_the_crop_example_gives_the_field_its_crop_size_and_popup(): void
+    {
+        Sample::factory()->create();
+
+        $html = $this->get(route('reference.form-widgets.file-upload'))->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/data-crop-width="1200"\s+data-crop-height="500"\s+data-crop-template="#([^"]+)"/', $html);
+        preg_match('/data-crop-template="#([^"]+)"/', $html, $matches);
+        $this->assertStringContainsString('<script type="text/template" id="'.$matches[1].'">', $html);
+
+        // The parts of the popup the cropper fills in
+        foreach (['data-cropper-stage', 'data-cropper-zoom', 'data-cropper-output', 'data-cropper-small', 'data-cropper-animated', 'data-cropper-apply'] as $part) {
+            $this->assertStringContainsString($part, $html);
+        }
+        $this->assertStringContainsString('smaller than 600 × 250 pixels', $html);
+
+        // Only the banner and the photos crop, so only they have a size and a popup
+        $this->assertSame(2, substr_count($html, 'data-crop-width='));
+        $this->assertSame(2, substr_count($html, 'class="image-cropper-popup"'));
+
+        // With no size of its own, the preview takes the crop's shape, its longer side grown from 190
+        $this->assertMatchesRegularExpression('/data-thumbnail-width="456"\s+data-thumbnail-height="190"[^>]*data-crop-width="1200"/', $html);
+        $this->assertStringContainsString('style="--fileupload-image-ratio: 2.4"', $html);
+    }
+
+    public function test_the_multiple_crop_example_gives_the_gallery_its_crop_size_and_popup(): void
+    {
+        Sample::factory()->create();
+
+        $html = $this->get(route('reference.form-widgets.file-upload'))->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/class="field-fileupload size-large is-image is-multi is-grid is-sortable[^"]*"\s+data-control="fileupload"[^>]*data-crop-width="900"\s+data-crop-height="1200"\s+data-crop-template="#([^"]+)"\s+data-max-files="4"/', $html);
+        preg_match('/data-crop-width="900"\s+data-crop-height="1200"\s+data-crop-template="#([^"]+)"/', $html, $matches);
+        $this->assertStringContainsString('<script type="text/template" id="'.$matches[1].'">', $html);
+        $this->assertStringContainsString('smaller than 450 × 600 pixels', $html);
+
+        // A portrait crop keeps the width and grows the preview's height
+        $this->assertStringContainsString('style="--fileupload-image-ratio: 0.751"', $html);
+    }
+
+    public function test_photos_in_the_crop_shape_upload_and_save_in_order(): void
+    {
+        $sample = Sample::factory()->create();
+
+        foreach (['first.png' => [900, 1200], 'second.png' => [450, 600], 'third.png' => [1800, 2400]] as $name => [$width, $height]) {
+            $response = $this->ajax('exampleImageMultiCropPhotos::onUpload', [
+                'file_data' => UploadedFile::fake()->image($name, $width, $height),
+                '_session_key' => 'session-1',
+            ]);
+            $this->assertSame(200, $response->status(), "{$name}: ".$response->getContent());
+        }
+
+        $this->assertSame(0, $sample->photos()->count());
+
+        $this->ajax('onSaveExamples', ['_session_key' => 'session-1'])->assertOk();
+
+        $this->assertSame(['first.png', 'second.png', 'third.png'], $sample->fresh()->photos->pluck('file_name')->all());
+    }
+
+    public function test_a_photo_of_another_shape_is_refused_while_the_others_upload(): void
+    {
+        Sample::factory()->create();
+
+        $this->ajax('exampleImageMultiCropPhotos::onUpload', [
+            'file_data' => UploadedFile::fake()->image('portrait.png', 900, 1200),
+            '_session_key' => 'session-1',
+        ])->assertOk();
+
+        $response = $this->ajax('exampleImageMultiCropPhotos::onUpload', [
+            'file_data' => UploadedFile::fake()->image('landscape.png', 1600, 900),
+            '_session_key' => 'session-1',
+        ]);
+
+        $response->assertStatus(400);
+        $this->assertStringContainsString('The image must be cropped to the shape of 900 x 1200 pixels.', $response->getContent());
+        $this->assertSame(['portrait.png'], File::pluck('file_name')->all());
+    }
+
+    public function test_a_crop_shapes_the_preview_unless_the_field_sets_its_size(): void
+    {
+        $form = Form::createIn(new FormWidgetsController, [
+            'model' => new Sample,
+            'fields' => [
+                'cover' => ['label' => 'Cover', 'type' => 'fileupload', 'mode' => 'image', 'cropWidth' => 500, 'cropHeight' => 1000],
+                'banner' => ['label' => 'Banner', 'type' => 'fileupload', 'mode' => 'image', 'cropWidth' => 1200, 'cropHeight' => 500, 'imageWidth' => 300, 'imageHeight' => 300],
+            ],
+        ]);
+        $form->bindToController();
+
+        $html = (string) $form->render();
+
+        // A tall crop grows the height instead
+        $this->assertMatchesRegularExpression('/data-thumbnail-width="190"\s+data-thumbnail-height="380"[^>]*data-crop-width="500"/', $html);
+        $this->assertStringContainsString('style="--fileupload-image-ratio: 0.5"', $html);
+
+        // Sizes the field sets win over the crop's shape
+        $this->assertMatchesRegularExpression('/data-thumbnail-width="300"\s+data-thumbnail-height="300"[^>]*data-crop-width="1200"/', $html);
+        $this->assertStringContainsString('style="--fileupload-image-ratio: 1"', $html);
+    }
+
+    public function test_a_crop_size_is_left_out_of_preview_mode_and_file_mode(): void
+    {
+        // A preview field with no file shows only a note, so the banner needs one to show the field
+        $sample = Sample::factory()->create();
+        $this->attachFiles($sample, 'banner', ['banner.png']);
+
+        $form = Form::createIn(new FormWidgetsController, [
+            'model' => $sample,
+            'fields' => [
+                'banner' => ['label' => 'Banner', 'type' => 'fileupload', 'mode' => 'image', 'cropWidth' => 1200, 'cropHeight' => 500, 'disabled' => true],
+                'brochure' => ['label' => 'Brochure', 'type' => 'fileupload', 'mode' => 'file', 'cropWidth' => 1200, 'cropHeight' => 500],
+            ],
+        ]);
+        $form->bindToController();
+
+        $html = (string) $form->render();
+
+        $this->assertMatchesRegularExpression('/class="field-fileupload is-image is-single is-populated is-preview"/', $html);
+        $this->assertMatchesRegularExpression('/class="field-fileupload is-file is-single\s[^"]*"\s+data-control="fileupload"/', $html);
+        $this->assertStringNotContainsString('data-crop-width', $html);
+        $this->assertStringNotContainsString('image-cropper-popup', $html);
+    }
+
+    public function test_an_image_in_the_crop_shape_uploads_and_saves_as_the_banner(): void
+    {
+        $sample = Sample::factory()->create();
+
+        // The server checks only the shape, since the browser scales a larger image down
+        foreach ([[1200, 500], [600, 250], [2400, 1000]] as [$width, $height]) {
+            $response = $this->uploadBanner($width, $height);
+            $this->assertSame(200, $response->status(), "{$width} x {$height}: ".$response->getContent());
+        }
+
+        $this->assertSame(3, File::count());
+
+        $this->ajax('onSaveExamples', ['_session_key' => 'session-1'])->assertOk();
+
+        $banner = $sample->fresh()->banner;
+        $this->assertSame('banner.png', $banner->file_name);
+        $this->assertSame('banner', $banner->field);
+    }
+
+    public function test_an_image_of_another_shape_is_refused(): void
+    {
+        Sample::factory()->create();
+
+        $response = $this->uploadBanner(1200, 900);
+
+        $response->assertStatus(400);
+        $this->assertStringContainsString('The image must be cropped to the shape of 1200 x 500 pixels.', $response->getContent());
+        $this->assertSame(0, File::count());
+    }
+
+    public function test_a_shape_within_one_percent_or_a_pixel_passes(): void
+    {
+        Sample::factory()->create();
+
+        // One percent of 500 is 5 pixels
+        $this->uploadBanner(1200, 505)->assertOk();
+        $this->uploadBanner(1200, 506)->assertStatus(400);
+
+        // A small image may be a pixel out, where one percent is less than a pixel
+        $this->uploadBanner(24, 11)->assertOk();
+        $this->uploadBanner(24, 12)->assertStatus(400);
+
+        $this->assertSame(2, File::count());
+    }
+
+    public function test_the_shape_on_its_side_passes(): void
+    {
+        Sample::factory()->create();
+
+        // A photo turned by its Exif data reads as its stored size
+        $this->uploadBanner(500, 1200)->assertOk();
+
+        $this->assertSame(1, File::count());
+    }
+
     public function test_preview_mode_shows_the_files_without_the_toolbar(): void
     {
         $sample = Sample::factory()->create();
@@ -96,7 +285,8 @@ class FileUploadTest extends TestCase
 
         $html = $this->get(route('reference.form-widgets.file-upload'))->assertOk()->getContent();
 
-        $this->assertMatchesRegularExpression('/class="field-fileupload size-large is-image is-multi is-grid is-sortable is-populated is-preview"/', $html);
+        // A preview field cannot sort, so it leaves out is-sortable
+        $this->assertMatchesRegularExpression('/class="field-fileupload size-large is-image is-multi is-grid\s+is-populated is-preview"/', $html);
         $this->assertSame(2, substr_count($html, 'data-name="photo.png"'));
         $this->assertStringNotContainsString('There are no files uploaded.', $html);
     }
